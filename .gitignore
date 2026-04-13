@@ -12,6 +12,10 @@ yarn-error.log*
 lerna-debug.log*
 .pnpm-debug.log*
 
+# Playwright
+test-results/
+playwright-report/
+
 # Diagnostic reports (https://nodejs.org/api/report.html)
 report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
 
