@@ -1,8 +1,19 @@
 'use client'
 
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 
 export default function NotFound() {
+  const router = useRouter()
+
+  const handleGoBack = () => {
+    if (window.history.length > 1) {
+      router.back()
+    } else {
+      router.push('/')
+    }
+  }
+
   return (
     <div
       className={
@@ -36,7 +47,7 @@ export default function NotFound() {
           </Link>
 
           <button
-            onClick={() => globalThis.history.back()}
+            onClick={handleGoBack}
             className={
               'cursor-pointer px-6 py-3 bg-slate-200 text-slate-800 font-medium rounded-lg transition-all duration-600 transform hover:scale-101 hover:bg-slate-300'
             }
