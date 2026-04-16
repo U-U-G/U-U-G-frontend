@@ -7,8 +7,8 @@
   --primary: #663CFF;
   --secondary: #A7A7A7;
 
-  --foreground-primary: #111111;
-  --foreground-point-red: #F73030;
+  --text-primary: #111111;
+  --text-point-red: #F73030;
 }
 
 @theme inline {
@@ -18,8 +18,8 @@
   --color-primary: var(--primary);
   --color-secondary: var(--secondary);
 
-  --color-foreground-primary: var(--foreground-primary);
-  --color-foreground-point-red: var(--foreground-point-red);
+  --color-text-primary: var(--text-primary);
+  --color-text-point-red: var(--text-point-red);
 
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
