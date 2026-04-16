@@ -13,7 +13,7 @@ export default function Login() {
   return (
     <main className="flex min-h-screen items-center justify-center">
       <section className="w-full max-w-[380px]">
-        <form className="flex flex-col" onClick={handleLogin}>
+        <form className="flex flex-col" onSubmit={handleLogin}>
           <div className="mb-5">
             <label htmlFor="email" className="sr-only">
               이메일
@@ -35,7 +35,6 @@ export default function Login() {
               id="password"
               type="password"
               placeholder="비밀번호"
-              autoComplete="current-password"
               className="w-full border-0 border-b border-secondary bg-transparent px-1 pb-4 pt-2 text-lg text-text-primary outline-none focus:border-text-primary placeholder:text-secondary transition-all duration-300 ease-in-out"
             />
           </div>
@@ -49,11 +48,13 @@ export default function Login() {
         </form>
 
         <div className="font-medium mb-12 flex items-center justify-center gap-4 text-md text-text-primary">
-          <button className="cursor-pointer" type="button">
+          <button type="button" className="cursor-pointer">
             비밀번호 찾기
           </button>
-          <span className="text-foreground-primary">|</span>
-          <button className="cursor-pointer" type="button">
+          <span className="text-foreground-primary" aria-hidden="true">
+            |
+          </span>
+          <button type="button" className="cursor-pointer">
             회원가입
           </button>
         </div>
@@ -64,7 +65,7 @@ export default function Login() {
             className="flex h-[68px] w-[68px] items-center justify-center rounded-full bg-[#fee500] cursor-pointer"
             aria-label="카카오 로그인"
           >
-            <Image src={KakaoLogoIcon} alt="카카오 로그인" />
+            <Image src={KakaoLogoIcon} alt="" />
           </button>
 
           <button
@@ -72,7 +73,7 @@ export default function Login() {
             className="flex h-[68px] w-[68px] items-center justify-center rounded-full shadow-[0_2px_10px_rgba(0,0,0,0.08)] cursor-pointer"
             aria-label="구글 로그인"
           >
-            <Image src={GoogleLogoIcon} alt="구글 로그인" />
+            <Image src={GoogleLogoIcon} alt="" />
           </button>
 
           <button
@@ -80,7 +81,7 @@ export default function Login() {
             className="flex h-[68px] w-[68px] items-center justify-center rounded-full bg-[#03c75a] cursor-pointer"
             aria-label="네이버 로그인"
           >
-            <Image src={NaverLogoIcon} alt="네이버 로그인" />
+            <Image src={NaverLogoIcon} alt="" />
           </button>
         </div>
       </section>
