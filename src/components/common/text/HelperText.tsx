@@ -35,7 +35,15 @@ export default function HelperText({
         className="-mr-1"
       />
     ),
-    error: <Image src={ErrorIcon} alt="error" width={21} height={21} />,
+    error: (
+      <Image
+        src={ErrorIcon}
+        alt="error"
+        width={14}
+        height={14}
+        className="ml-1"
+      />
+    ),
     empty: <span className="w-5.25 h-5.25" />,
   }[status]
 
