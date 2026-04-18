@@ -23,7 +23,8 @@ export default function InputBox({
         <input
           {...props}
           className={`
-            w-full px-4 py-3.5 text-base rounded-lg border outline-text-primary
+            w-full px-4 py-3.5 text-base rounded-lg border outline-none
+            focus:border-text-primary transition-colors duration-250 ease-in-out
             placeholder:text-secondary disabled:cursor-not-allowed
             ${rightElement ? 'pr-12' : ''}
             ${borderClass}
@@ -31,7 +32,9 @@ export default function InputBox({
           `}
         />
         {rightElement && (
-          <div className="absolute right-4 inset-y-0 flex items-center">{rightElement}</div>
+          <div className="absolute right-4 inset-y-0 flex items-center">
+            {rightElement}
+          </div>
         )}
       </div>
     </div>
