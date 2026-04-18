@@ -1,0 +1,70 @@
+import { useState, useEffect } from 'react'
+import PasswordField from '@/components/common/input/PasswordField'
+
+const PASSWORD_REGEX =
+  /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]).{8,}$/
+
+function isValidNewPassword(pw: string) {
+  return PASSWORD_REGEX.test(pw)
+}
+
+interface ResetPasswordSectionProps {
+  onPasswordValid?: (valid: boolean) => void
+}
+
+export default function ResetPasswordSection({
+  onPasswordValid,
+}: ResetPasswordSectionProps) {
+  const [newPassword, setNewPassword] = useState('')
+  const [confirm, setConfirm] = useState('')
+
+  useEffect(() => {
+    onPasswordValid?.(
+      isValidNewPassword(newPassword) &&
+        newPassword === confirm &&
+        confirm !== '',
+    )
+  }, [newPassword, confirm, onPasswordValid])
+
+  const newPasswordStatus = !newPassword
+    ? 'default'
+    : isValidNewPassword(newPassword)
+      ? 'success'
+      : 'error'
+
+  const confirmStatus = !confirm
+    ? 'default'
+    : confirm === newPassword
+      ? 'success'
+      : 'error'
+
+  return (
+    <div className="flex flex-col gap-5.5">
+      <PasswordField
+        label="새 비밀번호"
+        name="newPassword"
+        value={newPassword}
+        placeholder="새 비밀번호를 입력해주세요."
+        status={newPasswordStatus}
+        helperText="영문, 숫자, 특수문자를 포함하여 8자 이상 입력해주세요."
+        onChange={setNewPassword}
+      />
+
+      <PasswordField
+        label="새 비밀번호 확인"
+        name="newPasswordConfirm"
+        value={confirm}
+        onChange={setConfirm}
+        placeholder="비밀번호를 입력해주세요."
+        status={confirmStatus}
+        helperText={
+          confirm
+            ? confirm === newPassword
+              ? '비밀번호가 일치합니다.'
+              : '비밀번호가 일치하지 않습니다.'
+            : '\u00A0'
+        }
+      />
+    </div>
+  )
+}

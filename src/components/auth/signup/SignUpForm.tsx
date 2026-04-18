@@ -13,9 +13,13 @@ export default function SignUpForm() {
   const [nicknameChecked, setNicknameChecked] = useState(false)
   const [termsAccepted, setTermsAccepted] = useState(false)
 
-  const handlePasswordValid = useCallback((valid: boolean) => setPasswordValid(valid), [])
+  const handlePasswordValid = useCallback(
+    (valid: boolean) => setPasswordValid(valid),
+    [],
+  )
 
-  const canSubmit = emailVerified && passwordValid && nicknameChecked && termsAccepted
+  const canSubmit =
+    emailVerified && passwordValid && nicknameChecked && termsAccepted
 
   return (
     <form className="flex flex-col gap-5.5">
