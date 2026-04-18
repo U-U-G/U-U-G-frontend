@@ -3,9 +3,6 @@
 import { useEffect, useState } from 'react'
 import PasswordField from '@/components/common/input/PasswordField'
 
-const PASSWORD_REGEX =
-  /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]).{8,}$/
-
 function isValidPassword(pw: string) {
   return PASSWORD_REGEX.test(pw)
 }

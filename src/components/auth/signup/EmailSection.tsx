@@ -5,8 +5,6 @@ import Button from '@/components/common/button/Button'
 import InputBox from '@/components/common/input/InputBox'
 import HelperText from '@/components/common/text/HelperText'
 
-const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-
 type FieldStatus = 'default' | 'success' | 'error'
 type HelperStatus = FieldStatus | 'empty'
 

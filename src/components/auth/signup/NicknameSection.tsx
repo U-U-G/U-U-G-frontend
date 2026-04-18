@@ -5,8 +5,6 @@ import Button from '@/components/common/button/Button'
 import InputBox from '@/components/common/input/InputBox'
 import HelperText from '@/components/common/text/HelperText'
 
-const NICKNAME_REGEX = /[^a-zA-Z0-9가-힣]/
-
 type HelperState = {
   text: string
   status: 'default' | 'success' | 'error' | 'empty'

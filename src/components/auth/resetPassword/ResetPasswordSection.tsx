@@ -1,9 +1,6 @@
 import { useState, useEffect } from 'react'
 import PasswordField from '@/components/common/input/PasswordField'
 
-const PASSWORD_REGEX =
-  /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]).{8,}$/
-
 function isValidNewPassword(pw: string) {
   return PASSWORD_REGEX.test(pw)
 }
@@ -20,9 +17,7 @@ export default function ResetPasswordSection({
 
   useEffect(() => {
     onPasswordValid?.(
-      isValidNewPassword(newPassword) &&
-        newPassword === confirm &&
-        confirm !== '',
+      isValidNewPassword(newPassword) && newPassword === confirm,
     )
   }, [newPassword, confirm, onPasswordValid])
 
