@@ -5,6 +5,8 @@ import Button from '@/components/common/button/Button'
 import InputBox from '@/components/common/input/InputBox'
 import HelperText from '@/components/common/text/HelperText'
 
+const NICKNAME_REGEX = /[^a-zA-Z0-9가-힣]/
+
 type HelperState = {
   text: string
   status: 'default' | 'success' | 'error' | 'empty'
@@ -14,7 +16,9 @@ interface NicknameSectionProps {
   onNicknameChecked?: (checked: boolean) => void
 }
 
-export default function NicknameSection({ onNicknameChecked }: NicknameSectionProps) {
+export default function NicknameSection({
+  onNicknameChecked,
+}: NicknameSectionProps) {
   const [nickname, setNickname] = useState('')
   const [inputStatus, setInputStatus] = useState<
     'default' | 'success' | 'error'
@@ -31,7 +35,7 @@ export default function NicknameSection({ onNicknameChecked }: NicknameSectionPr
       return
     }
 
-    if (/[^a-zA-Z0-9가-힣]/.test(nickname)) {
+    if (NICKNAME_REGEX.test(nickname)) {
       setHelper({ text: '특수문자가 포함되어 있습니다.', status: 'error' })
       setInputStatus('error')
       return

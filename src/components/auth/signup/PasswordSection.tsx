@@ -5,26 +5,31 @@ import Image from 'next/image'
 import VisibleIcon from '@/assets/icon/visible-icon.svg'
 import InvisibleIcon from '@/assets/icon/invisible-icon.svg'
 import InputBox from '@/components/common/input/InputBox'
+
+const PASSWORD_REGEX =
+  /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]).{8,}$/
 import HelperText from '@/components/common/text/HelperText'
 
 function isValidPassword(pw: string) {
-  return /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]).{8,}$/.test(
-    pw,
-  )
+  return PASSWORD_REGEX.test(pw)
 }
 
 interface PasswordSectionProps {
   onPasswordValid?: (valid: boolean) => void
 }
 
-export default function PasswordSection({ onPasswordValid }: PasswordSectionProps) {
+export default function PasswordSection({
+  onPasswordValid,
+}: PasswordSectionProps) {
   const [password, setPassword] = useState('')
   const [confirm, setConfirm] = useState('')
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirm, setShowConfirm] = useState(false)
 
   useEffect(() => {
-    onPasswordValid?.(isValidPassword(password) && password === confirm && confirm !== '')
+    onPasswordValid?.(
+      isValidPassword(password) && password === confirm && confirm !== '',
+    )
   }, [password, confirm, onPasswordValid])
 
   const passwordStatus = !password

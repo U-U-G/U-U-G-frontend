@@ -5,15 +5,22 @@ import Button from '@/components/common/button/Button'
 import InputBox from '@/components/common/input/InputBox'
 import HelperText from '@/components/common/text/HelperText'
 
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+
+type FieldStatus = 'default' | 'success' | 'error'
+type HelperStatus = FieldStatus | 'empty'
+
 type HelperState = {
   text: string
-  status: 'default' | 'success' | 'error' | 'empty'
+  status: HelperStatus
 }
 
 const EMPTY: HelperState = { text: '\u00A0', status: 'empty' }
 
 function formatTime(seconds: number) {
-  const m = Math.floor(seconds / 60).toString().padStart(2, '0')
+  const m = Math.floor(seconds / 60)
+    .toString()
+    .padStart(2, '0')
   const s = (seconds % 60).toString().padStart(2, '0')
   return `${m}:${s}`
 }
@@ -25,8 +32,8 @@ interface EmailSectionProps {
 export default function EmailSection({ onEmailVerified }: EmailSectionProps) {
   const [email, setEmail] = useState('')
   const [code, setCode] = useState('')
-  const [emailStatus, setEmailStatus] = useState<'default' | 'success' | 'error'>('default')
-  const [codeStatus, setCodeStatus] = useState<'default' | 'success' | 'error'>('default')
+  const [emailStatus, setEmailStatus] = useState<FieldStatus>('default')
+  const [codeStatus, setCodeStatus] = useState<FieldStatus>('default')
   const [emailHelper, setEmailHelper] = useState<HelperState>(EMPTY)
   const [codeHelper, setCodeHelper] = useState<HelperState>(EMPTY)
   const [timeLeft, setTimeLeft] = useState<number | null>(null)
@@ -50,7 +57,7 @@ export default function EmailSection({ onEmailVerified }: EmailSectionProps) {
   }
 
   async function handleSendCode() {
-    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    if (!email || !EMAIL_REGEX.test(email)) {
       setEmailHelper({
         text: '올바른 이메일 주소를 입력해주세요.',
         status: 'error',
@@ -135,7 +142,9 @@ export default function EmailSection({ onEmailVerified }: EmailSectionProps) {
             status={codeStatus}
             rightElement={
               timeLeft !== null && timeLeft > 0 ? (
-                <span className="text-sm text-primary">{formatTime(timeLeft)}</span>
+                <span className="text-sm text-primary">
+                  {formatTime(timeLeft)}
+                </span>
               ) : undefined
             }
           />
