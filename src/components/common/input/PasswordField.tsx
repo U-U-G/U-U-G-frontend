@@ -16,6 +16,7 @@ interface PasswordFieldProps {
   placeholder: string
   status: FieldStatus
   helperText: string
+  showDash?: boolean
   onChange: (value: string) => void
 }
 
@@ -26,6 +27,7 @@ export default function PasswordField({
   placeholder,
   status,
   helperText,
+  showDash,
   onChange,
 }: PasswordFieldProps) {
   const [show, setShow] = useState(false)
@@ -59,7 +61,7 @@ export default function PasswordField({
           </button>
         }
       />
-      <HelperText id={`${name}-desc`} status={status}>
+      <HelperText id={`${name}-desc`} status={status} showDash={showDash}>
         {helperText}
       </HelperText>
     </div>
