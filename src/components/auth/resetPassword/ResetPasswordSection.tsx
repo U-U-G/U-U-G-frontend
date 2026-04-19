@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { PASSWORD_REGEX } from '@/constants/regex'
 import PasswordField from '@/components/common/input/PasswordField'
 
 function isValidNewPassword(pw: string) {
