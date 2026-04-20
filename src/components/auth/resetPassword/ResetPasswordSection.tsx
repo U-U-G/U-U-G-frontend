@@ -1,63 +1,62 @@
-'use client'
-
-import { useEffect, useState } from 'react'
+import { useState, useEffect } from 'react'
 import { PASSWORD_REGEX } from '@/constants/regex'
 import PasswordField from '@/components/common/input/PasswordField'
 
-function isValidPassword(pw: string) {
+function isValidNewPassword(pw: string) {
   return PASSWORD_REGEX.test(pw)
 }
 
-interface PasswordSectionProps {
+interface ResetPasswordSectionProps {
   onPasswordValid?: (valid: boolean) => void
 }
 
-export default function PasswordSection({
+export default function ResetPasswordSection({
   onPasswordValid,
-}: PasswordSectionProps) {
-  const [password, setPassword] = useState('')
+}: ResetPasswordSectionProps) {
+  const [newPassword, setNewPassword] = useState('')
   const [confirm, setConfirm] = useState('')
 
   useEffect(() => {
     onPasswordValid?.(
-      isValidPassword(password) && password === confirm && confirm !== '',
+      isValidNewPassword(newPassword) && newPassword === confirm,
     )
-  }, [password, confirm, onPasswordValid])
+  }, [newPassword, confirm, onPasswordValid])
 
-  const passwordStatus = !password
+  const newPasswordStatus = !newPassword
     ? 'default'
-    : isValidPassword(password)
+    : isValidNewPassword(newPassword)
       ? 'success'
       : 'error'
+
   const confirmStatus = !confirm
     ? 'default'
-    : confirm === password
+    : confirm === newPassword
       ? 'success'
       : 'error'
 
   return (
     <div className="flex flex-col gap-5.5">
       <PasswordField
-        label="비밀번호"
-        name="password"
-        value={password}
-        onChange={setPassword}
-        placeholder="비밀번호를 입력해주세요."
-        status={passwordStatus}
+        label="새 비밀번호"
+        name="newPassword"
+        value={newPassword}
+        placeholder="새 비밀번호를 입력해주세요."
+        status={newPasswordStatus}
         helperText="영문, 숫자, 특수문자를 포함하여 8자 이상 입력해주세요."
+        onChange={setNewPassword}
         showDash
       />
 
       <PasswordField
-        label="비밀번호 확인"
-        name="passwordConfirm"
+        label="새 비밀번호 확인"
+        name="newPasswordConfirm"
         value={confirm}
         onChange={setConfirm}
         placeholder="비밀번호를 입력해주세요."
         status={confirmStatus}
         helperText={
           confirm
-            ? confirm === password
+            ? confirm === newPassword
               ? '비밀번호가 일치합니다.'
               : '비밀번호가 일치하지 않습니다.'
             : '\u00A0'

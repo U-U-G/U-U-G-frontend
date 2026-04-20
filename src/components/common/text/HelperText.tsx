@@ -7,6 +7,7 @@ interface HelperTextProps {
   status?: 'default' | 'success' | 'error' | 'empty'
   id?: string
   visible?: boolean
+  showDash?: boolean
 }
 
 export default function HelperText({
@@ -14,6 +15,7 @@ export default function HelperText({
   status = 'default',
   id,
   visible = true,
+  showDash = false,
 }: HelperTextProps) {
   if (!visible) return null
 
@@ -50,6 +52,7 @@ export default function HelperText({
   return (
     <span id={id} className={`flex items-center gap-1 text-sm ${colorClass}`}>
       {icon}
+      {showDash && status === 'default' && <span>-</span>}
       {children}
     </span>
   )
