@@ -1,11 +1,18 @@
 'use client'
 
+import { useEffect } from 'react'
+import Link from 'next/link'
+
 interface Props {
   error: Error & { digest?: string }
   unstable_retry: () => void
 }
 
 export default function Error({ error, unstable_retry }: Props) {
+  useEffect(() => {
+    console.error(error)
+  }, [error])
+
   return (
     <div
       role="alert"
@@ -31,12 +38,12 @@ export default function Error({ error, unstable_retry }: Props) {
           </div>
 
           <h1 className="mb-2 text-2xl text-center text-white font-light tracking-wide">
-            {error.name}
+            오류가 발생했습니다
           </h1>
           <div className="h-0.5 w-16 bg-red-500/50 mx-auto mb-4" aria-hidden="true" />
 
           <div className="text-red-100/80 text-center mb-6 font-light">
-            <p>{error.message}</p>
+            <p>잠시 후 다시 시도해 주세요.</p>
             {error.digest && (
               <p className="mt-2 text-xs text-red-300/60 font-mono">
                 <span className="sr-only">오류 ID: </span>
@@ -45,7 +52,13 @@ export default function Error({ error, unstable_retry }: Props) {
             )}
           </div>
 
-          <div className="flex justify-center">
+          <div className="flex justify-center gap-3">
+            <Link
+              href="/"
+              className="px-6 py-2.5 bg-white/10 text-white font-medium rounded-lg shadow-lg transition-all duration-200 hover:bg-white/20"
+            >
+              홈으로
+            </Link>
             <button
               type="button"
               onClick={unstable_retry}
