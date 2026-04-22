@@ -3,7 +3,11 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import { useState, useRef, useEffect } from 'react'
-import { IconChevronDown, IconSettingsFilled, IconUserFilled } from '@tabler/icons-react'
+import {
+  IconChevronDown,
+  IconSettingsFilled,
+  IconUserFilled,
+} from '@tabler/icons-react'
 
 interface HeaderProps {
   className?: string
@@ -38,11 +42,11 @@ export default function Header({
 
   return (
     <header
-      className={`w-full h-19.5 px-10 py-5.5 flex items-center justify-between bg-white border-b border-[#E5DDFF] ${className}`}
+      className={`w-full h-19.5 px-20 py-5.5 flex items-center justify-between bg-white border-b border-[#E5DDFF] ${className}`}
     >
       <Link href="/" aria-label="홈으로 이동">
         <Image
-          src="/logo.png"
+          src="/logo.svg"
           alt="음어그 로고"
           width={77.5}
           height={40.63}
@@ -104,7 +108,11 @@ export default function Header({
                   onClick={() => setOpen(false)}
                   className="flex items-center justify-center gap-2.5 px-8 py-4.25 font-medium hover:text-primary"
                 >
-                  <IconSettingsFilled size={24} aria-hidden="true" className="shrink-0" />
+                  <IconSettingsFilled
+                    size={24}
+                    aria-hidden="true"
+                    className="shrink-0"
+                  />
                   환경설정
                 </Link>
                 <div className="h-px bg-gray5 mx-3" aria-hidden="true" />
@@ -114,7 +122,11 @@ export default function Header({
                   onClick={() => setOpen(false)}
                   className="w-full flex items-center justify-center gap-2.5 px-8 py-4.25 font-medium hover:text-primary hover:cursor-pointer"
                 >
-                  <IconUserFilled size={24} aria-hidden="true" className="shrink-0" />
+                  <IconUserFilled
+                    size={24}
+                    aria-hidden="true"
+                    className="shrink-0"
+                  />
                   로그아웃
                 </button>
               </div>
