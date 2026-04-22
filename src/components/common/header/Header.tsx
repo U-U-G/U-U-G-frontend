@@ -42,7 +42,7 @@ export default function Header({
 
   return (
     <header
-      className={`w-full h-19.5 px-20 py-5.5 flex items-center justify-between bg-white border-b border-[#E5DDFF] ${className}`}
+      className={`w-full h-19.5 px-10 py-5.5 flex items-center justify-between bg-white border-b border-[#E5DDFF] ${className}`}
     >
       <Link href="/" aria-label="홈으로 이동">
         <Image

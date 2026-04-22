@@ -20,7 +20,7 @@ export default function Button({
       type="button"
       {...props}
       className={`
-        text-base rounded-lg font-medium whitespace-nowrap min-w-22.25 px-4 py-3.5 cursor-pointer
+        text-base rounded-lg font-medium whitespace-nowrap min-w-22.25 px-4 py-3 cursor-pointer
         disabled:opacity-50 disabled:cursor-not-allowed
         ${variantStyle}
         ${className ?? ''}
