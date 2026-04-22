@@ -32,7 +32,7 @@ export default function TermsSection({ onAcceptChange }: TermsSectionProps) {
 
   return (
     <fieldset>
-      <div className="h-10 border-b border-gray4 text-xl font-bold mt-8 mb-9.5 flex">
+      <div className="h-10 border-b border-gray-4 text-xl font-bold mt-8 mb-9.5 flex">
         <legend>약관 동의</legend>
       </div>
 

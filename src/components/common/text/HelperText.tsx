@@ -20,7 +20,7 @@ export default function HelperText({
   if (!visible) return null
 
   const colorClass = {
-    default: 'text-gray4',
+    default: 'text-gray-4',
     success: 'text-primary',
     error: 'text-text-point-red',
     empty: 'text-transparent',

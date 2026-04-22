@@ -12,7 +12,7 @@ export default function Button({
 }: ButtonProps) {
   const variantStyle = {
     primary: 'bg-primary text-white',
-    secondary: 'bg-gray5',
+    secondary: 'bg-gray-5',
   }[variant]
 
   return (

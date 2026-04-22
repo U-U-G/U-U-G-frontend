@@ -86,7 +86,7 @@ export default function Header({
               aria-expanded={open}
               aria-haspopup="menu"
               aria-controls="profile-menu"
-              className="group w-7.5 h-7.5 flex items-center justify-center rounded-lg border border-gray5 hover:border-primary hover:cursor-pointer"
+              className="group w-7.5 h-7.5 flex items-center justify-center rounded-lg border border-gray-5 hover:border-primary hover:cursor-pointer"
             >
               <IconChevronDown
                 size={16}
@@ -115,7 +115,7 @@ export default function Header({
                   />
                   환경설정
                 </Link>
-                <div className="h-px bg-gray5 mx-3" aria-hidden="true" />
+                <div className="h-px bg-gray-5 mx-3" aria-hidden="true" />
                 <button
                   type="button"
                   role="menuitem"
