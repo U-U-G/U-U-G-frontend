@@ -5,8 +5,14 @@
   --foreground: #171717;
 
   --primary: #663cff;
+  --secondary: #f9f7ff;
+
   --primary-light: #e8e1ff;
-  --secondary: #a7a7a7;
+
+  --gray1: #393939;
+  --gary2: #636363;
+  --gary3: #848484;
+  --gary4: #a7a7a7;
   --gray5: #d8d8d8;
 
   --text-primary: #111111;
@@ -18,8 +24,13 @@
   --color-foreground: var(--foreground);
 
   --color-primary: var(--primary);
-  --color-primary-light: var(--primary-light);
   --color-secondary: var(--secondary);
+  --color-primary-light: var(--primary-light);
+
+  --color-gray1: var(--gray1);
+  --color-gray2: var(--gray2);
+  --color-gray3: var(--gray3);
+  --color-gray4: var(--gray4);
   --color-gray5: var(--gray5);
 
   --color-text-primary: var(--text-primary);

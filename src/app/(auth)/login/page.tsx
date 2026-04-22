@@ -23,7 +23,7 @@ export default function Login() {
               id="email"
               type="email"
               placeholder="이메일"
-              className="w-full border-0 border-b border-secondary bg-transparent px-1 pb-4 pt-2 text-lg text-text-primary outline-none focus:border-text-primary placeholder:text-secondary transition-all duration-300 ease-in-out"
+              className="w-full border-0 border-b border-gray4 bg-transparent px-1 pb-4 pt-2 text-lg text-text-primary outline-none focus:border-text-primary placeholder:text-gray4 transition-all duration-300 ease-in-out"
             />
           </div>
 
@@ -36,7 +36,7 @@ export default function Login() {
               id="password"
               type="password"
               placeholder="비밀번호"
-              className="w-full border-0 border-b border-secondary bg-transparent px-1 pb-4 pt-2 text-lg text-text-primary outline-none focus:border-text-primary placeholder:text-secondary transition-all duration-300 ease-in-out"
+              className="w-full border-0 border-b border-gray4 bg-transparent px-1 pb-4 pt-2 text-lg text-text-primary outline-none focus:border-text-primary placeholder:text-gray4 transition-all duration-300 ease-in-out"
             />
           </div>
 
