@@ -1,6 +1,8 @@
 import Image from 'next/image'
-import NoteImage from '@/assets/icon/home/note-icon.svg'
-import RobotImage from '@/assets/icon/home/robot-icon.svg'
+import UUGCharacterImage from '@/assets/image/uug-character-img.png'
+import NoteImage from '@/assets/image/note-img.png'
+//import NoteImage from '@/assets/icon/home/note-icon.svg'
+//import RobotImage from '@/assets/icon/home/robot-icon.svg'
 
 type HeroGoalData = {
   title: string
@@ -53,13 +55,13 @@ export default function HeroGoalSection({ data }: { data: HeroGoalData }) {
           <Image
             src={NoteImage}
             alt=""
-            className="absolute right-115 bottom-35 w-[150px]"
+            className="absolute right-105 bottom-35 w-[150px]"
           />
 
           <Image
-            src={RobotImage}
+            src={UUGCharacterImage}
             alt="면접 준비 캐릭터"
-            className="absolute right-12 bottom-[-25px] w-[450px]"
+            className="absolute right-10 bottom-[-10px] w-[430px]"
             priority
           />
         </div>
