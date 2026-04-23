@@ -60,11 +60,7 @@ export default function Header({
           className="flex items-center gap-15.25 mr-14.25"
         >
           {NAV_LINKS.map(({ href, label }) => (
-            <Link
-              key={href}
-              href={href}
-              className="text-xl font-medium hover:text-primary"
-            >
+            <Link key={href} href={href} className="p1 hover:text-primary">
               {label}
             </Link>
           ))}
@@ -75,7 +71,7 @@ export default function Header({
             className="w-7.5 h-7.5 rounded-full bg-primary mr-3.25"
             aria-hidden="true"
           />
-          <span className="text-xl font-medium mr-3.75">{userName} 님</span>
+          <span className="p1 mr-3.75">{userName} 님</span>
 
           <div className="relative">
             <button
@@ -106,7 +102,7 @@ export default function Header({
                   href="/settings"
                   role="menuitem"
                   onClick={() => setOpen(false)}
-                  className="flex items-center justify-center gap-2.5 px-8 py-4.25 font-medium hover:text-primary"
+                  className="flex items-center justify-center gap-2.5 px-8 py-4.25 p4 hover:text-primary"
                 >
                   <IconSettingsFilled
                     size={24}
@@ -120,7 +116,7 @@ export default function Header({
                   type="button"
                   role="menuitem"
                   onClick={() => setOpen(false)}
-                  className="w-full flex items-center justify-center gap-2.5 px-8 py-4.25 font-medium hover:text-primary hover:cursor-pointer"
+                  className="w-full flex items-center justify-center gap-2.5 px-8 py-4.25 p4 hover:text-primary hover:cursor-pointer"
                 >
                   <IconUserFilled
                     size={24}

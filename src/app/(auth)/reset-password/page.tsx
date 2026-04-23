@@ -23,7 +23,7 @@ export default function ResetPasswordPage() {
     <main className="min-h-screen py-12 flex flex-col justify-center">
       <div className="mx-auto flex w-full max-w-[410px] flex-col justify-center">
         <div className="pb-3.75 mb-13.5 border-b border-gray5">
-          <h1 className="text-xl font-bold">비밀번호 재설정</h1>
+          <h1 className="h4">비밀번호 재설정</h1>
         </div>
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-6">
