@@ -22,7 +22,7 @@ export default function Login() {
               id="email"
               type="email"
               placeholder="이메일"
-              className="w-full border-0 border-b border-secondary bg-transparent px-1 pb-4 pt-2 text-lg text-text-primary outline-none focus:border-text-primary placeholder:text-secondary transition-all duration-300 ease-in-out"
+              className="w-full border-0 border-b border-secondary bg-transparent px-1 pb-4 pt-2 p1 text-text-primary outline-none focus:border-text-primary placeholder:text-secondary transition-all duration-300 ease-in-out"
             />
           </div>
 
@@ -35,19 +35,19 @@ export default function Login() {
               id="password"
               type="password"
               placeholder="비밀번호"
-              className="w-full border-0 border-b border-secondary bg-transparent px-1 pb-4 pt-2 text-lg text-text-primary outline-none focus:border-text-primary placeholder:text-secondary transition-all duration-300 ease-in-out"
+              className="w-full border-0 border-b border-secondary bg-transparent px-1 pb-4 pt-2 p1 text-text-primary outline-none focus:border-text-primary placeholder:text-secondary transition-all duration-300 ease-in-out"
             />
           </div>
 
           <button
             type="submit"
-            className="mb-10 h-[56px] w-full rounded-md bg-primary text-xl font-bold text-white cursor-pointer"
+            className="mb-10 h-[56px] w-full rounded-md bg-primary h4 text-white cursor-pointer"
           >
             로그인
           </button>
         </form>
 
-        <div className="font-medium mb-12 flex items-center justify-center gap-4 text-md text-text-primary">
+        <div className="p4 mb-12 flex items-center justify-center gap-4 text-text-primary">
           <button type="button" className="cursor-pointer">
             비밀번호 찾기
           </button>

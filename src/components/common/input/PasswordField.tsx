@@ -34,7 +34,7 @@ export default function PasswordField({
 
   return (
     <div className="flex flex-col gap-2">
-      <label className="font-medium mb-1.75" htmlFor={name}>
+      <label className="p4 mb-1.75" htmlFor={name}>
         {label}
       </label>
       <InputBox
