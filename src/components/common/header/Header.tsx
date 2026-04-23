@@ -46,7 +46,7 @@ export default function Header({
     >
       <Link href="/" aria-label="홈으로 이동">
         <Image
-          src="/logo.svg"
+          src="/logo.png"
           alt="음어그 로고"
           width={77.5}
           height={40.63}
