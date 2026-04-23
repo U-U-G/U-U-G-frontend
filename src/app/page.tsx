@@ -21,7 +21,7 @@ export default function Home() {
           <TodayScheduleSection data={data.todaySchedule} />
         </section>
 
-        <InterviewPlanSection />
+        <InterviewPlanSection data={data.interviewPlans} />
       </div>
     </main>
   )
