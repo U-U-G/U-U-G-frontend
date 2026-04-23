@@ -22,7 +22,7 @@ const NAV_LINKS = [
 
 export default function Header({
   className = '',
-  userName = '정우식',
+  userName = '음어그',
 }: HeaderProps) {
   const [open, setOpen] = useState(false)
   const dropdownRef = useRef<HTMLDivElement>(null)
