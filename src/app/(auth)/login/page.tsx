@@ -1,6 +1,7 @@
 'use client'
 
 import Image from 'next/image'
+import Link from 'next/link'
 import KakaoLogoIcon from '@/assets/icon/kakao-logo.svg'
 import GoogleLogoIcon from '@/assets/icon/google-logo.svg'
 import NaverLogoIcon from '@/assets/icon/naver-logo.svg'
@@ -48,15 +49,15 @@ export default function Login() {
         </form>
 
         <div className="p4 mb-12 flex items-center justify-center gap-4 text-text-primary">
-          <button type="button" className="cursor-pointer">
+          <Link href="/reset-password" className="cursor-pointer">
             비밀번호 찾기
-          </button>
+          </Link>
           <span className="text-foreground-primary" aria-hidden="true">
             |
           </span>
-          <button type="button" className="cursor-pointer">
+          <Link href="/sign-up" className="cursor-pointer">
             회원가입
-          </button>
+          </Link>
         </div>
 
         <div className="flex items-center justify-center gap-8">

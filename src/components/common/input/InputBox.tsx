@@ -12,8 +12,8 @@ export default function InputBox({
   ...props
 }: InputBoxProps) {
   const borderClass = {
-    default: 'border-secondary focus:border-text-primary',
-    success: 'border-secondary focus:border-primary',
+    default: 'border-gray-4 focus:border-text-primary',
+    success: 'border-gray-4 focus:border-primary',
     error: 'border-text-point-red focus:border-text-point-red',
   }[status]
 
@@ -25,7 +25,7 @@ export default function InputBox({
           className={`
             w-full px-4 py-3.5 p4 rounded-lg border outline-none
             transition-colors duration-250 ease-in-out
-            placeholder:text-secondary disabled:cursor-not-allowed
+            placeholder:text-gray-4 disabled:cursor-not-allowed
             ${rightElement ? 'pr-12' : ''}
             ${borderClass}
             ${className ?? ''}
