@@ -8,7 +8,15 @@ export const emptyHomeMockData = {
   heroGoal: null,
   todaySchedule: {
     selectedDate: '2026-04-20',
-    weekDates: [],
+    weekDates: [
+      { dayLabel: '일', date: 19, fullDate: '2026-04-19', isSelected: false },
+      { dayLabel: '월', date: 20, fullDate: '2026-04-20', isSelected: true },
+      { dayLabel: '화', date: 21, fullDate: '2026-04-21', isSelected: false },
+      { dayLabel: '수', date: 22, fullDate: '2026-04-22', isSelected: false },
+      { dayLabel: '목', date: 23, fullDate: '2026-04-23', isSelected: false },
+      { dayLabel: '금', date: 24, fullDate: '2026-04-24', isSelected: false },
+      { dayLabel: '토', date: 25, fullDate: '2026-04-25', isSelected: false },
+    ],
     schedules: [],
   },
   interviewPlans: [],

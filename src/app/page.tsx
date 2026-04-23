@@ -18,7 +18,7 @@ export default function Home() {
 
         <section className="flex">
           <HeroGoalSection data={data.heroGoal} />
-          <TodayScheduleSection />
+          <TodayScheduleSection data={data.todaySchedule} />
         </section>
 
         <InterviewPlanSection />
