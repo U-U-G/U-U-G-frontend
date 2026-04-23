@@ -54,7 +54,7 @@ export default function InterviewPlanSection({
             </div>
           ) : (
             <div className="space-y-4">
-              {data.map((plan, index) => (
+              {data.map((plan) => (
                 <div
                   key={plan.id}
                   className={[
