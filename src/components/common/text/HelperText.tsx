@@ -20,7 +20,7 @@ export default function HelperText({
   if (!visible) return null
 
   const colorClass = {
-    default: 'text-secondary',
+    default: 'text-gray-4',
     success: 'text-primary',
     error: 'text-text-point-red',
     empty: 'text-transparent',
@@ -50,7 +50,7 @@ export default function HelperText({
   }[status]
 
   return (
-    <span id={id} className={`flex items-center gap-1 text-sm ${colorClass}`}>
+    <span id={id} className={`flex items-center gap-1 caption ${colorClass}`}>
       {icon}
       {showDash && status === 'default' && <span>-</span>}
       {children}

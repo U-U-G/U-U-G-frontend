@@ -5,12 +5,15 @@
   --foreground: #171717;
 
   --primary: #663cff;
-  --primary-light: #e8e1ff;
-  --secondary: #a7a7a7;
+  --secondary: #f9f7ff;
 
-  --gray2: #636363;
-  --gray3: #848484;
-  --gray5: #d8d8d8;
+  --primary-light: #e8e1ff;
+
+  --gray-1: #393939;
+  --gray-2: #636363;
+  --gray-3: #848484;
+  --gray-4: #a7a7a7;
+  --gray-5: #d8d8d8;
 
   --text-primary: #111111;
   --text-point-red: #f73030;
@@ -21,11 +24,14 @@
   --color-foreground: var(--foreground);
 
   --color-primary: var(--primary);
-  --color-primary-light: var(--primary-light);
   --color-secondary: var(--secondary);
-  --color-gray2: var(--gray2);
-  --color-gray3: var(--gray3);
-  --color-gray5: var(--gray5);
+  --color-primary-light: var(--primary-light);
+
+  --color-gray-1: var(--gray-1);
+  --color-gray-2: var(--gray-2);
+  --color-gray-3: var(--gray-3);
+  --color-gray-4: var(--gray-4);
+  --color-gray-5: var(--gray-5);
 
   --color-text-primary: var(--text-primary);
   --color-text-point-red: var(--text-point-red);
@@ -37,4 +43,61 @@ body {
   background: var(--background);
   color: var(--text-primary);
   font-family: var(--font-pretendard), sans-serif;
+}
+
+@layer utilities {
+  .h1 {
+    font-size: 32px;
+    font-weight: 700;
+    line-height: 150%;
+    letter-spacing: -0.03em;
+  }
+  .h2 {
+    font-size: 24px;
+    font-weight: 700;
+    line-height: 150%;
+    letter-spacing: -0.03em;
+  }
+  .h3 {
+    font-size: 22px;
+    font-weight: 700;
+    line-height: 150%;
+    letter-spacing: -0.03em;
+  }
+  .h4 {
+    font-size: 20px;
+    font-weight: 700;
+    line-height: 150%;
+    letter-spacing: -0.03em;
+  }
+  .p1 {
+    font-size: 20px;
+    font-weight: 500;
+    line-height: 150%;
+    letter-spacing: -0.03em;
+  }
+  .p2 {
+    font-size: 18px;
+    font-weight: 700;
+    line-height: 150%;
+    letter-spacing: -0.02em;
+  }
+  .p3 {
+    font-size: 18px;
+    font-weight: 500;
+    line-height: 150%;
+    letter-spacing: -0.02em;
+  }
+  .p4 {
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 150%;
+    letter-spacing: -0.02em;
+  }
+  .caption {
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 150%;
+    letter-spacing: -0.02em;
+  }
 }
