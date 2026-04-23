@@ -102,7 +102,7 @@ export default function EmailSection({ onEmailVerified }: EmailSectionProps) {
 
   return (
     <div className="flex flex-col gap-2">
-      <label className="font-medium mb-1.75" htmlFor="email">
+      <label className="p4 mb-1.75" htmlFor="email">
         이메일
       </label>
       <div className="flex flex-col gap-2">
@@ -141,7 +141,7 @@ export default function EmailSection({ onEmailVerified }: EmailSectionProps) {
             status={codeStatus}
             rightElement={
               timeLeft !== null && timeLeft > 0 ? (
-                <span className="text-sm text-primary">
+                <span className="caption text-primary">
                   {formatTime(timeLeft)}
                 </span>
               ) : undefined

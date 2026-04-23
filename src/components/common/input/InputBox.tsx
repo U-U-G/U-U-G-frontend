@@ -23,7 +23,7 @@ export default function InputBox({
         <input
           {...props}
           className={`
-            w-full px-4 py-3.5 text-base rounded-lg border outline-none
+            w-full px-4 py-3.5 p4 rounded-lg border outline-none
             transition-colors duration-250 ease-in-out
             placeholder:text-secondary disabled:cursor-not-allowed
             ${rightElement ? 'pr-12' : ''}
