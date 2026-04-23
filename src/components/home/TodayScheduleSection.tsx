@@ -20,15 +20,15 @@ type TodayScheduleData = {
   schedules: readonly ScheduleItem[]
 }
 
-const weekDays = [
-  { label: '일', date: 19 },
-  { label: '월', date: 20, active: true },
-  { label: '화', date: 21 },
-  { label: '수', date: 22 },
-  { label: '목', date: 23 },
-  { label: '금', date: 24 },
-  { label: '토', date: 25 },
-]
+// const weekDays = [
+//   { label: '일', date: 19 },
+//   { label: '월', date: 20, active: true },
+//   { label: '화', date: 21 },
+//   { label: '수', date: 22 },
+//   { label: '목', date: 23 },
+//   { label: '금', date: 24 },
+//   { label: '토', date: 25 },
+// ]
 
 export default function TodayScheduleSection({
   data,
