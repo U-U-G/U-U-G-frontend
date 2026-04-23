@@ -27,11 +27,6 @@ export default function InterviewPlanSection({
 
   const selectedPlan = data.find((plan) => plan.isSelected) ?? data[0] ?? null
 
-  const planCount = data.length
-  const curriculumCount = selectedPlan?.curriculum.length ?? 0
-
-  const shouldGrowHeight = planCount > 4 || curriculumCount > 6
-
   return (
     <section className="min-h-[420px] rounded-2xl bg-secondary p-7">
       <div className="flex h-full">
@@ -64,7 +59,7 @@ export default function InterviewPlanSection({
                   key={plan.id}
                   className={[
                     'flex h-14 items-center justify-between rounded-lg bg-white px-5 py-3',
-                    index === 0 ? 'border border-primary' : '',
+                    plan.isSelected ? 'border border-primary' : '',
                   ].join(' ')}
                 >
                   <div className="flex items-center gap-4 overflow-hidden">
@@ -82,7 +77,7 @@ export default function InterviewPlanSection({
           )}
         </div>
 
-        <div className="hidden w-8 justify-center pt-[80px] lg:flex">
+        <div className="hidden w-8 justify-center pt-[220px] lg:flex">
           <div className="h-px w-full bg-primary" />
         </div>
 

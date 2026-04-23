@@ -1,8 +1,6 @@
 import Image from 'next/image'
 import UUGCharacterImage from '@/assets/image/uug-character-img.png'
 import NoteImage from '@/assets/image/note-img.png'
-//import NoteImage from '@/assets/icon/home/note-icon.svg'
-//import RobotImage from '@/assets/icon/home/robot-icon.svg'
 
 type HeroGoalData = {
   title: string
