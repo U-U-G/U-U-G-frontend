@@ -38,8 +38,8 @@ export default function TodayScheduleSection({
   const isEmpty = data.schedules.length === 0
 
   return (
-    <div className="h-[480px] flex-1 overflow-hidden rounded-2xl bg-secondary">
-      <div className="flex h-full flex-col gap-8 p-7">
+    <div className="h-full w-full min-h-0 overflow-hidden rounded-2xl bg-secondary">
+      <div className="flex h-full flex-col gap-4 p-6">
         <div className="flex items-center justify-between">
           <h3 className="p2 text-text-primary">오늘의 스케줄</h3>
         </div>
@@ -48,12 +48,11 @@ export default function TodayScheduleSection({
           {data.weekDates.map((day) => (
             <div
               key={day.fullDate}
-              className="flex flex-1 flex-col items-center gap-4"
+              className="flex flex-1 flex-col items-center gap-2"
             >
-              <span className="p4 text-text-primary">{day.dayLabel}</span>
               <div
                 className={[
-                  'flex h-10 w-10 items-center justify-center rounded-full text-xl font-bold',
+                  'flex h-10 w-10 items-center justify-center rounded-full text-lg font-bold',
                   day.isSelected
                     ? 'bg-primary text-white'
                     : 'text-text-primary',
