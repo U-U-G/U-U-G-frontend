@@ -13,7 +13,7 @@ export default function HeroGoalSection({ data }: { data: HeroGoalData }) {
   const isEmpty = !data
 
   return (
-    <div className="h-full w-full rounded-2xl bg-secondary p-6 flex flex-col justify-between min-h-0">
+    <div className="h-full w-full overflow-hidden rounded-2xl bg-secondary p-6 flex flex-col justify-between min-h-0">
       <div>
         {isEmpty ? (
           <>
@@ -40,25 +40,25 @@ export default function HeroGoalSection({ data }: { data: HeroGoalData }) {
         )}
       </div>
 
-      <div className="flex items-end justify-between gap-4">
+      <div className="flex justify-between gap-4 min-w-0">
         <button
           type="button"
-          className="h3 h-[clamp(40px,5.5vh,56px)] px-[clamp(16px,4vw,48px)] rounded-full bg-primary text-white whitespace-nowrap"
+          className="self-end mb-8 ml-6 h4 h-[clamp(40px,5.5vh,56px)] px-[clamp(20px,3vw,48px)] rounded-full bg-primary text-white whitespace-nowrap min-w-0"
         >
           {isEmpty ? '지금 시작하기' : data.ctaLabel}
         </button>
 
-        <div className="flex items-end gap-2">
+        <div className="flex items-center flex-shrink-0 -mt-22">
           <Image
             src={NoteImage}
             alt=""
-            className="hidden md:block w-[80px] lg:w-[120px]"
+            className="w-[clamp(56px,8vw,120px)] shrink"
           />
 
           <Image
             src={UUGCharacterImage}
             alt="면접 준비 캐릭터"
-            className="w-[clamp(120px,20vw,320px)]"
+            className="w-[clamp(240px,25vw,340px)] shrink"
             priority
           />
         </div>

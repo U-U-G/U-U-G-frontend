@@ -43,7 +43,7 @@ export default function InterviewPlanSection({
           </div>
 
           {isEmpty ? (
-            <div className="space-y-4">
+            <div className="space-y-3.5">
               <div className="flex h-16 items-center rounded-lg border border-primary bg-white px-5 py-4">
                 <span className="mr-4 h2 text-primary">D-day</span>
                 <span className="p4 text-gray-3">면접 일정을 등록해주세요</span>
@@ -78,7 +78,7 @@ export default function InterviewPlanSection({
         </div>
 
         <div className="flex flex-[1.3] flex-col ">
-          <h3 className="mb-5 p2 text-text-primary">면접 커리큘럼</h3>
+          <h3 className="mb-4 p2 text-text-primary">면접 커리큘럼</h3>
 
           {isEmpty ? (
             <div className="flex-1 rounded-lg border border-primary bg-white px-6.5 py-6.5">

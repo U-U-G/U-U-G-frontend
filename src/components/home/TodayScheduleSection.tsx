@@ -73,13 +73,12 @@ export default function TodayScheduleSection({
 
         <div className="mt-auto flex min-h-0 flex-1 flex-col">
           {isEmpty ? (
-            <div className="space-y-3.5">
+            <div className="space-y-3">
               <div className="p3 w-full rounded-lg border border-primary bg-white px-5 py-4 text-left text-gray-3">
                 일정에 맞게 오늘의 스케줄을 생성해요
               </div>
               <div className="h-14 rounded-lg bg-white" />
-              <div className="h-14 rounded-lg bg-white" />
-              <div className="h-9 rounded-t-lg bg-white" />
+              <div className="h-12 rounded-t-lg bg-white" />
             </div>
           ) : (
             <div className="space-y-3 overflow-y-auto pr-1">
