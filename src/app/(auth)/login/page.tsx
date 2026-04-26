@@ -1,20 +1,44 @@
 'use client'
 
+import { FormEvent, useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
+import { useMutation } from '@tanstack/react-query'
+import { login } from '@/apis/auth'
+import { setAccessToken } from '@/apis/common/tokenStorage'
 import KakaoLogoIcon from '@/assets/icon/kakao-logo.svg'
 import GoogleLogoIcon from '@/assets/icon/google-logo.svg'
 import NaverLogoIcon from '@/assets/icon/naver-logo.svg'
 
 export default function Login() {
-  const handleLogin = () => {
-    console.log('홈으로 이동') //TODO: 로그인 api 연동
+  const router = useRouter()
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+
+  const loginMutation = useMutation({
+    mutationFn: login,
+
+    onSuccess: (data) => {
+      if (!data.success) return
+      setAccessToken(data.data.accessToken)
+      router.push('/')
+    },
+
+    onError: (error) => {
+      console.error('로그인 실패', error)
+    },
+  })
+
+  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    loginMutation.mutate({ email, password })
   }
 
   return (
     <main className="flex min-h-screen items-center justify-center">
       <section className="w-full max-w-[380px]">
-        <form className="flex flex-col" onSubmit={handleLogin}>
+        <form className="flex flex-col" onSubmit={handleSubmit}>
           <div className="mb-5">
             <label htmlFor="email" className="sr-only">
               이메일
@@ -22,6 +46,8 @@ export default function Login() {
             <input
               id="email"
               type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               placeholder="이메일"
               className="w-full border-0 border-b border-secondary bg-transparent px-1 pb-4 pt-2 p1 text-text-primary outline-none focus:border-text-primary placeholder:text-secondary transition-all duration-300 ease-in-out"
             />
@@ -35,6 +61,8 @@ export default function Login() {
             <input
               id="password"
               type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
               placeholder="비밀번호"
               className="w-full border-0 border-b border-secondary bg-transparent px-1 pb-4 pt-2 p1 text-text-primary outline-none focus:border-text-primary placeholder:text-secondary transition-all duration-300 ease-in-out"
             />
