@@ -5,7 +5,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useMutation } from '@tanstack/react-query'
-import { login } from '@/apis/auth'
+import { loginApi } from '@/apis/auth'
 import { setAccessToken } from '@/utils/tokenStorage'
 import KakaoLogoIcon from '@/assets/icon/kakao-logo.svg'
 import GoogleLogoIcon from '@/assets/icon/google-logo.svg'
@@ -17,7 +17,7 @@ export default function Login() {
   const [password, setPassword] = useState('')
 
   const loginMutation = useMutation({
-    mutationFn: login,
+    mutationFn: loginApi.login,
 
     onSuccess: (response) => {
       if (!response.success) return
@@ -29,6 +29,16 @@ export default function Login() {
       console.error('로그인 실패', error)
     },
   })
+
+  const handleKakaoLogin = () => {
+    window.location.href = loginApi.withKakao()
+  }
+  const handleGoogleLogin = () => {
+    window.location.href = loginApi.withGoogle()
+  }
+  const handleNaverLogin = () => {
+    window.location.href = loginApi.withNaver()
+  }
 
   const handleSubmit = (
     e: React.SyntheticEvent<HTMLFormElement, SubmitEvent>,
@@ -93,6 +103,7 @@ export default function Login() {
         <div className="flex items-center justify-center gap-8">
           <button
             type="button"
+            onClick={handleKakaoLogin}
             className="flex h-[68px] w-[68px] items-center justify-center rounded-full bg-[#fee500] cursor-pointer"
             aria-label="카카오 로그인"
           >
@@ -101,6 +112,7 @@ export default function Login() {
 
           <button
             type="button"
+            onClick={handleGoogleLogin}
             className="flex h-[68px] w-[68px] items-center justify-center rounded-full shadow-[0_2px_10px_rgba(0,0,0,0.08)] cursor-pointer"
             aria-label="구글 로그인"
           >
@@ -109,6 +121,7 @@ export default function Login() {
 
           <button
             type="button"
+            onClick={handleNaverLogin}
             className="flex h-[68px] w-[68px] items-center justify-center rounded-full bg-[#03c75a] cursor-pointer"
             aria-label="네이버 로그인"
           >
