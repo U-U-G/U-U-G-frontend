@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { getAccessToken } from './tokenStorage'
+import { getAccessToken } from '@/utils/tokenStorage'
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL
 

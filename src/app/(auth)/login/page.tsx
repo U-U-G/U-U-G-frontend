@@ -1,12 +1,12 @@
 'use client'
 
-import { FormEvent, useState } from 'react'
+import { useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useMutation } from '@tanstack/react-query'
 import { login } from '@/apis/auth'
-import { setAccessToken } from '@/apis/common/tokenStorage'
+import { setAccessToken } from '@/utils/tokenStorage'
 import KakaoLogoIcon from '@/assets/icon/kakao-logo.svg'
 import GoogleLogoIcon from '@/assets/icon/google-logo.svg'
 import NaverLogoIcon from '@/assets/icon/naver-logo.svg'
@@ -19,9 +19,9 @@ export default function Login() {
   const loginMutation = useMutation({
     mutationFn: login,
 
-    onSuccess: (data) => {
-      if (!data.success) return
-      setAccessToken(data.data.accessToken)
+    onSuccess: (response) => {
+      if (!response.success) return
+      setAccessToken(response.data.accessToken)
       router.push('/')
     },
 
@@ -30,7 +30,9 @@ export default function Login() {
     },
   })
 
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = (
+    e: React.SyntheticEvent<HTMLFormElement, SubmitEvent>,
+  ) => {
     e.preventDefault()
     loginMutation.mutate({ email, password })
   }
