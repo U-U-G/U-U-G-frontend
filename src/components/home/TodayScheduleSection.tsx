@@ -1,11 +1,8 @@
-import { IconChevronRight } from '@tabler/icons-react'
+'use client'
 
-type WeekDate = {
-  dayLabel: string
-  date: number
-  fullDate: string
-  isSelected: boolean
-}
+import { IconChevronRight, IconChevronLeft } from '@tabler/icons-react'
+import { useState } from 'react'
+import { formatFullDate, getWeekDates } from '@/utils/getWeekDates'
 
 type ScheduleItem = {
   id: number
@@ -14,28 +11,33 @@ type ScheduleItem = {
   time: string
 }
 
-type TodayScheduleData = {
-  selectedDate: string
-  weekDates: readonly WeekDate[]
+type TodayScheduleSectionProps = {
   schedules: readonly ScheduleItem[]
 }
 
-// const weekDays = [
-//   { label: '일', date: 19 },
-//   { label: '월', date: 20, active: true },
-//   { label: '화', date: 21 },
-//   { label: '수', date: 22 },
-//   { label: '목', date: 23 },
-//   { label: '금', date: 24 },
-//   { label: '토', date: 25 },
-// ]
-
 export default function TodayScheduleSection({
-  data,
-}: {
-  data: TodayScheduleData
-}) {
-  const isEmpty = data.schedules.length === 0
+  schedules,
+}: TodayScheduleSectionProps) {
+  const [isNextWeek, setIsNextWeek] = useState(false)
+  const [selectedDate, setSelectedDate] = useState(formatFullDate(new Date()))
+
+  const weekOffset = isNextWeek ? 1 : 0
+
+  const weekDates = getWeekDates(weekOffset).map((d) => ({
+    ...d,
+    isSelected: d.fullDate === selectedDate,
+  }))
+
+  const handleWeekToggle = () => {
+    const nextIsNextWeek = !isNextWeek
+    const nextWeekOffset = nextIsNextWeek ? 1 : 0
+    const nextWeekDates = getWeekDates(nextWeekOffset)
+
+    setIsNextWeek(nextIsNextWeek)
+    setSelectedDate(nextWeekDates[0].fullDate)
+  }
+
+  const isEmpty = schedules.length === 0
 
   return (
     <div className="h-full w-full min-h-0 overflow-hidden rounded-2xl bg-secondary">
@@ -45,14 +47,16 @@ export default function TodayScheduleSection({
         </div>
 
         <div className="flex gap-4 text-center">
-          {data.weekDates.map((day) => (
-            <div
+          {weekDates.map((day) => (
+            <button
               key={day.fullDate}
+              type="button"
+              onClick={() => setSelectedDate(day.fullDate)}
               className="flex flex-1 flex-col items-center gap-2"
             >
               <div
                 className={[
-                  'flex h-10 w-10 items-center justify-center rounded-full text-lg font-bold',
+                  'flex h-10 w-10 items-center justify-center rounded-full text-lg font-bold cursor-pointer',
                   day.isSelected
                     ? 'bg-primary text-white'
                     : 'text-text-primary',
@@ -60,14 +64,16 @@ export default function TodayScheduleSection({
               >
                 {day.date}
               </div>
-            </div>
+            </button>
           ))}
+
           <button
             type="button"
-            className="text-3xl leading-none font-light text-primary transition"
+            onClick={handleWeekToggle}
+            className="text-3xl leading-none font-light text-primary transition cursor-pointer"
             aria-label="다음 주 보기"
           >
-            <IconChevronRight />
+            {isNextWeek ? <IconChevronLeft /> : <IconChevronRight />}
           </button>
         </div>
 
@@ -82,7 +88,7 @@ export default function TodayScheduleSection({
             </div>
           ) : (
             <div className="space-y-3 overflow-y-auto pr-1">
-              {data.schedules.map((schedule, index) => (
+              {schedules.map((schedule, index) => (
                 <div
                   key={schedule.id}
                   className={[

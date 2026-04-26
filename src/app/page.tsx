@@ -23,7 +23,7 @@ export default function Home() {
               <HeroGoalSection data={data.heroGoal} />
             </div>
             <div className="flex-[1] min-h-0 flex">
-              <TodayScheduleSection data={data.todaySchedule} />
+              <TodayScheduleSection schedules={data.todaySchedule.schedules} />
             </div>
           </section>
 

@@ -43,7 +43,7 @@ export default function HeroGoalSection({ data }: { data: HeroGoalData }) {
       <div className="flex justify-between gap-4 min-w-0">
         <button
           type="button"
-          className="self-end mb-8 ml-6 h4 h-[clamp(40px,5.5vh,56px)] px-[clamp(20px,3vw,48px)] rounded-full bg-primary text-white whitespace-nowrap min-w-0"
+          className="flex-shrink-0 self-end mb-8 ml-6 h4 h-[clamp(40px,5.5vh,56px)] px-[clamp(20px,3vw,48px)] rounded-full bg-primary text-white whitespace-nowrap min-w-0"
         >
           {isEmpty ? '지금 시작하기' : data.ctaLabel}
         </button>
