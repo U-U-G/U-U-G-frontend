@@ -34,7 +34,15 @@ export default function TodayScheduleSection({
     const nextWeekDates = getWeekDates(nextWeekOffset)
 
     setIsNextWeek(nextIsNextWeek)
-    setSelectedDate(nextWeekDates[0].fullDate)
+
+    if (nextIsNextWeek) {
+      setSelectedDate(nextWeekDates[0].fullDate)
+      return
+    }
+
+    const today = formatFullDate(new Date())
+    const hasToday = nextWeekDates.some((d) => d.fullDate === today)
+    setSelectedDate(hasToday ? today : nextWeekDates[0].fullDate)
   }
 
   const isEmpty = schedules.length === 0
@@ -71,7 +79,7 @@ export default function TodayScheduleSection({
             type="button"
             onClick={handleWeekToggle}
             className="text-3xl leading-none font-light text-primary transition cursor-pointer"
-            aria-label="다음 주 보기"
+            aria-label={isNextWeek ? '이번 주 보기' : '다음 주 보기'}
           >
             {isNextWeek ? <IconChevronLeft /> : <IconChevronRight />}
           </button>
