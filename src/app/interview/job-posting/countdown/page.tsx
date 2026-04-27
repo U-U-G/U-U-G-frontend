@@ -1,5 +1,7 @@
+import { notFound } from 'next/navigation'
 import Header from '@/components/common/header/Header'
 import CountdownSection from '@/components/interview/CountdownSection'
+import { interviewMockData } from '@/mocks/interviewMockData'
 
 export default async function CountdownPage({
   searchParams,
@@ -7,7 +9,14 @@ export default async function CountdownPage({
   searchParams: Promise<{ q?: string }>
 }) {
   const { q } = await searchParams
-  const questionNumber = Math.max(1, parseInt(q ?? '1', 10) || 1)
+  const questionNumber = parseInt(q ?? '', 10)
+  if (
+    isNaN(questionNumber) ||
+    questionNumber < 1 ||
+    questionNumber > interviewMockData.questions.length
+  ) {
+    notFound()
+  }
 
   return (
     <main className="h-screen flex flex-col overflow-hidden">
