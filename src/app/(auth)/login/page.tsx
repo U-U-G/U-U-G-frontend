@@ -31,13 +31,13 @@ export default function Login() {
   })
 
   const handleKakaoLogin = () => {
-    window.location.href = loginApi.withKakao()
+    window.location.href = loginApi.loginWithKakao()
   }
   const handleGoogleLogin = () => {
-    window.location.href = loginApi.withGoogle()
+    window.location.href = loginApi.loginWithGoogle()
   }
   const handleNaverLogin = () => {
-    window.location.href = loginApi.withNaver()
+    window.location.href = loginApi.loginWithNaver()
   }
 
   const handleSubmit = (
