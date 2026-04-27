@@ -169,9 +169,9 @@ export default function JobPostingFormSection() {
     handlePrevMonth, handleNextMonth, handleConfirm, handleCancel,
   } = useDatePicker()
 
-  const urlError = url.length > 0 && !isValidUrl(url)
-  const urlValid = url.length > 0 && isValidUrl(url)
-  const isComplete = url.length > 0 && company.length > 0 && selectedDate !== null
+  const urlError = url.trim().length > 0 && !isValidUrl(url)
+  const urlValid = url.trim().length > 0 && isValidUrl(url)
+  const isComplete = url.trim().length > 0 && company.trim().length > 0 && selectedDate !== null
 
   return (
     <section className="flex flex-col flex-1 min-h-0 gap-5 px-10 pt-6.5 pb-10">
