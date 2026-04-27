@@ -59,7 +59,7 @@ export default function ForgotPasswordPage() {
                 setTouched(true)
               }}
               placeholder="이메일을 입력하세요"
-              status="default"
+              status={showEmailError ? 'error' : 'default'}
               disabled={mailSent}
             />
             <HelperText status={showEmailError ? 'error' : 'empty'}>
