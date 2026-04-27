@@ -28,11 +28,11 @@ export default function InterviewPlanSection({
   const selectedPlan = data.find((plan) => plan.isSelected) ?? data[0] ?? null
 
   return (
-    <section className="min-h-[420px] rounded-2xl bg-secondary p-7">
-      <div className="flex h-full">
-        <div className="flex-1">
-          <div className="mb-5 flex items-center gap-2">
-            <h3 className="text-lg font-bold text-text-primary">면접 일정</h3>
+    <section className="min-h-[clamp(320px,36vh,420px)] rounded-2xl bg-secondary p-[clamp(16px,2vw,28px)]">
+      <div className="flex h-full min-h-0 gap-5">
+        <div className="flex-1 flex flex-col min-h-0">
+          <div className="mb-4 flex items-center gap-2">
+            <h3 className="p2 text-text-primary">면접 일정</h3>
             <button
               type="button"
               className="text-primary"
@@ -43,7 +43,7 @@ export default function InterviewPlanSection({
           </div>
 
           {isEmpty ? (
-            <div className="space-y-4">
+            <div className="space-y-3.5">
               <div className="flex h-16 items-center rounded-lg border border-primary bg-white px-5 py-4">
                 <span className="mr-4 h2 text-primary">D-day</span>
                 <span className="p4 text-gray-3">면접 일정을 등록해주세요</span>
@@ -53,7 +53,7 @@ export default function InterviewPlanSection({
               <div className="h-10 rounded-t-lg bg-white" />
             </div>
           ) : (
-            <div className="space-y-4">
+            <div className="max-h-[248px] overflow-y-auto space-y-4 pr-2">
               {data.map((plan) => (
                 <div
                   key={plan.id}
@@ -77,14 +77,8 @@ export default function InterviewPlanSection({
           )}
         </div>
 
-        <div className="hidden w-8 justify-center pt-[220px] lg:flex">
-          <div className="h-px w-full bg-primary" />
-        </div>
-
-        <div className="flex flex-[1.3] flex-col">
-          <h3 className="mb-5 text-lg font-bold text-text-primary">
-            면접 커리큘럼
-          </h3>
+        <div className="flex flex-[1.3] flex-col ">
+          <h3 className="mb-4 p2 text-text-primary">면접 커리큘럼</h3>
 
           {isEmpty ? (
             <div className="flex-1 rounded-lg border border-primary bg-white px-6.5 py-6.5">
@@ -96,9 +90,9 @@ export default function InterviewPlanSection({
               </div>
             </div>
           ) : (
-            <div className="flex-1 rounded-lg border border-primary bg-white px-6.5 py-6.5">
-              <div className="space-y-5">
-                {selectedPlan?.curriculum.map((item) => (
+            <div className="max-h-[248px] flex-1 rounded-lg border border-primary bg-white px-6.5 py-6.5">
+              <div className="space-y-4">
+                {selectedPlan?.curriculum.slice(0, 5).map((item) => (
                   <div key={item.id} className="flex items-start gap-4">
                     <span className="mt-2 inline-block h-1.5 w-1.5 rounded-full bg-[#977AFF]" />
                     <div className="flex min-w-0 flex-1 items-center justify-between gap-4">

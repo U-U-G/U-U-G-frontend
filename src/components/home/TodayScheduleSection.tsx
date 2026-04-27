@@ -1,11 +1,8 @@
-import { IconChevronRight } from '@tabler/icons-react'
+'use client'
 
-type WeekDate = {
-  dayLabel: string
-  date: number
-  fullDate: string
-  isSelected: boolean
-}
+import { IconChevronRight, IconChevronLeft } from '@tabler/icons-react'
+import { useState } from 'react'
+import { formatFullDate, getWeekDates } from '@/utils/getWeekDates'
 
 type ScheduleItem = {
   id: number
@@ -14,46 +11,60 @@ type ScheduleItem = {
   time: string
 }
 
-type TodayScheduleData = {
-  selectedDate: string
-  weekDates: readonly WeekDate[]
+type TodayScheduleSectionProps = {
   schedules: readonly ScheduleItem[]
 }
 
-// const weekDays = [
-//   { label: '일', date: 19 },
-//   { label: '월', date: 20, active: true },
-//   { label: '화', date: 21 },
-//   { label: '수', date: 22 },
-//   { label: '목', date: 23 },
-//   { label: '금', date: 24 },
-//   { label: '토', date: 25 },
-// ]
-
 export default function TodayScheduleSection({
-  data,
-}: {
-  data: TodayScheduleData
-}) {
-  const isEmpty = data.schedules.length === 0
+  schedules,
+}: TodayScheduleSectionProps) {
+  const [isNextWeek, setIsNextWeek] = useState(false)
+  const [selectedDate, setSelectedDate] = useState(formatFullDate(new Date()))
+
+  const weekOffset = isNextWeek ? 1 : 0
+
+  const weekDates = getWeekDates(weekOffset).map((d) => ({
+    ...d,
+    isSelected: d.fullDate === selectedDate,
+  }))
+
+  const handleWeekToggle = () => {
+    const nextIsNextWeek = !isNextWeek
+    const nextWeekOffset = nextIsNextWeek ? 1 : 0
+    const nextWeekDates = getWeekDates(nextWeekOffset)
+
+    setIsNextWeek(nextIsNextWeek)
+
+    if (nextIsNextWeek) {
+      setSelectedDate(nextWeekDates[0].fullDate)
+      return
+    }
+
+    const today = formatFullDate(new Date())
+    const hasToday = nextWeekDates.some((d) => d.fullDate === today)
+    setSelectedDate(hasToday ? today : nextWeekDates[0].fullDate)
+  }
+
+  const isEmpty = schedules.length === 0
 
   return (
-    <div className="h-[480px] flex-1 overflow-hidden rounded-2xl bg-secondary">
-      <div className="flex h-full flex-col gap-8 p-7">
+    <div className="h-full w-full min-h-0 overflow-hidden rounded-2xl bg-secondary">
+      <div className="flex h-full flex-col gap-4 p-6">
         <div className="flex items-center justify-between">
           <h3 className="p2 text-text-primary">오늘의 스케줄</h3>
         </div>
 
         <div className="flex gap-4 text-center">
-          {data.weekDates.map((day) => (
-            <div
+          {weekDates.map((day) => (
+            <button
               key={day.fullDate}
-              className="flex flex-1 flex-col items-center gap-4"
+              type="button"
+              onClick={() => setSelectedDate(day.fullDate)}
+              className="flex flex-1 flex-col items-center gap-2"
             >
-              <span className="p4 text-text-primary">{day.dayLabel}</span>
               <div
                 className={[
-                  'flex h-10 w-10 items-center justify-center rounded-full text-xl font-bold',
+                  'flex h-10 w-10 items-center justify-center rounded-full text-lg font-bold cursor-pointer',
                   day.isSelected
                     ? 'bg-primary text-white'
                     : 'text-text-primary',
@@ -61,30 +72,31 @@ export default function TodayScheduleSection({
               >
                 {day.date}
               </div>
-            </div>
+            </button>
           ))}
+
           <button
             type="button"
-            className="text-3xl leading-none font-light text-primary transition"
-            aria-label="다음 주 보기"
+            onClick={handleWeekToggle}
+            className="text-3xl leading-none font-light text-primary transition cursor-pointer"
+            aria-label={isNextWeek ? '이번 주 보기' : '다음 주 보기'}
           >
-            <IconChevronRight />
+            {isNextWeek ? <IconChevronLeft /> : <IconChevronRight />}
           </button>
         </div>
 
         <div className="mt-auto flex min-h-0 flex-1 flex-col">
           {isEmpty ? (
-            <div className="space-y-3.5">
+            <div className="space-y-3">
               <div className="p3 w-full rounded-lg border border-primary bg-white px-5 py-4 text-left text-gray-3">
                 일정에 맞게 오늘의 스케줄을 생성해요
               </div>
               <div className="h-14 rounded-lg bg-white" />
-              <div className="h-14 rounded-lg bg-white" />
-              <div className="h-9 rounded-t-lg bg-white" />
+              <div className="h-12 rounded-t-lg bg-white" />
             </div>
           ) : (
             <div className="space-y-3 overflow-y-auto pr-1">
-              {data.schedules.map((schedule, index) => (
+              {schedules.map((schedule, index) => (
                 <div
                   key={schedule.id}
                   className={[
