@@ -1,16 +1,17 @@
 const ACCESS_TOKEN_KEY = 'uug:accessToken'
+const REFRESH_TOKEN_KEY = 'uug:refreshToken'
 
-export const getAccessToken = () => {
-  if (typeof window === 'undefined') return null
-  return localStorage.getItem(ACCESS_TOKEN_KEY)
-}
+export const getAccessToken = () => localStorage.getItem(ACCESS_TOKEN_KEY)
 
-export const setAccessToken = (token: string) => {
-  if (typeof window === 'undefined') return
+export const setAccessToken = (token: string) =>
   localStorage.setItem(ACCESS_TOKEN_KEY, token)
-}
 
-export const removeAccessToken = () => {
-  if (typeof window === 'undefined') return
+export const getRefreshToken = () => localStorage.getItem(REFRESH_TOKEN_KEY)
+
+export const setRefreshToken = (token: string) =>
+  localStorage.setItem(REFRESH_TOKEN_KEY, token)
+
+export const clearAuthTokens = () => {
   localStorage.removeItem(ACCESS_TOKEN_KEY)
+  localStorage.removeItem(REFRESH_TOKEN_KEY)
 }
