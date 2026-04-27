@@ -1,20 +1,56 @@
 'use client'
 
+import { useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
+import { useMutation } from '@tanstack/react-query'
+import { loginApi } from '@/apis/auth'
+import { setAccessToken } from '@/utils/tokenStorage'
 import KakaoLogoIcon from '@/assets/icon/kakao-logo.svg'
 import GoogleLogoIcon from '@/assets/icon/google-logo.svg'
 import NaverLogoIcon from '@/assets/icon/naver-logo.svg'
 
 export default function Login() {
-  const handleLogin = () => {
-    console.log('홈으로 이동') //TODO: 로그인 api 연동
+  const router = useRouter()
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+
+  const loginMutation = useMutation({
+    mutationFn: loginApi.login,
+
+    onSuccess: (response) => {
+      if (!response.success) return
+      setAccessToken(response.data.accessToken)
+      router.push('/')
+    },
+
+    onError: (error) => {
+      console.error('로그인 실패', error)
+    },
+  })
+
+  const handleKakaoLogin = () => {
+    window.location.href = loginApi.loginWithKakao()
+  }
+  const handleGoogleLogin = () => {
+    window.location.href = loginApi.loginWithGoogle()
+  }
+  const handleNaverLogin = () => {
+    window.location.href = loginApi.loginWithNaver()
+  }
+
+  const handleSubmit = (
+    e: React.SyntheticEvent<HTMLFormElement, SubmitEvent>,
+  ) => {
+    e.preventDefault()
+    loginMutation.mutate({ email, password })
   }
 
   return (
     <main className="flex min-h-screen items-center justify-center">
       <section className="w-full max-w-[380px]">
-        <form className="flex flex-col" onSubmit={handleLogin}>
+        <form className="flex flex-col" onSubmit={handleSubmit}>
           <div className="mb-5">
             <label htmlFor="email" className="sr-only">
               이메일
@@ -22,6 +58,8 @@ export default function Login() {
             <input
               id="email"
               type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               placeholder="이메일"
               className="w-full border-0 border-b border-secondary bg-transparent px-1 pb-4 pt-2 p1 text-text-primary outline-none focus:border-text-primary placeholder:text-secondary transition-all duration-300 ease-in-out"
             />
@@ -35,6 +73,8 @@ export default function Login() {
             <input
               id="password"
               type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
               placeholder="비밀번호"
               className="w-full border-0 border-b border-secondary bg-transparent px-1 pb-4 pt-2 p1 text-text-primary outline-none focus:border-text-primary placeholder:text-secondary transition-all duration-300 ease-in-out"
             />
@@ -63,6 +103,7 @@ export default function Login() {
         <div className="flex items-center justify-center gap-8">
           <button
             type="button"
+            onClick={handleKakaoLogin}
             className="flex h-[68px] w-[68px] items-center justify-center rounded-full bg-[#fee500] cursor-pointer"
             aria-label="카카오 로그인"
           >
@@ -71,6 +112,7 @@ export default function Login() {
 
           <button
             type="button"
+            onClick={handleGoogleLogin}
             className="flex h-[68px] w-[68px] items-center justify-center rounded-full shadow-[0_2px_10px_rgba(0,0,0,0.08)] cursor-pointer"
             aria-label="구글 로그인"
           >
@@ -79,6 +121,7 @@ export default function Login() {
 
           <button
             type="button"
+            onClick={handleNaverLogin}
             className="flex h-[68px] w-[68px] items-center justify-center rounded-full bg-[#03c75a] cursor-pointer"
             aria-label="네이버 로그인"
           >
