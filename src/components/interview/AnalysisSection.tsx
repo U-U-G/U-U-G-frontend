@@ -77,15 +77,6 @@ export default function AnalysisSection() {
             className="object-contain mt-0.5"
           />
 
-          <div className="flex flex-col items-center gap-3.25 w-172.5">
-            <div className="w-full h-2 bg-gray-5 rounded-full overflow-hidden">
-              <div className="h-full w-full bg-primary rounded-full" />
-            </div>
-            <p className="p3 text-gray-4">
-              {COMPANY} {JOB} {ROUND}차 면접 결과 분석 완료
-            </p>
-          </div>
-
           <Button
             className="rounded-full! py-3! px-18.25! mt-3.5"
             onClick={() => router.push('/history')}
