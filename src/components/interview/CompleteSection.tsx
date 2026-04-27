@@ -19,7 +19,7 @@ export default function CompleteSection({
   const nextQuestion = currentQuestion + 1
 
   function handleNext() {
-    if (currentQuestion >= totalQuestions) {
+    if (isLast) {
       router.push('/interview/job-posting/analysis')
     } else {
       router.push(`/interview/job-posting/countdown?q=${nextQuestion}`)
