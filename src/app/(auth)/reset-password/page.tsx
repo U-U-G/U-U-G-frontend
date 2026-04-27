@@ -6,6 +6,9 @@ import { useMutation } from '@tanstack/react-query'
 import Button from '@/components/common/button/Button'
 import ResetPasswordSection from '@/components/auth/resetPassword/ResetPasswordSection'
 import { resetPasswordApi } from '@/apis/auth'
+import type { ResetPasswordRequest } from '@/apis/auth/type'
+
+type ResetPasswordForm = Omit<ResetPasswordRequest, 'token'>
 
 export default function ResetPasswordPage() {
   const router = useRouter()
@@ -13,7 +16,7 @@ export default function ResetPasswordPage() {
   const token = searchParams.get('token')?.trim() ?? ''
 
   const [newPasswordVerified, setNewPasswordVerified] = useState(false)
-  const [passwordForm, setPasswordForm] = useState({
+  const [passwordForm, setPasswordForm] = useState<ResetPasswordForm>({
     newPassword: '',
     confirmPassword: '',
   })
@@ -37,8 +40,7 @@ export default function ResetPasswordPage() {
 
     resetMutation.mutate({
       token,
-      newPassword: passwordForm.newPassword,
-      confirmPassword: passwordForm.confirmPassword,
+      ...passwordForm,
     })
   }
 
@@ -56,7 +58,10 @@ export default function ResetPasswordPage() {
         </div>
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-6">
-          <ResetPasswordSection onPasswordValid={setNewPasswordVerified} />
+          <ResetPasswordSection
+            onPasswordValid={setNewPasswordVerified}
+            onPasswordChange={setPasswordForm}
+          />
           <Button
             type="submit"
             variant={canSubmit ? 'primary' : 'secondary'}
