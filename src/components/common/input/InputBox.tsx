@@ -3,16 +3,20 @@ import { InputHTMLAttributes } from 'react'
 interface InputBoxProps extends InputHTMLAttributes<HTMLInputElement> {
   status?: 'default' | 'success' | 'error'
   rightElement?: React.ReactNode
+  focusPrimary?: boolean
 }
 
 export default function InputBox({
   status = 'default',
   rightElement,
+  focusPrimary = false,
   className,
   ...props
 }: InputBoxProps) {
   const borderClass = {
-    default: 'border-gray-4 focus:border-text-primary',
+    default: focusPrimary
+      ? 'border-gray-4 hover:border-primary focus:border-primary'
+      : 'border-gray-4 focus:border-text-primary',
     success: 'border-gray-4 focus:border-primary',
     error: 'border-text-point-red focus:border-text-point-red',
   }[status]
