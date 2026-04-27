@@ -33,7 +33,7 @@ export default function SignUpForm() {
         disabled={!canSubmit}
         className="w-full"
       >
-        회원가입
+        <span className="h4">회원가입</span>
       </Button>
     </form>
   )

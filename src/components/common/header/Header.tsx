@@ -8,6 +8,7 @@ import {
   IconSettingsFilled,
   IconUserFilled,
 } from '@tabler/icons-react'
+import defaultProfileIcon from '@/assets/icon/default-profile-icon.svg'
 
 interface HeaderProps {
   className?: string
@@ -67,9 +68,12 @@ export default function Header({
         </nav>
 
         <div className="flex items-center" ref={dropdownRef}>
-          <div
-            className="w-7.5 h-7.5 rounded-full bg-primary mr-3.25"
-            aria-hidden="true"
+          <Image
+            src={defaultProfileIcon}
+            alt=""
+            width={30}
+            height={30}
+            className="rounded-full mr-3.25"
           />
           <span className="p1 mr-3.75">{userName} 님</span>
 
