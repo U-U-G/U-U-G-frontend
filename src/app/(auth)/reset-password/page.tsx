@@ -34,7 +34,7 @@ export default function ResetPasswordPage() {
   const canSubmit =
     Boolean(token) && newPasswordVerified && !resetMutation.isPending
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = (e: React.SyntheticEvent) => {
     e.preventDefault()
     if (!canSubmit) return
 
@@ -68,7 +68,7 @@ export default function ResetPasswordPage() {
             disabled={!canSubmit}
             className="w-full"
           >
-            {resetMutation.isPending ? '변경 중...' : '변경 완료'}
+            {resetMutation.isPending ? '변경 중' : '변경 완료'}
           </Button>
         </form>
       </div>
