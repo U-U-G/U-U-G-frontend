@@ -24,13 +24,6 @@ export const loginWithGoogle = () => `${BASE_URL}/oauth2/authorization/google`
 
 export const loginWithNaver = () => `${BASE_URL}/oauth2/authorization/naver`
 
-export const loginApi = {
-  login,
-  loginWithKakao,
-  loginWithGoogle,
-  loginWithNaver,
-}
-
 export const forgotPassword = async (body: UserInfo) => {
   const { data } = await publicClient.post<ApiResponse<string>>(
     '/auth/forgot-password',
@@ -45,6 +38,13 @@ export const resetPassword = async (body: ResetPasswordRequest) => {
     body,
   )
   return data
+}
+
+export const loginApi = {
+  login,
+  loginWithKakao,
+  loginWithGoogle,
+  loginWithNaver,
 }
 
 export const resetPasswordApi = {
