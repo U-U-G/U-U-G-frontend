@@ -70,7 +70,7 @@ export default function Header({
         <div className="flex items-center" ref={dropdownRef}>
           <Image
             src={defaultProfileIcon}
-            alt="프로필"
+            alt=""
             width={30}
             height={30}
             className="rounded-full mr-3.25"
