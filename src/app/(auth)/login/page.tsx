@@ -20,8 +20,7 @@ export default function Login() {
     mutationFn: loginApi.login,
 
     onSuccess: (response) => {
-      if (!response.success) return
-      setAccessToken(response.data.accessToken)
+      setAccessToken(response.accessToken)
       router.push('/')
     },
 

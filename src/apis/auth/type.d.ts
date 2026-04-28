@@ -8,17 +8,25 @@ export interface LoginResponse {
   refreshToken: string
 }
 
-export interface UserInfo {
-  email: string
+interface PasswordConfirmFields {
+  password: string
+  confirmPassword: string
 }
 
-export interface EmailVerificationConfirmRequest {
-  email: string
-  code: string
-}
-
-export interface ResetPasswordRequest {
-  token: string
+interface NewPasswordConfirmFields {
   newPassword: string
   confirmPassword: string
+}
+
+export interface SignupRequest extends PasswordConfirmFields {
+  email: string
+  nickname: string
+}
+
+export interface ResetPasswordRequest extends NewPasswordConfirmFields {
+  token: string
+}
+
+export interface ChangePasswordRequest extends NewPasswordConfirmFields {
+  currentPassword: string
 }
