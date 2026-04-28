@@ -2,6 +2,7 @@
 
 import { useCallback, useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { useMutation } from '@tanstack/react-query'
 import { isAxiosError } from 'axios'
 import { signupApi } from '@/apis/auth'
 import HelperText from '@/components/common/text/HelperText'
@@ -17,7 +18,6 @@ export default function SignUpForm() {
   const [passwordValid, setPasswordValid] = useState(false)
   const [nicknameChecked, setNicknameChecked] = useState(false)
   const [termsAccepted, setTermsAccepted] = useState(false)
-  const [isSubmitting, setIsSubmitting] = useState(false)
   const [submitError, setSubmitError] = useState('')
   const [emailError, setEmailError] = useState('')
 
@@ -29,41 +29,42 @@ export default function SignUpForm() {
   const canSubmit =
     emailVerified && passwordValid && nicknameChecked && termsAccepted
 
+  const signupMutation = useMutation({
+    mutationFn: signupApi.signup,
+    onSuccess: () => {
+      router.push('/login')
+    },
+    onError: (err) => {
+      const message =
+        isAxiosError(err) && err.response?.data?.message
+          ? err.response.data.message
+          : '회원가입에 실패했습니다. 다시 시도해주세요.'
+      if (message.includes('이메일')) {
+        setEmailError(message)
+        setEmailVerified(false)
+      } else {
+        setSubmitError(message)
+      }
+    },
+  })
+
+  const handleSubmit = (e: React.SyntheticEvent<HTMLFormElement, SubmitEvent>) => {
+    e.preventDefault()
+    if (!canSubmit) return
+
+    const formData = new FormData(e.currentTarget)
+    setSubmitError('')
+    setEmailError('')
+    signupMutation.mutate({
+      email: formData.get('email') as string,
+      password: formData.get('password') as string,
+      confirmPassword: formData.get('passwordConfirm') as string,
+      nickname: formData.get('nickname') as string,
+    })
+  }
+
   return (
-    <form
-      className="flex flex-col gap-5.5"
-      onSubmit={async (e) => {
-        e.preventDefault()
-        if (!canSubmit) return
-
-        const formData = new FormData(e.currentTarget)
-        const email = formData.get('email') as string
-        const password = formData.get('password') as string
-        const confirmPassword = formData.get('passwordConfirm') as string
-        const nickname = formData.get('nickname') as string
-
-        setSubmitError('')
-        setEmailError('')
-        setIsSubmitting(true)
-        try {
-          await signupApi.signup({ email, password, confirmPassword, nickname })
-          router.push('/login')
-        } catch (err) {
-          const message =
-            isAxiosError(err) && err.response?.data?.message
-              ? err.response.data.message
-              : '회원가입에 실패했습니다. 다시 시도해주세요.'
-          if (message.includes('이메일')) {
-            setEmailError(message)
-            setEmailVerified(false)
-          } else {
-            setSubmitError(message)
-          }
-        } finally {
-          setIsSubmitting(false)
-        }
-      }}
-    >
+    <form className="flex flex-col gap-5.5" onSubmit={handleSubmit}>
       <EmailSection
         onEmailVerified={setEmailVerified}
         serverError={emailError}
@@ -76,7 +77,7 @@ export default function SignUpForm() {
       <Button
         type="submit"
         variant={canSubmit ? 'primary' : 'secondary'}
-        disabled={!canSubmit || isSubmitting}
+        disabled={!canSubmit || signupMutation.isPending}
         className="w-full"
       >
         <span className="h4">회원가입</span>

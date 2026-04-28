@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
+import { useMutation } from '@tanstack/react-query'
 import { EMAIL_REGEX } from '@/constants/regex'
 import { signupApi } from '@/apis/auth'
 import Button from '@/components/common/button/Button'
@@ -64,7 +65,35 @@ export default function EmailSection({ onEmailVerified, serverError, onClearServ
     }, 1000)
   }
 
-  async function handleSendCode() {
+  const sendCodeMutation = useMutation({
+    mutationFn: signupApi.sendEmailVerificationCode,
+    onSuccess: () => {
+      setEmailHelper({ text: '전송 완료', status: 'success' })
+      setEmailStatus('success')
+      startTimer()
+    },
+    onError: () => {
+      setEmailHelper({ text: '이메일 전송에 실패했습니다.', status: 'error' })
+      setEmailStatus('error')
+    },
+  })
+
+  const verifyCodeMutation = useMutation({
+    mutationFn: signupApi.verifyEmailVerification,
+    onSuccess: () => {
+      if (timerRef.current) clearInterval(timerRef.current)
+      setTimeLeft(null)
+      setCodeHelper({ text: '인증 완료', status: 'success' })
+      setCodeStatus('success')
+      onEmailVerified?.(true)
+    },
+    onError: () => {
+      setCodeHelper({ text: '인증번호가 일치하지 않습니다.', status: 'error' })
+      setCodeStatus('error')
+    },
+  })
+
+  function handleSendCode() {
     if (!email || !EMAIL_REGEX.test(email)) {
       setEmailHelper({
         text: '올바른 이메일 주소를 입력해주세요.',
@@ -73,36 +102,16 @@ export default function EmailSection({ onEmailVerified, serverError, onClearServ
       setEmailStatus('error')
       return
     }
-
-    try {
-      await signupApi.sendEmailVerificationCode({ email })
-      setEmailHelper({ text: '전송 완료', status: 'success' })
-      setEmailStatus('success')
-      startTimer()
-    } catch {
-      setEmailHelper({ text: '이메일 전송에 실패했습니다.', status: 'error' })
-      setEmailStatus('error')
-    }
+    sendCodeMutation.mutate({ email })
   }
 
-  async function handleVerifyCode() {
+  function handleVerifyCode() {
     if (!code) {
       setCodeHelper({ text: '인증번호를 입력해주세요.', status: 'error' })
       setCodeStatus('error')
       return
     }
-
-    try {
-      await signupApi.verifyEmailVerification({ email, code })
-      if (timerRef.current) clearInterval(timerRef.current)
-      setTimeLeft(null)
-      setCodeHelper({ text: '인증 완료', status: 'success' })
-      setCodeStatus('success')
-      onEmailVerified?.(true)
-    } catch {
-      setCodeHelper({ text: '인증번호가 일치하지 않습니다.', status: 'error' })
-      setCodeStatus('error')
-    }
+    verifyCodeMutation.mutate({ email, code })
   }
 
   return (
@@ -129,7 +138,7 @@ export default function EmailSection({ onEmailVerified, serverError, onClearServ
           />
           <Button
             onClick={handleSendCode}
-            disabled={codeSent && !timerExpired}
+            disabled={sendCodeMutation.isPending || (codeSent && !timerExpired)}
             variant={codeSent ? 'secondary' : 'primary'}
             className={codeSent ? 'bg-primary-light text-primary' : ''}
           >
@@ -157,7 +166,12 @@ export default function EmailSection({ onEmailVerified, serverError, onClearServ
               ) : undefined
             }
           />
-          <Button onClick={handleVerifyCode}>인증확인</Button>
+          <Button
+            onClick={handleVerifyCode}
+            disabled={verifyCodeMutation.isPending}
+          >
+            인증확인
+          </Button>
         </div>
         <HelperText status={codeHelper.status}>{codeHelper.text}</HelperText>
       </div>
