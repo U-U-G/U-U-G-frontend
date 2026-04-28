@@ -21,7 +21,8 @@ export const login = async (body: LoginRequest) => {
 }
 
 export const logout = async () => {
-  await privateClient.post<ApiResponse<string>>('/auth/logout')
+  const { data } = await privateClient.post<ApiResponse<string>>('/auth/logout')
+  return data.data
 }
 
 export const forgotPassword = async (body: EmailField) => {
@@ -67,7 +68,7 @@ export const verifyEmailVerification = async (
 }
 
 export const changePassword = async (body: ChangePasswordRequest) => {
-  const { data } = await publicClient.post<ApiResponse<string>>(
+  const { data } = await privateClient.post<ApiResponse<string>>(
     '/auth/password',
     body,
   )

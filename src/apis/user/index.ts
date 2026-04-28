@@ -11,7 +11,7 @@ export const getProfile = async () => {
 
 export const signout = async () => {
   const { data } = await privateClient.delete<ApiResponse<string>>('/users/me')
-  return data
+  return data.data
 }
 
 export const updateProfile = async (body: UpdateProfileRequest) => {
