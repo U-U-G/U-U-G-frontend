@@ -1,3 +1,7 @@
+export interface UserInfo {
+  email: string
+}
+
 export interface LoginRequest {
   email: string
   password: string
@@ -8,8 +12,11 @@ export interface LoginResponse {
   refreshToken: string
 }
 
-export interface UserInfo {
+export interface SignupRequest {
   email: string
+  password: string
+  confirmPassword: string
+  nickname: string
 }
 
 export interface EmailVerificationConfirmRequest {
@@ -19,6 +26,12 @@ export interface EmailVerificationConfirmRequest {
 
 export interface ResetPasswordRequest {
   token: string
+  newPassword: string
+  confirmPassword: string
+}
+
+export interface ChangePasswordRequest {
+  currentPassword: string
   newPassword: string
   confirmPassword: string
 }
