@@ -4,12 +4,11 @@ import { ApiResponse } from '@/apis/common/type'
 import {
   LoginRequest,
   LoginResponse,
-  UserInfo,
-  EmailVerificationConfirmRequest,
   ResetPasswordRequest,
   ChangePasswordRequest,
   SignupRequest,
 } from './type'
+import { EmailField, EmailVerificationConfirmRequest } from '@/apis/common/type'
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL
 
@@ -18,19 +17,19 @@ export const login = async (body: LoginRequest) => {
     '/auth/login',
     body,
   )
-  return data
+  return data.data
 }
 
 export const logout = async () => {
   await privateClient.post<ApiResponse<string>>('/auth/logout')
 }
 
-export const forgotPassword = async (body: UserInfo) => {
+export const forgotPassword = async (body: EmailField) => {
   const { data } = await publicClient.post<ApiResponse<string>>(
     '/auth/forgot-password',
     body,
   )
-  return data
+  return data.data
 }
 
 export const resetPassword = async (body: ResetPasswordRequest) => {
@@ -38,7 +37,7 @@ export const resetPassword = async (body: ResetPasswordRequest) => {
     '/auth/reset-password',
     body,
   )
-  return data
+  return data.data
 }
 
 export const signup = async (body: SignupRequest) => {
@@ -46,15 +45,15 @@ export const signup = async (body: SignupRequest) => {
     '/auth/signup',
     body,
   )
-  return data
+  return data.data
 }
 
-export const sendEmailVerificationCode = async (body: UserInfo) => {
+export const sendEmailVerificationCode = async (body: EmailField) => {
   const { data } = await publicClient.post<ApiResponse<string>>(
     '/auth/email-verifications',
     body,
   )
-  return data
+  return data.data
 }
 
 export const verifyEmailVerification = async (
@@ -64,7 +63,7 @@ export const verifyEmailVerification = async (
     '/auth/email-verifications/verify',
     body,
   )
-  return data
+  return data.data
 }
 
 export const changePassword = async (body: ChangePasswordRequest) => {
@@ -72,7 +71,7 @@ export const changePassword = async (body: ChangePasswordRequest) => {
     '/auth/password',
     body,
   )
-  return data
+  return data.data
 }
 
 export const loginWithKakao = () => `${BASE_URL}/oauth2/authorization/kakao`

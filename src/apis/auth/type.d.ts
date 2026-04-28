@@ -1,7 +1,3 @@
-export interface UserInfo {
-  email: string
-}
-
 export interface LoginRequest {
   email: string
   password: string
@@ -17,11 +13,6 @@ export interface SignupRequest {
   password: string
   confirmPassword: string
   nickname: string
-}
-
-export interface EmailVerificationConfirmRequest {
-  email: string
-  code: string
 }
 
 export interface ResetPasswordRequest {
