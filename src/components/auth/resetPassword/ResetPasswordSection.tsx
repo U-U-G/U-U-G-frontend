@@ -8,10 +8,15 @@ function isValidNewPassword(pw: string) {
 
 interface ResetPasswordSectionProps {
   onPasswordValid?: (valid: boolean) => void
+  onPasswordChange?: (value: {
+    newPassword: string
+    confirmPassword: string
+  }) => void
 }
 
 export default function ResetPasswordSection({
   onPasswordValid,
+  onPasswordChange,
 }: ResetPasswordSectionProps) {
   const [newPassword, setNewPassword] = useState('')
   const [confirm, setConfirm] = useState('')
@@ -20,7 +25,11 @@ export default function ResetPasswordSection({
     onPasswordValid?.(
       isValidNewPassword(newPassword) && newPassword === confirm,
     )
-  }, [newPassword, confirm, onPasswordValid])
+    onPasswordChange?.({
+      newPassword,
+      confirmPassword: confirm,
+    })
+  }, [newPassword, confirm, onPasswordValid,onPasswordChange])
 
   const newPasswordStatus = !newPassword
     ? 'default'

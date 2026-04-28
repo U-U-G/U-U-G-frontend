@@ -61,7 +61,7 @@ export default function Login() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="이메일"
-              className="w-full border-0 border-b border-secondary bg-transparent px-1 pb-4 pt-2 p1 text-text-primary outline-none focus:border-text-primary placeholder:text-secondary transition-all duration-300 ease-in-out"
+              className="w-full border-0 border-b border-gray-4 bg-transparent px-1 pb-4 pt-2 p1 text-text-primary outline-none focus:border-text-primary placeholder:text-gray-5 transition-all duration-300 ease-in-out"
             />
           </div>
 
@@ -76,7 +76,7 @@ export default function Login() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="비밀번호"
-              className="w-full border-0 border-b border-secondary bg-transparent px-1 pb-4 pt-2 p1 text-text-primary outline-none focus:border-text-primary placeholder:text-secondary transition-all duration-300 ease-in-out"
+              className="w-full border-0 border-b border-gray-4 bg-transparent px-1 pb-4 pt-2 p1 text-text-primary outline-none focus:border-text-primary placeholder:text-gray-5 transition-all duration-300 ease-in-out"
             />
           </div>
 
@@ -89,7 +89,7 @@ export default function Login() {
         </form>
 
         <div className="p4 mb-12 flex items-center justify-center gap-4 text-text-primary">
-          <Link href="/reset-password" className="cursor-pointer">
+          <Link href="forgot-password" className="cursor-pointer">
             비밀번호 찾기
           </Link>
           <span className="text-foreground-primary" aria-hidden="true">
