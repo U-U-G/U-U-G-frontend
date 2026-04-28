@@ -1,7 +1,8 @@
 'use client'
 
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { EMAIL_REGEX } from '@/constants/regex'
+import { signupApi } from '@/apis/auth'
 import Button from '@/components/common/button/Button'
 import InputBox from '@/components/common/input/InputBox'
 import HelperText from '@/components/common/text/HelperText'
@@ -26,9 +27,11 @@ function formatTime(seconds: number) {
 
 interface EmailSectionProps {
   onEmailVerified?: (verified: boolean) => void
+  serverError?: string
+  onClearServerError?: () => void
 }
 
-export default function EmailSection({ onEmailVerified }: EmailSectionProps) {
+export default function EmailSection({ onEmailVerified, serverError, onClearServerError }: EmailSectionProps) {
   const [email, setEmail] = useState('')
   const [code, setCode] = useState('')
   const [emailStatus, setEmailStatus] = useState<FieldStatus>('default')
@@ -40,6 +43,12 @@ export default function EmailSection({ onEmailVerified }: EmailSectionProps) {
 
   const codeSent = timeLeft !== null
   const timerExpired = timeLeft === 0
+
+  useEffect(() => {
+    return () => {
+      if (timerRef.current) clearInterval(timerRef.current)
+    }
+  }, [])
 
   function startTimer() {
     if (timerRef.current) clearInterval(timerRef.current)
@@ -65,17 +74,15 @@ export default function EmailSection({ onEmailVerified }: EmailSectionProps) {
       return
     }
 
-    // TODO: 백엔드 API로 이메일 중복 검증
-    // const isDuplicate = await checkEmailDuplicate(email)
-    // if (isDuplicate) {
-    //   setEmailHelper({ text: '이미 사용 중인 이메일입니다.', status: 'error' })
-    //   setEmailStatus('error')
-    //   return
-    // }
-
-    setEmailHelper({ text: '전송 완료', status: 'success' })
-    setEmailStatus('success')
-    startTimer()
+    try {
+      await signupApi.sendEmailVerificationCode({ email })
+      setEmailHelper({ text: '전송 완료', status: 'success' })
+      setEmailStatus('success')
+      startTimer()
+    } catch {
+      setEmailHelper({ text: '이메일 전송에 실패했습니다.', status: 'error' })
+      setEmailStatus('error')
+    }
   }
 
   async function handleVerifyCode() {
@@ -85,19 +92,17 @@ export default function EmailSection({ onEmailVerified }: EmailSectionProps) {
       return
     }
 
-    // TODO: 백엔드 API로 인증번호 확인
-    // const isMatch = await verifyEmailCode(email, code)
-    // if (!isMatch) {
-    //   setCodeHelper({ text: '인증번호가 일치하지 않습니다.', status: 'error' })
-    //   setCodeStatus('error')
-    //   return
-    // }
-
-    if (timerRef.current) clearInterval(timerRef.current)
-    setTimeLeft(null)
-    setCodeHelper({ text: '인증 완료', status: 'success' })
-    setCodeStatus('success')
-    onEmailVerified?.(true)
+    try {
+      await signupApi.verifyEmailVerification({ email, code })
+      if (timerRef.current) clearInterval(timerRef.current)
+      setTimeLeft(null)
+      setCodeHelper({ text: '인증 완료', status: 'success' })
+      setCodeStatus('success')
+      onEmailVerified?.(true)
+    } catch {
+      setCodeHelper({ text: '인증번호가 일치하지 않습니다.', status: 'error' })
+      setCodeStatus('error')
+    }
   }
 
   return (
@@ -114,7 +119,10 @@ export default function EmailSection({ onEmailVerified }: EmailSectionProps) {
             value={email}
             onChange={(e) => {
               setEmail(e.target.value)
+              setEmailStatus('default')
+              setEmailHelper(EMPTY)
               onEmailVerified?.(false)
+              onClearServerError?.()
             }}
             placeholder="이메일을 입력해주세요."
             status={emailStatus}
@@ -128,7 +136,9 @@ export default function EmailSection({ onEmailVerified }: EmailSectionProps) {
             {codeSent ? '재전송' : '인증번호'}
           </Button>
         </div>
-        <HelperText status={emailHelper.status}>{emailHelper.text}</HelperText>
+        <HelperText status={serverError ? 'error' : emailHelper.status}>
+          {serverError || emailHelper.text}
+        </HelperText>
       </div>
       <div className="flex flex-col gap-2">
         <div className="flex gap-2.75">
