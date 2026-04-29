@@ -253,8 +253,8 @@ export default function JobPostingFormSection() {
   const createJobPostingMutation = useMutation({
     mutationFn: createJobPosting,
     onSuccess: (response) => {
-      setJobPostingUuid(response.uuid) //uuid 임시 보관
       setPopupState('complete')
+      setJobPostingUuid(response.uuid)
     },
     onError: (error) => {
       console.error('공고 조회 실패', error)
@@ -370,7 +370,9 @@ export default function JobPostingFormSection() {
       {popupState === 'complete' && (
         <CompletePopup
           popupRef={popupRef}
-          onStart={() => router.push('/interview/job-posting/countdown')}
+          onStart={() =>
+            router.push(`/interview/job-posting/${jobPostingUuid}/countdown`)
+          }
         />
       )}
     </section>
