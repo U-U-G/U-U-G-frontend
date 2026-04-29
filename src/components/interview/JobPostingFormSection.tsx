@@ -371,7 +371,9 @@ export default function JobPostingFormSection() {
         <CompletePopup
           popupRef={popupRef}
           onStart={() =>
-            router.push(`/interview/job-posting/${jobPostingUuid}/countdown`)
+            router.push(
+              `/interview/job-posting/${jobPostingUuid}/countdown?q=1`,
+            )
           }
         />
       )}

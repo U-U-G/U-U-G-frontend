@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, Fragment } from 'react'
-import { useRouter } from 'next/navigation'
+import { useRouter, useParams } from 'next/navigation'
 import Image from 'next/image'
 import playIcon from '@/assets/icon/play-icon.svg'
 import playColorIcon from '@/assets/icon/play-color-icon.svg'
@@ -53,6 +53,7 @@ export default function QuestionSection({
 }: QuestionSectionProps) {
   const question = interviewMockData.questions[questionNumber - 1]!
   const router = useRouter()
+  const { uuid } = useParams<{ uuid: string }>()
 
   const [isPaused, setIsPaused] = useState(false)
   const {
@@ -177,7 +178,9 @@ export default function QuestionSection({
           <Button
             className="w-44.75 rounded-full! py-3!"
             onClick={() =>
-              router.push(`/interview/job-posting/complete?q=${questionNumber}`)
+              router.push(
+                `/interview/job-posting/${uuid}/complete?q=${questionNumber}`,
+              )
             }
           >
             <span className="h3">답변 완료</span>
