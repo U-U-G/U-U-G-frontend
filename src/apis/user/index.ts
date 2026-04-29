@@ -1,4 +1,5 @@
 import { privateClient } from '@/apis/common/privateClient'
+import { publicClient } from '@/apis/common/publicClient'
 import { ApiResponse } from '@/apis/common/type'
 import { UpdateProfileRequest, UserProfile } from './type'
 import { EmailField, EmailVerificationConfirmRequest } from '@/apis/common/type'
@@ -23,13 +24,7 @@ export const updateProfile = async (body: UpdateProfileRequest) => {
 }
 
 export const checkNicknameAvailability = async (nickname: string) => {
-  const { data } = await privateClient.get<ApiResponse<string>>(
-    '/users/nickname-check',
-    {
-      params: { nickname },
-    },
-  )
-  return data.data
+  await publicClient.get('/users/nickname-check', { params: { nickname } })
 }
 
 export const sendEmailVerificationCode = async (body: EmailField) => {
