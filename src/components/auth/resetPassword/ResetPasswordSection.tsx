@@ -29,7 +29,7 @@ export default function ResetPasswordSection({
       newPassword,
       confirmPassword: confirm,
     })
-  }, [newPassword, confirm, onPasswordValid,onPasswordChange])
+  }, [newPassword, confirm, onPasswordValid, onPasswordChange])
 
   const newPasswordStatus = !newPassword
     ? 'default'
