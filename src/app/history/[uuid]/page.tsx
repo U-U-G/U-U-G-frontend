@@ -32,7 +32,19 @@ export default function HistoryDetailPage() {
           </div>
         </section>
 
-        <HistoryReportSection questionAnalyses={questionAnalyses} />
+        <HistoryReportSection
+          attempt="2차 시도"
+          title="카카오 서비스 기획자"
+          meta="00월 00일 5문항 6분 50초"
+          totalScore="64점"
+          feedback="서비스에 대한 애정과 열정은 충분히 느껴졌지만, 질문의 핵심 의도를 파악하고 논리적으로 설득하는 과정에서 큰 아쉬움이 남는 면접이었습니다. 특히 당황스러운 질문을 받았을 때 습관어가 급격히 늘어나고 말끝을 흐리는 패턴이 반복되어, 기획자에게 가장 중요한 '신뢰감'과 '전문성'이 다소 부족해 보일 수 있습니다."
+          metrics={[
+            { label: '침묵', value: '평균 4초', percent: 60, color: 'bg-red-500' },
+            { label: '습관어', value: '평균 5회', percent: 45, color: 'bg-red-500' },
+            { label: '논리/구조', value: '평균 64점', percent: 70, color: 'bg-purple-500' },
+          ]}
+          questionAnalyses={questionAnalyses}
+        />
       </div>
     </main>
   )

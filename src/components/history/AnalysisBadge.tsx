@@ -9,8 +9,8 @@ export default function AnalysisBadge({
 }) {
   return (
     <div
-      className={`rounded-full border px-4 py-1 p1 bg-secondary ${
-        active ? 'border-primary text-primary' : 'border-gray-5 text-primary '
+      className={`rounded-full border px-4 py-1 p1 bg-secondary text-primary ${
+        active ? 'border-primary' : 'border-gray-5'
       }`}
     >
       {label} <span className="h4">{value}</span>
