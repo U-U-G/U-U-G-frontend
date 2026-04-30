@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { useRouter } from 'next/navigation'
+import { useRouter, useParams } from 'next/navigation'
 import { interviewMockData } from '@/mocks/interviewMockData'
 
 const TOTAL = 5
@@ -16,13 +16,15 @@ export default function CountdownSection({
   questionNumber,
 }: CountdownSectionProps) {
   const router = useRouter()
+  const { uuid } = useParams<{ uuid: string }>()
+
   const [count, setCount] = useState(TOTAL)
 
   const question = interviewMockData.questions[questionNumber - 1]!
 
   useEffect(() => {
     if (count === 0) {
-      router.push(`/interview/job-posting/question?q=${questionNumber}`)
+      router.push(`/interview/job-posting/${uuid}/question?q=${questionNumber}`)
       return
     }
     const timer = setTimeout(() => setCount((c) => c - 1), 1000)

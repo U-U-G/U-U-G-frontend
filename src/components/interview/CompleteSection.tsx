@@ -1,7 +1,7 @@
 'use client'
 
 import Image from 'next/image'
-import { useRouter } from 'next/navigation'
+import { useRouter, useParams } from 'next/navigation'
 import checkImg from '@/assets/image/check-img.png'
 import Button from '@/components/common/button/Button'
 
@@ -15,14 +15,16 @@ export default function CompleteSection({
   totalQuestions,
 }: CompleteSectionProps) {
   const router = useRouter()
+  const { uuid } = useParams<{ uuid: string }>()
+
   const isLast = currentQuestion >= totalQuestions
   const nextQuestion = currentQuestion + 1
 
   function handleNext() {
     if (isLast) {
-      router.push('/interview/job-posting/analysis')
+      router.push(`/interview/job-posting/${uuid}/analysis`)
     } else {
-      router.push(`/interview/job-posting/countdown?q=${nextQuestion}`)
+      router.push(`/interview/job-posting/${uuid}/countdown?q=${nextQuestion}`)
     }
   }
 
