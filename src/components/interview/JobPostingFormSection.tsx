@@ -8,16 +8,15 @@ import {
   IconChevronLeft,
   IconChevronRight,
 } from '@tabler/icons-react'
-import { useMutation, useQuery } from '@tanstack/react-query'
+import { useMutation } from '@tanstack/react-query'
 import InputBox from '@/components/common/input/InputBox'
 import HelperText from '@/components/common/text/HelperText'
 import Button from '@/components/common/button/Button'
-import character2 from '@/assets/image/uug-character2-img.png'
 import character3 from '@/assets/image/uug-character3-img.png'
-import speechBubble from '@/assets/image/speech-bubble-img.png'
 import { useDatePicker } from '@/hooks/useDatePicker'
 import { useModal } from '@/hooks/useModal'
 import { createJobPosting } from '@/apis/job-postings'
+import GeneratingPopup from '@/components/common/popup/GeneratingPopup'
 
 const DAYS = ['일', '월', '화', '수', '목', '금', '토']
 
@@ -30,52 +29,6 @@ function isValidUrl(value: string): boolean {
   return JOB_URL_PATTERNS.some((pattern) => pattern.test(value))
 }
 
-function GeneratingPopup({
-  popupRef,
-  onClose,
-}: {
-  popupRef: React.RefObject<HTMLDivElement | null>
-  onClose: () => void
-}) {
-  return (
-    <div className="fixed inset-0 bg-black/13 flex items-center justify-center z-50">
-      <div
-        ref={popupRef}
-        className="bg-white rounded-2xl py-25 flex flex-col items-center w-194.5 shadow-[0_0_16px_0_rgba(99,99,99,0.16)]"
-      >
-        <div className="relative mb-4.5">
-          <Image
-            src={character2}
-            alt="캐릭터"
-            width={158}
-            height={154}
-            className="object-contain"
-          />
-          <Image
-            src={speechBubble}
-            alt="말풍선"
-            width={57}
-            height={45}
-            className="absolute -top-4 -right-6 object-contain"
-          />
-        </div>
-        <div className="flex flex-col items-center gap-1.75 mb-12">
-          <p className="h1 text-primary">질문을 생성 중이에요</p>
-          <p className="p1 text-gray-2">
-            공고에 특화된 질문을 AI가 생성하고 있습니다.
-          </p>
-        </div>
-        <button
-          type="button"
-          onClick={onClose}
-          className="w-70 rounded-full border border-primary text-primary h3 py-3 cursor-pointer hover:bg-secondary"
-        >
-          중단 하기
-        </button>
-      </div>
-    </div>
-  )
-}
 
 function CompletePopup({
   popupRef,
@@ -225,7 +178,6 @@ export default function JobPostingFormSection() {
   const [popupState, setPopupState] = useState<
     'generating' | 'complete' | null
   >(null)
-  const [jobPostingUuid, setJobPostingUuid] = useState<string | null>(null)
 
   const { ref: popupRef } = useModal(popupState !== null)
   const {
@@ -252,9 +204,8 @@ export default function JobPostingFormSection() {
 
   const createJobPostingMutation = useMutation({
     mutationFn: createJobPosting,
-    onSuccess: (response) => {
+    onSuccess: (jobPosting) => {
       setPopupState('complete')
-      setJobPostingUuid(response.uuid)
     },
     onError: (error) => {
       console.error('공고 조회 실패', error)
@@ -370,11 +321,7 @@ export default function JobPostingFormSection() {
       {popupState === 'complete' && (
         <CompletePopup
           popupRef={popupRef}
-          onStart={() =>
-            router.push(
-              `/interview/job-posting/${jobPostingUuid}/countdown?q=1`,
-            )
-          }
+          onStart={() => router.push('/interview/job-posting/countdown')}
         />
       )}
     </section>
