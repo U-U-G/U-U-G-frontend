@@ -1,4 +1,6 @@
 import { IconChevronLeft } from '@tabler/icons-react'
+import Image from 'next/image'
+import character5 from '@/assets/image/uug-character5-img.png'
 import Header from '@/components/common/header/Header'
 
 const questionAnalyses = Array.from({ length: 5 }, (_, index) => ({
@@ -52,8 +54,10 @@ function QuestionAnalysisCard({
         </div>
       </div>
 
-      <div className="max-w-[1200px] mx-auto w-full flex flex-col gap-4">
-        <p className="p3 text-text-primary leading-relaxed">{feedback}</p>
+      <div className="max-w-[1240px] mx-auto w-full flex flex-col gap-4">
+        <p className="p3 text-text-primary leading-relaxed break-words">
+          {feedback}
+        </p>
         <div className="flex flex-wrap gap-4">
           <AnalysisBadge label="총점" value={`${score}점`} active />
           <AnalysisBadge label="침묵" value={silence} />
@@ -112,7 +116,7 @@ export default function HistoryDetailPage() {
 
           <section className="grid grid-cols-[2fr_1fr] gap-6 mb-8">
             <div className="bg-secondary rounded-2xl p-6 flex justify-between items-center">
-              <div className="flex flex-col gap-2 flex-1">
+              <div className="flex flex-col gap-2 flex-1 mr-5">
                 <span className="p3 text-primary">종합점수</span>
                 <span className="text-5xl font-bold text-primary">64점</span>
                 <p className="text-sm text-gray-600 leading-relaxed">
@@ -123,7 +127,13 @@ export default function HistoryDetailPage() {
                   중요한 ‘신뢰감’과 ‘전문성’이 다소 부족해 보일 수 있습니다.
                 </p>
               </div>
-              <div className="min-w-50 w-50 h-50 bg-purple-200 rounded-xl" />
+              <Image
+                src={character5}
+                alt="캐릭터"
+                width={200}
+                height={200}
+                className="object-contain"
+              />
             </div>
 
             <div className="bg-secondary rounded-2xl p-6 flex flex-col gap-4">
@@ -179,7 +189,7 @@ function Metric({
         <span>{value}</span>
       </div>
 
-      <div className="w-full h-3 rounded-full overflow-hidden">
+      <div className={`w-full h-3 rounded-full overflow-hidden  ${background}`}>
         <div className={`h-full ${color}`} style={{ width: `${percent}%` }} />
       </div>
     </div>
