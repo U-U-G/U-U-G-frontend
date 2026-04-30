@@ -22,13 +22,19 @@ export default function Error({ error, unstable_retry }: Props) {
       <div className="overflow-hidden w-full max-w-md bg-white/10 backdrop-blur-md rounded-xl shadow-2xl border border-red-500/20">
         <div className="p-6">
           <div className="flex items-center justify-center w-16 h-16 mx-auto mb-4 rounded-full bg-red-600/20">
-            <IconAlertTriangle className="w-10 h-10 text-red-500" aria-hidden="true" />
+            <IconAlertTriangle
+              className="w-10 h-10 text-red-500"
+              aria-hidden="true"
+            />
           </div>
 
           <h1 className="mb-2 text-2xl text-center text-white font-light tracking-wide">
             오류가 발생했습니다
           </h1>
-          <div className="h-0.5 w-16 bg-red-500/50 mx-auto mb-4" aria-hidden="true" />
+          <div
+            className="h-0.5 w-16 bg-red-500/50 mx-auto mb-4"
+            aria-hidden="true"
+          />
 
           <div className="text-red-100/80 text-center mb-6 font-light">
             <p>잠시 후 다시 시도해 주세요.</p>

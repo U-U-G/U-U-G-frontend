@@ -32,7 +32,11 @@ interface EmailSectionProps {
   onClearServerError?: () => void
 }
 
-export default function EmailSection({ onEmailVerified, serverError, onClearServerError }: EmailSectionProps) {
+export default function EmailSection({
+  onEmailVerified,
+  serverError,
+  onClearServerError,
+}: EmailSectionProps) {
   const [email, setEmail] = useState('')
   const [code, setCode] = useState('')
   const [emailStatus, setEmailStatus] = useState<FieldStatus>('default')

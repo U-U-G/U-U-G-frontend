@@ -48,7 +48,9 @@ export default function SignUpForm() {
     },
   })
 
-  const handleSubmit = (e: React.SyntheticEvent<HTMLFormElement, SubmitEvent>) => {
+  const handleSubmit = (
+    e: React.SyntheticEvent<HTMLFormElement, SubmitEvent>,
+  ) => {
     e.preventDefault()
     if (!canSubmit) return
 
