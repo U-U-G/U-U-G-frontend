@@ -43,8 +43,8 @@ export default function RankingCard({
         isLarge ? 'min-h-[144px] px-16 py-14' : 'min-h-[104px] px-12 py-8',
       ].join(' ')}
     >
-      <div className="flex flex-1 items-center gap-6">
-        <span className="w-12 shrink-0 text-primary h2">#{rank}</span>
+      <div className={`flex flex-1 items-center ${isPrimary ? 'gap-10' : 'gap-6'}`}>
+        <span className={`w-12 shrink-0 text-primary ${isPrimary ? 'h1' : 'h2'}`}>#{rank}</span>
 
         <Image
           src={profileImage ?? defaultProfileIcon}
