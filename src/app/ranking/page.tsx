@@ -1,6 +1,7 @@
 import Header from '@/components/common/header/Header'
 import RankingCard from '@/components/ranking/RankingCard'
 import { MY_RANK, rankingList } from '@/mock/ranking'
+import { formatDateKo } from '@/utils/formatDate'
 
 export default function RankingPage() {
   return (
@@ -24,15 +25,7 @@ export default function RankingPage() {
         <div className="flex flex-col px-10">
           <div className="flex items-center gap-2 py-4">
             <span className="p2 text-gray-1">전체 유저 순위</span>
-            <span className="p4 text-gray-3">
-              {(() => {
-                const d = new Date()
-                const y = d.getFullYear()
-                const m = String(d.getMonth() + 1).padStart(2, '0')
-                const day = String(d.getDate()).padStart(2, '0')
-                return `${y}년 ${m}월 ${day}일 기준`
-              })()}
-            </span>
+            <span className="p4 text-gray-3">{formatDateKo()} 기준</span>
           </div>
           <section className="bg-secondary rounded-t-2xl">
             <div className="flex flex-col gap-4 p-8">
