@@ -49,5 +49,6 @@ export function useNicknameEdit(initialNickname: string) {
     onEdit,
     onConfirm,
     onInputChange,
+    setIsDuplicate,
   }
 }

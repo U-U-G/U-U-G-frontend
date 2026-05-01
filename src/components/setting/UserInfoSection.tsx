@@ -9,8 +9,9 @@ import HelperText from '@/components/common/text/HelperText'
 import ChangePasswordPopup from '@/components/setting/ChangePasswordPopup'
 import defaultProfileIcon from '@/assets/icon/default-profile-icon.svg'
 import { useNicknameEdit } from '@/hooks/useNicknameEdit'
-import { getProfile, signout } from '@/apis/user'
+import { getProfile, signout, updateProfile } from '@/apis/user'
 import { logout } from '@/apis/auth'
+import { getHttpStatus } from '@/apis/common/httpError'
 import { formatDateToLocale } from '@/utils/date'
 
 export default function UserInfoSection() {
@@ -47,7 +48,23 @@ export default function UserInfoSection() {
     onEdit: handleNicknameEdit,
     onConfirm: handleNicknameConfirm,
     onInputChange: handleNicknameInputChange,
+    setIsDuplicate: setNicknameDuplicate,
   } = useNicknameEdit(profile?.nickname ?? '')
+
+  const { mutate: handleUpdateNickname } = useMutation({
+    mutationFn: (nickname: string) =>
+      updateProfile({
+        email: profile?.email ?? '',
+        nickname,
+        profileImageUrl: profile?.profileImageUrl ?? '',
+      }),
+    onSuccess: () => handleNicknameConfirm(),
+    onError: (e) => {
+      if (getHttpStatus(e) === 409) {
+        setNicknameDuplicate(true)
+      }
+    },
+  })
 
   if (isLoading || !profile) {
     return <div className="flex-1" />
@@ -57,7 +74,11 @@ export default function UserInfoSection() {
     <div className="flex-1">
       <div className="flex items-center gap-4 mb-6">
         <Image
-          src={profile.profileImageUrl ?? defaultProfileIcon}
+          src={
+            profile.profileImageUrl?.startsWith('http')
+              ? profile.profileImageUrl
+              : defaultProfileIcon
+          }
           alt="프로필 사진"
           width={64}
           height={64}
@@ -95,7 +116,9 @@ export default function UserInfoSection() {
               type="button"
               disabled={isEditingNickname && !hasInput}
               onClick={
-                isEditingNickname ? handleNicknameConfirm : handleNicknameEdit
+                isEditingNickname
+                  ? () => handleUpdateNickname(nicknameInput)
+                  : handleNicknameEdit
               }
               className={`p4 shrink-0 px-7 rounded-lg transition-colors ${
                 isEditingNickname
