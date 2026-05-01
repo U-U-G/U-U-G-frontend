@@ -4,6 +4,8 @@ import { MY_RANK, rankingList } from '@/mock/ranking'
 import { formatDateKo } from '@/utils/formatDate'
 
 export default function RankingPage() {
+  const myData = rankingList.find((item) => item.rank === MY_RANK)
+
   return (
     <main className="h-screen flex flex-col overflow-hidden">
       <Header />
@@ -11,16 +13,9 @@ export default function RankingPage() {
         <section className="p-8">
           <div className="h1 mb-4">랭킹을 확인해보세요</div>
           <div className="p2 mb-2">나의 순위</div>
-          <RankingCard
-            rank={MY_RANK}
-            name="아무개"
-            role="서비스 기획자"
-            score={64}
-            bestScore={72}
-            practiceCount={4}
-            variant="primary"
-            size="lg"
-          />
+          {myData && (
+            <RankingCard {...myData} variant="primary" size="lg" />
+          )}
         </section>
         <div className="flex flex-col px-10">
           <div className="flex items-center gap-2 py-4">
