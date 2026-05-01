@@ -1,6 +1,10 @@
+'use client'
+
+import { useState } from 'react'
 import Image from 'next/image'
 import Header from '@/components/common/header/Header'
 import InputBox from '@/components/common/input/InputBox'
+import HelperText from '@/components/common/text/HelperText'
 import defaultProfileIcon from '@/assets/icon/default-profile-icon.svg'
 
 interface SettingPageProps {
@@ -16,6 +20,34 @@ export default function SettingPage({
   profileImage,
   joinedAt = '0000년 00월 00일',
 }: SettingPageProps) {
+  const [isEditingNickname, setIsEditingNickname] = useState(false)
+  const [nicknameValue, setNicknameValue] = useState(nickname)
+  const [nicknameInput, setNicknameInput] = useState('')
+  const [nicknameDuplicate, setNicknameDuplicate] = useState(false)
+
+  const hasInput = nicknameInput.trim().length > 0
+
+  const handleNicknameEdit = () => {
+    setIsEditingNickname(true)
+    setNicknameInput('')
+    setNicknameDuplicate(false)
+  }
+
+  const handleNicknameConfirm = async () => {
+    // TODO: API 연동 후 실제 중복 검사로 교체
+    const isDuplicate = false
+
+    if (isDuplicate) {
+      setNicknameDuplicate(true)
+      return
+    }
+
+    setNicknameValue(nicknameInput)
+    setIsEditingNickname(false)
+    setNicknameInput('')
+    setNicknameDuplicate(false)
+  }
+
   return (
     <main className="h-screen flex flex-col overflow-hidden">
       <Header />
@@ -47,21 +79,37 @@ export default function SettingPage({
                 />
               </div>
               <div />
-              <div className="flex flex-col gap-2">
+              <div className="flex flex-col gap-1">
                 <label className="p4 text-gray-2">닉네임</label>
                 <div className="flex flex-row gap-3">
                   <InputBox
                     className="border-gray-5 text-gray-4"
-                    disabled
-                    defaultValue={nickname}
+                    disabled={!isEditingNickname}
+                    value={isEditingNickname ? nicknameInput : nicknameValue}
+                    onChange={(e) => {
+                      setNicknameInput(e.target.value)
+                      setNicknameDuplicate(false)
+                    }}
+                    status={nicknameDuplicate ? 'error' : 'default'}
                   />
                   <button
                     type="button"
-                    className="p4 shrink-0 bg-primary text-white px-7 rounded-lg cursor-pointer"
+                    disabled={isEditingNickname && !hasInput}
+                    onClick={isEditingNickname ? handleNicknameConfirm : handleNicknameEdit}
+                    className={`p4 shrink-0 px-7 rounded-lg transition-colors ${
+                      isEditingNickname
+                        ? hasInput
+                          ? 'bg-primary text-white cursor-pointer'
+                          : 'bg-gray-5 text-text-primary cursor-not-allowed'
+                        : 'bg-primary text-white cursor-pointer'
+                    }`}
                   >
-                    변경
+                    {isEditingNickname ? '완료' : '변경'}
                   </button>
                 </div>
+                {nicknameDuplicate && (
+                  <HelperText status="error">이미 사용 중인 닉네임입니다.</HelperText>
+                )}
               </div>
               <div className="flex flex-col gap-2">
                 <label className="p4 text-gray-2">비밀번호</label>
