@@ -3,22 +3,14 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
-import {
-  IconCalendar,
-  IconChevronLeft,
-  IconChevronRight,
-} from '@tabler/icons-react'
 import { useMutation } from '@tanstack/react-query'
 import InputBox from '@/components/common/input/InputBox'
 import HelperText from '@/components/common/text/HelperText'
 import Button from '@/components/common/button/Button'
 import character3 from '@/assets/image/uug-character3-img.png'
-import { useDatePicker } from '@/hooks/useDatePicker'
 import { useModal } from '@/hooks/useModal'
 import { createJobPosting } from '@/apis/job-postings'
 import GeneratingPopup from '@/components/common/popup/GeneratingPopup'
-
-const DAYS = ['일', '월', '화', '수', '목', '금', '토']
 
 const JOB_URL_PATTERNS = [
   /^https?:\/\/(www\.)?wanted\.co\.kr\/wd\/\d+/,
@@ -65,142 +57,19 @@ function CompletePopup({
   )
 }
 
-function CalendarDropdown({
-  calendarRef,
-  year,
-  month,
-  tempDate,
-  onPrevMonth,
-  onNextMonth,
-  onSelectDate,
-  onConfirm,
-  onCancel,
-}: {
-  calendarRef: React.RefObject<HTMLDivElement | null>
-  year: number
-  month: number
-  tempDate: Date | null
-  onPrevMonth: () => void
-  onNextMonth: () => void
-  onSelectDate: (date: Date) => void
-  onConfirm: () => void
-  onCancel: () => void
-}) {
-  const firstDay = new Date(year, month, 1).getDay()
-  const daysInMonth = new Date(year, month + 1, 0).getDate()
-  const calendarDays = Array.from({ length: 42 }, (_, i) => {
-    const day = i - firstDay + 1
-    return day > 0 && day <= daysInMonth ? day : null
-  })
-
-  return (
-    <div
-      ref={calendarRef}
-      className="absolute bottom-18 right-0 z-50 bg-white rounded-xl shadow-[0_0_16px_0_rgba(99,99,99,0.16)] p-4 w-82"
-    >
-      <div className="flex items-center justify-between mb-3">
-        <button
-          type="button"
-          onClick={onPrevMonth}
-          className="cursor-pointer p-1 hover:text-primary"
-        >
-          <IconChevronLeft
-            size={20}
-            className="text-gray-4 hover:text-text-primary"
-          />
-        </button>
-        <span className="p4">
-          {year}년 {month + 1}월
-        </span>
-        <button
-          type="button"
-          onClick={onNextMonth}
-          className="cursor-pointer p-1 hover:text-primary"
-        >
-          <IconChevronRight
-            size={20}
-            className="text-gray-4 hover:text-text-primary"
-          />
-        </button>
-      </div>
-      <div className="grid grid-cols-7 mb-2.5">
-        {DAYS.map((day) => (
-          <div key={day} className="text-center p4 text-gray-4">
-            {day}
-          </div>
-        ))}
-      </div>
-      <div className="grid grid-cols-7">
-        {calendarDays.map((day, i) => {
-          const isSelected =
-            tempDate !== null &&
-            tempDate.getFullYear() === year &&
-            tempDate.getMonth() === month &&
-            tempDate.getDate() === day
-          return (
-            <button
-              key={i}
-              type="button"
-              disabled={!day}
-              onClick={() => day && onSelectDate(new Date(year, month, day))}
-              className={`text-center p4 py-1.5 rounded-full ${!day ? 'invisible' : 'cursor-pointer'} ${isSelected ? 'text-primary' : 'hover:text-primary'}`}
-            >
-              {day}
-            </button>
-          )
-        })}
-      </div>
-      <div className="flex justify-end gap-6">
-        <button
-          type="button"
-          onClick={onCancel}
-          className="p4 text-gray-4 cursor-pointer hover:text-primary"
-        >
-          취소
-        </button>
-        <button
-          type="button"
-          onClick={onConfirm}
-          disabled={!tempDate}
-          className={`p4 cursor-pointer ${tempDate ? 'text-primary' : 'text-gray-4'}`}
-        >
-          확인
-        </button>
-      </div>
-    </div>
-  )
-}
 
 export default function JobPostingFormSection() {
   const router = useRouter()
   const [url, setUrl] = useState('')
-  const [company, setCompany] = useState('')
   const [popupState, setPopupState] = useState<
     'generating' | 'complete' | null
   >(null)
 
   const { ref: popupRef } = useModal(popupState !== null)
-  const {
-    calendarRef,
-    selectedDate,
-    dateInput,
-    showCalendar,
-    calendarYear,
-    calendarMonth,
-    tempDate,
-    setTempDate,
-    openCalendar,
-    handleDateInputChange,
-    handlePrevMonth,
-    handleNextMonth,
-    handleConfirm,
-    handleCancel,
-  } = useDatePicker()
 
   const urlError = url.trim().length > 0 && !isValidUrl(url)
   const urlValid = url.trim().length > 0 && isValidUrl(url)
-  const isComplete =
-    url.trim().length > 0 && company.trim().length > 0 && selectedDate !== null
+  const isComplete = urlValid
 
   const createJobPostingMutation = useMutation({
     mutationFn: createJobPosting,
@@ -242,56 +111,6 @@ export default function JobPostingFormSection() {
                 </HelperText>
               </div>
             </div>
-          </div>
-
-          <div className="flex flex-col gap-5">
-            <label className="p3 border-b border-gray-5 h-10">
-              <span className="text-primary">회사명</span>을 입력해주세요
-            </label>
-            <InputBox
-              className="bg-white"
-              value={company}
-              onChange={(e) => setCompany(e.target.value)}
-              focusPrimary
-            />
-          </div>
-
-          <div className="flex flex-col gap-5 relative">
-            <label className="p3 border-b border-gray-5 h-10">
-              <span className="text-primary">면접 일정</span>을 입력해주세요
-            </label>
-            <div className="relative">
-              <InputBox
-                className="bg-white"
-                value={dateInput}
-                onChange={(e) => handleDateInputChange(e.target.value)}
-                status="default"
-                focusPrimary
-                placeholder="0000년 00월 00일"
-                rightElement={
-                  <button
-                    type="button"
-                    onClick={openCalendar}
-                    className="cursor-pointer text-gray-4 hover:text-text-primary"
-                  >
-                    <IconCalendar size={24} />
-                  </button>
-                }
-              />
-            </div>
-            {showCalendar && (
-              <CalendarDropdown
-                calendarRef={calendarRef}
-                year={calendarYear}
-                month={calendarMonth}
-                tempDate={tempDate}
-                onPrevMonth={handlePrevMonth}
-                onNextMonth={handleNextMonth}
-                onSelectDate={setTempDate}
-                onConfirm={handleConfirm}
-                onCancel={handleCancel}
-              />
-            )}
           </div>
 
           <Button
