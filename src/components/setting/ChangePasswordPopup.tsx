@@ -44,7 +44,10 @@ export default function ChangePasswordPopup({
 
   return (
     <PopupShell onClose={onClose} className="w-[720px] py-18 px-40">
-      <form onSubmit={handleSubmit} className="flex flex-col gap-5">
+      <div className="mb-10 pb-4 border-b border-gray-4">
+        <p className="p2 text-text-primary">비밀번호 재설정</p>
+      </div>
+      <form onSubmit={handleSubmit} className="flex flex-col gap-7">
         <PasswordField
           label="현재 비밀번호"
           name="currentPassword"
