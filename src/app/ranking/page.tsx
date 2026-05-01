@@ -21,19 +21,33 @@ export default function RankingPage() {
             size="lg"
           />
         </section>
-        <section className="flex-1 min-h-0 overflow-auto">
-          <div className="flex flex-col gap-4 p-6">
-            {rankingList.map(({ rank, ...rest }) => (
-              <RankingCard
-                key={rank}
-                rank={rank}
-                {...rest}
-                variant={rank === MY_RANK ? 'primary' : 'secondary'}
-                bgWhite={rank === MY_RANK}
-              />
-            ))}
+        <div className="flex-1 min-h-0 flex flex-col px-10">
+          <div className="flex items-center gap-2 py-4">
+            <span className="p2 text-gray-1">전체 유저 순위</span>
+            <span className="p4 text-gray-3">
+              {(() => {
+                const d = new Date()
+                const y = d.getFullYear()
+                const m = String(d.getMonth() + 1).padStart(2, '0')
+                const day = String(d.getDate()).padStart(2, '0')
+                return `${y}년 ${m}월 ${day}일 기준`
+              })()}
+            </span>
           </div>
-        </section>
+          <section className="flex-1 min-h-0 overflow-auto bg-secondary rounded-t-2xl">
+            <div className="flex flex-col gap-4 p-8">
+              {rankingList.map(({ rank, ...rest }) => (
+                <RankingCard
+                  key={rank}
+                  rank={rank}
+                  {...rest}
+                  variant={rank === MY_RANK ? 'primary' : 'secondary'}
+                  bgWhite={rank === MY_RANK}
+                />
+              ))}
+            </div>
+          </section>
+        </div>
       </div>
     </main>
   )

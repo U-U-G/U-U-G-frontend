@@ -61,7 +61,7 @@ export default function RankingCard({
         </div>
       </div>
 
-      <div className="text-4xl font-bold text-primary">{score}점</div>
+      <div className={`text-4xl font-bold ${isPrimary && isLarge ? 'text-primary' : 'text-gray-1'}`}>{score}점</div>
 
       <div
         className={[
