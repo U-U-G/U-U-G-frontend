@@ -10,6 +10,7 @@ import { useNicknameEdit } from '@/hooks/useNicknameEdit'
 
 interface UserInfoSectionProps {
   name: string
+  email: string
   nickname: string
   joinedAt: string
   profileImage?: string
@@ -17,6 +18,7 @@ interface UserInfoSectionProps {
 
 export default function UserInfoSection({
   name,
+  email,
   nickname,
   joinedAt,
   profileImage,
@@ -55,7 +57,7 @@ export default function UserInfoSection({
           <InputBox
             className="border-gray-5 text-gray-4"
             disabled
-            defaultValue={name}
+            defaultValue={email}
           />
         </div>
         <div />

@@ -19,7 +19,7 @@ export default function ChangePasswordPopup({
   const isNewPasswordValid = PASSWORD_REGEX.test(newPassword)
   const isConfirmValid = confirm === newPassword && confirm.length > 0
 
-  const currentPasswordStatus = !currentPassword ? 'default' : 'default'
+  const currentPasswordStatus = 'default'
 
   const newPasswordStatus = !newPassword
     ? 'default'
