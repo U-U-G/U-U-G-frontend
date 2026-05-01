@@ -85,7 +85,7 @@ export default function SettingPage({
                 <label className="p4 text-gray-2">닉네임</label>
                 <div className="flex flex-row gap-3">
                   <InputBox
-                    className="border-gray-5 text-gray-4"
+                    className={`border-gray-5 ${isEditingNickname ? 'text-text-primary' : 'text-gray-4'}`}
                     disabled={!isEditingNickname}
                     value={isEditingNickname ? nicknameInput : nicknameValue}
                     onChange={(e) => {
