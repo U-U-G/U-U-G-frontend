@@ -1,9 +1,12 @@
 'use client'
 
 import { useState } from 'react'
+import { useMutation } from '@tanstack/react-query'
 import PopupShell from '@/components/common/popup/PopupShell'
 import PasswordField from '@/components/common/input/PasswordField'
 import { PASSWORD_REGEX } from '@/constants/regex'
+import { changePassword } from '@/apis/auth'
+import { getHttpStatus } from '@/apis/common/httpError'
 
 interface ChangePasswordPopupProps {
   onClose: () => void
@@ -15,11 +18,27 @@ export default function ChangePasswordPopup({
   const [currentPassword, setCurrentPassword] = useState('')
   const [newPassword, setNewPassword] = useState('')
   const [confirm, setConfirm] = useState('')
+  const [isCurrentPasswordError, setIsCurrentPasswordError] = useState(false)
 
   const isNewPasswordValid = PASSWORD_REGEX.test(newPassword)
   const isConfirmValid = confirm === newPassword && confirm.length > 0
 
-  const currentPasswordStatus = 'default'
+  const currentPasswordStatus = isCurrentPasswordError ? 'error' : 'default'
+
+  const { mutate: handleChangePassword, isPending } = useMutation({
+    mutationFn: () =>
+      changePassword({
+        currentPassword,
+        newPassword,
+        confirmPassword: confirm,
+      }),
+    onSuccess: () => onClose(),
+    onError: (e) => {
+      if (getHttpStatus(e) === 401) {
+        setIsCurrentPasswordError(true)
+      }
+    },
+  })
 
   const newPasswordStatus = !newPassword
     ? 'default'
@@ -38,8 +57,8 @@ export default function ChangePasswordPopup({
 
   const handleSubmit = (e: React.SyntheticEvent) => {
     e.preventDefault()
-    if (!canSubmit) return
-    // TODO: 비밀번호 변경 API 연동
+    if (!canSubmit || isPending) return
+    handleChangePassword()
   }
 
   return (
@@ -54,8 +73,11 @@ export default function ChangePasswordPopup({
           value={currentPassword}
           placeholder="현재 비밀번호를 입력해주세요."
           status={currentPasswordStatus}
-          helperText=" "
-          onChange={setCurrentPassword}
+          helperText={isCurrentPasswordError ? '현재 비밀번호가 올바르지 않습니다.' : ' '}
+          onChange={(val) => {
+            setIsCurrentPasswordError(false)
+            setCurrentPassword(val)
+          }}
         />
 
         <PasswordField
