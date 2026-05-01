@@ -9,12 +9,7 @@ export default function SettingPage() {
         <div className="h1 py-5">환경설정</div>
         <section className="gap-28 flex border-t border-b border-gray-5 py-16">
           <div className="p2 text-gray-1">내 정보</div>
-          <UserInfoSection
-            name="아무개"
-            email="example@email.com"
-            nickname="아무개"
-            joinedAt="0000년 00월 00일"
-          />
+          <UserInfoSection />
         </section>
         <section className="flex flex-row gap-19 py-15">
           <div className="p2 text-gray-1">서비스 정보</div>

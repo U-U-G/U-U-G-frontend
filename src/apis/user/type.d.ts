@@ -9,4 +9,5 @@ export interface UserProfile {
   nickname: string
   provider: 'LOCAL' | 'KAKAO' | 'GOOGLE' | 'NAVER'
   profileImageUrl: string
+  createdAt: string
 }
