@@ -108,8 +108,8 @@ export default function UserInfoSection({
       </div>
 
       <div className="flex gap-4 pt-14 p4 text-gray-1">
-        <a href="#" className="underline">로그아웃</a>
-        <a href="#" className="underline">회원탈퇴</a>
+        <button type="button" className="underline">로그아웃</button>
+        <button type="button" className="underline">회원탈퇴</button>
       </div>
 
       {isPasswordPopupOpen && (
