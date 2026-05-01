@@ -5,6 +5,7 @@ import Image from 'next/image'
 import Header from '@/components/common/header/Header'
 import InputBox from '@/components/common/input/InputBox'
 import HelperText from '@/components/common/text/HelperText'
+import ChangePasswordPopup from '@/components/setting/ChangePasswordPopup'
 import defaultProfileIcon from '@/assets/icon/default-profile-icon.svg'
 
 interface SettingPageProps {
@@ -20,6 +21,7 @@ export default function SettingPage({
   profileImage,
   joinedAt = '0000년 00월 00일',
 }: SettingPageProps) {
+  const [isPasswordPopupOpen, setIsPasswordPopupOpen] = useState(false)
   const [isEditingNickname, setIsEditingNickname] = useState(false)
   const [nicknameValue, setNicknameValue] = useState(nickname)
   const [nicknameInput, setNicknameInput] = useState('')
@@ -121,7 +123,8 @@ export default function SettingPage({
                   />
                   <button
                     type="button"
-                    className="p4 shrink-0 bg-primary text-white p4 px-6 rounded-lg cursor-pointer"
+                    onClick={() => setIsPasswordPopupOpen(true)}
+                    className="p4 shrink-0 bg-primary text-white px-6 rounded-lg cursor-pointer"
                   >
                     재설정
                   </button>
@@ -138,6 +141,9 @@ export default function SettingPage({
             </div>
           </div>
         </section>
+        {isPasswordPopupOpen && (
+          <ChangePasswordPopup onClose={() => setIsPasswordPopupOpen(false)} />
+        )}
         <section className="flex flex-row gap-19 py-15">
           <div className="p2 text-gray-1">서비스 정보</div>
           <div className="flex flex-row gap-5 p4 text-gray-3">
