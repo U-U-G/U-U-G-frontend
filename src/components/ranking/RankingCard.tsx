@@ -1,4 +1,5 @@
 import Image from 'next/image'
+import { IconSchoolFilled, IconFileTextFilled } from '@tabler/icons-react'
 import defaultProfileIcon from '@/assets/icon/default-profile-icon.svg'
 
 type RankingCardVariant = 'primary' | 'secondary'
@@ -65,12 +66,18 @@ export default function RankingCard({
 
       <div
         className={[
-          'ml-10 flex flex-col p1',
+          'ml-10 flex flex-col gap-1 p1',
           isPrimary ? 'text-primary' : 'text-gray-2',
         ].join(' ')}
       >
-        <div>최고 점수 {bestScore}점</div>
-        <div>총 {practiceCount}회 연습</div>
+        <div className="flex items-center gap-3">
+          <IconSchoolFilled size={20} />
+          <span>최고 점수 {bestScore}점</span>
+        </div>
+        <div className="flex items-center gap-3">
+          <IconFileTextFilled size={20} />
+          <span>총 {practiceCount}회 연습</span>
+        </div>
       </div>
     </article>
   )
