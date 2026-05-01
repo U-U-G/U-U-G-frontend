@@ -11,6 +11,7 @@ export default function SettingPage() {
           <div className="p2 text-gray-1">내 정보</div>
           <UserInfoSection
             name="아무개"
+            email="example@email.com"
             nickname="아무개"
             joinedAt="0000년 00월 00일"
           />
