@@ -2,21 +2,40 @@
 
 import { useState } from 'react'
 import Image from 'next/image'
-import { useQuery } from '@tanstack/react-query'
+import { useRouter } from 'next/navigation'
+import { useQuery, useMutation } from '@tanstack/react-query'
 import InputBox from '@/components/common/input/InputBox'
 import HelperText from '@/components/common/text/HelperText'
 import ChangePasswordPopup from '@/components/setting/ChangePasswordPopup'
 import defaultProfileIcon from '@/assets/icon/default-profile-icon.svg'
 import { useNicknameEdit } from '@/hooks/useNicknameEdit'
-import { getProfile } from '@/apis/user'
+import { getProfile, signout } from '@/apis/user'
+import { logout } from '@/apis/auth'
 import { formatDateToLocale } from '@/utils/date'
 
 export default function UserInfoSection() {
+  const router = useRouter()
   const [isPasswordPopupOpen, setIsPasswordPopupOpen] = useState(false)
 
   const { data: profile, isLoading } = useQuery({
     queryKey: ['profile'],
     queryFn: getProfile,
+  })
+
+  const { mutate: handleLogout } = useMutation({
+    mutationFn: logout,
+    onSuccess: () => router.push('/login'),
+    onError: (e) => {
+      console.log('로그 아웃에 실패하였습니다', e) //TODO: 토스트로 변경
+    },
+  })
+
+  const { mutate: handleSignout } = useMutation({
+    mutationFn: signout,
+    onSuccess: () => router.push('/login'),
+    onError: (e) => {
+      console.log('회원 탈퇴에 실패하였습니다', e) //TODO: 토스트로 변경
+    },
   })
 
   const {
@@ -113,10 +132,18 @@ export default function UserInfoSection() {
       </div>
 
       <div className="flex gap-4 pt-14 p4 text-gray-1">
-        <button type="button" className="underline">
+        <button
+          type="button"
+          className="underline"
+          onClick={() => handleLogout()}
+        >
           로그아웃
         </button>
-        <button type="button" className="underline">
+        <button
+          type="button"
+          className="underline"
+          onClick={() => handleSignout()}
+        >
           회원탈퇴
         </button>
       </div>
