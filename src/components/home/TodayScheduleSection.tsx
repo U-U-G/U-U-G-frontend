@@ -2,7 +2,8 @@
 
 import { IconChevronRight, IconChevronLeft } from '@tabler/icons-react'
 import { useState } from 'react'
-import { formatFullDate, getWeekDates } from '@/utils/getWeekDates'
+import { formatFullDate } from '@/utils/date'
+import { getWeekDates } from '@/utils/getWeekDates'
 
 type ScheduleItem = {
   id: number

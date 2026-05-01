@@ -9,6 +9,7 @@ import ChangePasswordPopup from '@/components/setting/ChangePasswordPopup'
 import defaultProfileIcon from '@/assets/icon/default-profile-icon.svg'
 import { useNicknameEdit } from '@/hooks/useNicknameEdit'
 import { getProfile } from '@/apis/user'
+import { formatDateToLocale } from '@/utils/date'
 
 export default function UserInfoSection() {
   const [isPasswordPopupOpen, setIsPasswordPopupOpen] = useState(false)
@@ -45,7 +46,9 @@ export default function UserInfoSection() {
         />
         <div className="flex flex-col justify-center gap-1">
           <span className="h3 text-text-primary">{profile.nickname}</span>
-          <span className="p4 text-gray-4">{profile.createdAt}</span>
+          <span className="p4 text-gray-4">
+            {formatDateToLocale(profile.createdAt)} 가입
+          </span>
         </div>
       </div>
 
