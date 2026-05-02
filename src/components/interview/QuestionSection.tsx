@@ -10,6 +10,7 @@ import stopColorIcon from '@/assets/icon/stop-color-icon.svg'
 import quitIcon from '@/assets/icon/quit-icon.svg'
 import quitColorIcon from '@/assets/icon/quit-color-icon.svg'
 import Button from '@/components/common/button/Button'
+import StopConfirmPopup from '@/components/interview/StopConfirmPopup'
 import { interviewMockData } from '@/mocks/interviewMockData'
 import { useStopwatch } from '@/hooks/useStopwatch'
 import { useAudioAnalyzer } from '@/hooks/useAudioAnalyzer'
@@ -56,6 +57,7 @@ export default function QuestionSection({
   const { uuid } = useParams<{ uuid: string }>()
 
   const [isPaused, setIsPaused] = useState(false)
+  const [isStopPopupOpen, setIsStopPopupOpen] = useState(false)
   const {
     elapsedMs,
     elapsedMsRef,
@@ -96,147 +98,156 @@ export default function QuestionSection({
   }
 
   return (
-    <section className="flex flex-col flex-1 min-h-0 gap-5 px-10 pt-6.5 pb-10">
-      <h1 className="h1 w-full">공고 맞춤 면접 연습</h1>
+    <>
+      <section className="flex flex-col flex-1 min-h-0 gap-5 px-10 pt-6.5 pb-10">
+        <h1 className="h1 w-full">공고 맞춤 면접 연습</h1>
 
-      <div className="flex flex-col w-full min-w-200 bg-white rounded-2xl border border-primary px-9.5 pt-6 pb-10 flex-1 min-h-0 gap-4">
-        {/* 상단 진행 바 + 아이콘 */}
-        <div className="flex items-center gap-1 shrink-0">
-          <div className="flex items-center flex-1">
-            {Array.from({ length: TOTAL_QUESTIONS + 1 }, (_, i) => (
-              <Fragment key={i}>
-                <div
-                  className={`w-2.5 h-2.5 rounded-full shrink-0 ${i <= questionNumber ? 'bg-primary' : 'bg-gray-5'}`}
-                />
-                {i < TOTAL_QUESTIONS && (
+        <div className="flex flex-col w-full min-w-200 bg-white rounded-2xl border border-primary px-9.5 pt-6 pb-10 flex-1 min-h-0 gap-4">
+          {/* 상단 진행 바 + 아이콘 */}
+          <div className="flex items-center gap-1 shrink-0">
+            <div className="flex items-center flex-1">
+              {Array.from({ length: TOTAL_QUESTIONS + 1 }, (_, i) => (
+                <Fragment key={i}>
                   <div
-                    className={`flex-1 h-1 ${i < questionNumber ? 'bg-primary' : 'bg-gray-5'}`}
+                    className={`w-2.5 h-2.5 rounded-full shrink-0 ${i <= questionNumber ? 'bg-primary' : 'bg-gray-5'}`}
                   />
-                )}
-              </Fragment>
-            ))}
+                  {i < TOTAL_QUESTIONS && (
+                    <div
+                      className={`flex-1 h-1 ${i < questionNumber ? 'bg-primary' : 'bg-gray-5'}`}
+                    />
+                  )}
+                </Fragment>
+              ))}
+            </div>
+            <button
+              type="button"
+              onClick={handlePauseResume}
+              className="relative group cursor-pointer w-6 h-6 shrink-0 ml-4"
+              aria-label={isPaused ? '재개' : '일시정지'}
+            >
+              <Image
+                src={isPaused ? playIcon : stopIcon}
+                alt={isPaused ? '재개' : '일시정지'}
+                width={24}
+                height={24}
+                className="group-hover:opacity-0 transition-opacity"
+              />
+              <Image
+                src={isPaused ? playColorIcon : stopColorIcon}
+                alt={isPaused ? '재개' : '일시정지'}
+                width={24}
+                height={24}
+                className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity"
+              />
+            </button>
+            <button
+              type="button"
+              onClick={() => setIsStopPopupOpen(true)}
+              className="relative group cursor-pointer w-6 h-6 shrink-0"
+              aria-label="닫기"
+            >
+              <Image
+                src={quitIcon}
+                alt="닫기"
+                width={24}
+                height={24}
+                className="group-hover:opacity-0 transition-opacity"
+              />
+              <Image
+                src={quitColorIcon}
+                alt="닫기"
+                width={24}
+                height={24}
+                className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity"
+              />
+            </button>
           </div>
-          <button
-            type="button"
-            onClick={handlePauseResume}
-            className="relative group cursor-pointer w-6 h-6 shrink-0 ml-4"
-            aria-label={isPaused ? '재개' : '일시정지'}
-          >
-            <Image
-              src={isPaused ? playIcon : stopIcon}
-              alt={isPaused ? '재개' : '일시정지'}
-              width={24}
-              height={24}
-              className="group-hover:opacity-0 transition-opacity"
-            />
-            <Image
-              src={isPaused ? playColorIcon : stopColorIcon}
-              alt={isPaused ? '재개' : '일시정지'}
-              width={24}
-              height={24}
-              className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity"
-            />
-          </button>
-          <button
-            type="button"
-            onClick={() => router.push('/interview')}
-            className="relative group cursor-pointer w-6 h-6 shrink-0"
-            aria-label="닫기"
-          >
-            <Image
-              src={quitIcon}
-              alt="닫기"
-              width={24}
-              height={24}
-              className="group-hover:opacity-0 transition-opacity"
-            />
-            <Image
-              src={quitColorIcon}
-              alt="닫기"
-              width={24}
-              height={24}
-              className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity"
-            />
-          </button>
-        </div>
 
-        {/* 질문 배지 + 텍스트 */}
-        <div className="flex items-center gap-3 shrink-0">
-          <span className="shrink-0 bg-secondary text-primary h4 px-4.25 py-0.75 border rounded-full">
-            질문 {questionNumber}
-          </span>
-          <p className="h2">{question.text}</p>
-        </div>
+          {/* 질문 배지 + 텍스트 */}
+          <div className="flex items-center gap-3 shrink-0">
+            <span className="shrink-0 bg-secondary text-primary h4 px-4.25 py-0.75 border rounded-full">
+              질문 {questionNumber}
+            </span>
+            <p className="h2">{question.text}</p>
+          </div>
 
-        {/* 스톱워치 + 버튼 */}
-        <div className="flex-1 flex flex-col items-center justify-center gap-4">
-          <span
-            className={`text-[5rem] font-semibold tabular-nums tracking-tight ${isOverTime ? 'text-text-point-red' : 'text-primary'}`}
-          >
-            {formatTime(elapsedMs)}
-          </span>
-          <Button
-            className="w-44.75 rounded-full! py-3!"
-            onClick={() =>
-              router.push(
-                `/interview/job-posting/${uuid}/complete?q=${questionNumber}`,
-              )
-            }
-          >
-            <span className="h3">답변 완료</span>
-          </Button>
-        </div>
+          {/* 스톱워치 + 버튼 */}
+          <div className="flex-1 flex flex-col items-center justify-center gap-4">
+            <span
+              className={`text-[5rem] font-semibold tabular-nums tracking-tight ${isOverTime ? 'text-text-point-red' : 'text-primary'}`}
+            >
+              {formatTime(elapsedMs)}
+            </span>
+            <Button
+              className="w-44.75 rounded-full! py-3!"
+              onClick={() =>
+                router.push(
+                  `/interview/job-posting/${uuid}/complete?q=${questionNumber}`,
+                )
+              }
+            >
+              <span className="h3">답변 완료</span>
+            </Button>
+          </div>
 
-        {/* 하단: 스크립트 + 볼륨/침묵 */}
-        <div className="flex gap-7.75 shrink-0">
-          <div className="flex flex-col flex-1">
-            <div className="bg-secondary rounded-xl p-6.75 h-42 overflow-hidden flex flex-col gap-2">
-              <span className="p2 text-gray-1 shrink-0">스크립트</span>
-              <p className="p4 text-gray-4 leading-relaxed">
-                <HighlightedText text={transcript} />
-                <span className="opacity-50">
-                  <HighlightedText text={interimTranscript} />
+          {/* 하단: 스크립트 + 볼륨/침묵 */}
+          <div className="flex gap-7.75 shrink-0">
+            <div className="flex flex-col flex-1">
+              <div className="bg-secondary rounded-xl p-6.75 h-42 overflow-hidden flex flex-col gap-2">
+                <span className="p2 text-gray-1 shrink-0">스크립트</span>
+                <p className="p4 text-gray-4 leading-relaxed">
+                  <HighlightedText text={transcript} />
+                  <span className="opacity-50">
+                    <HighlightedText text={interimTranscript} />
+                  </span>
+                </p>
+              </div>
+            </div>
+
+            <div className="bg-secondary rounded-xl p-6.75 flex flex-col gap-9.25 w-93.75 shrink-0 h-42">
+              {/* 볼륨 */}
+              <div className="flex items-end gap-4">
+                <span className="p2 shrink-0">볼륨</span>
+                <div className="flex items-end gap-1 h-14 flex-1">
+                  {volumeBars.map((vol, i) => (
+                    <div
+                      key={i}
+                      className="flex-1 rounded-lg transition-all duration-100"
+                      style={{
+                        height: `${Math.max(vol * 59, 14)}px`,
+                        backgroundColor:
+                          vol >= 0.5 ? 'var(--color-primary)' : '#AD97FF',
+                      }}
+                    />
+                  ))}
+                </div>
+                <span className="p2 shrink-0 w-10.75 text-right tabular-nums">
+                  {dbValue}db
                 </span>
-              </p>
-            </div>
-          </div>
+              </div>
 
-          <div className="bg-secondary rounded-xl p-6.75 flex flex-col gap-9.25 w-93.75 shrink-0 h-42">
-            {/* 볼륨 */}
-            <div className="flex items-end gap-4">
-              <span className="p2 shrink-0">볼륨</span>
-              <div className="flex items-end gap-1 h-14 flex-1">
-                {volumeBars.map((vol, i) => (
+              {/* 침묵 */}
+              <div className="flex items-center gap-4">
+                <span className="p2 shrink-0">침묵</span>
+                <div className="flex-1 h-3.5 bg-gray-5 rounded-full overflow-hidden">
                   <div
-                    key={i}
-                    className="flex-1 rounded-lg transition-all duration-100"
-                    style={{
-                      height: `${Math.max(vol * 59, 14)}px`,
-                      backgroundColor:
-                        vol >= 0.5 ? 'var(--color-primary)' : '#AD97FF',
-                    }}
+                    className={`h-full rounded-full transition-colors duration-300 ${isSilenceWarning ? 'bg-text-point-red' : 'bg-primary'}`}
+                    style={{ width: `${silenceRatio * 100}%` }}
                   />
-                ))}
+                </div>
+                <span className="p2 shrink-0">{silenceSec}s</span>
               </div>
-              <span className="p2 shrink-0 w-10.75 text-right tabular-nums">
-                {dbValue}db
-              </span>
-            </div>
-
-            {/* 침묵 */}
-            <div className="flex items-center gap-4">
-              <span className="p2 shrink-0">침묵</span>
-              <div className="flex-1 h-3.5 bg-gray-5 rounded-full overflow-hidden">
-                <div
-                  className={`h-full rounded-full transition-colors duration-300 ${isSilenceWarning ? 'bg-text-point-red' : 'bg-primary'}`}
-                  style={{ width: `${silenceRatio * 100}%` }}
-                />
-              </div>
-              <span className="p2 shrink-0">{silenceSec}s</span>
             </div>
           </div>
         </div>
-      </div>
-    </section>
+      </section>
+
+      {isStopPopupOpen && (
+        <StopConfirmPopup
+          onContinue={() => setIsStopPopupOpen(false)}
+          onStop={() => router.push('/interview')}
+        />
+      )}
+    </>
   )
 }
