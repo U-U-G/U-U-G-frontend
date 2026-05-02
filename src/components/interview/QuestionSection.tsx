@@ -111,16 +111,22 @@ export default function QuestionSection({
   }
 
   function handleCompleteAnswer() {
+    stopwatchPause()
+    speechPause()
+    audioPause()
+
+    const finalElapsedMs = elapsedMsRef.current
     const periods = [...silencePeriodsRef.current]
     if (isSilenceWarning) {
       periods.push({
-        startMs: Math.max(0, elapsedMs - silenceMs),
-        endMs: elapsedMs,
+        startMs: Math.max(0, finalElapsedMs - silenceMs),
+        endMs: finalElapsedMs,
       })
     }
 
     const fillerCount = transcript
-      .split(' ')
+      .trim()
+      .split(/\s+/)
       .filter((w) => FILLER_SET.has(w)).length
 
     const speechPeriods: { startMs: number; endMs: number }[] = []
@@ -131,18 +137,15 @@ export default function QuestionSection({
       }
       cursor = p.endMs
     }
-    if (cursor < elapsedMs) {
-      speechPeriods.push({ startMs: cursor, endMs: elapsedMs })
+    if (cursor < finalElapsedMs) {
+      speechPeriods.push({ startMs: cursor, endMs: finalElapsedMs })
     }
 
     const payload = {
-      totalElapsedMs: elapsedMs,
+      totalElapsedMs: finalElapsedMs,
       transcript,
       fillerCount,
-      silencePeriods: periods.map((p) => ({
-        startMs: p.startMs,
-        endMs: p.endMs,
-      })),
+      silencePeriods: periods,
       speechPeriods,
     }
 
