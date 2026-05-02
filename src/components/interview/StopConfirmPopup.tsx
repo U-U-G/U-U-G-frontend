@@ -1,3 +1,5 @@
+import Button from '@/components/common/button/Button'
+
 interface StopConfirmPopupProps {
   onContinue: () => void
   onStop: () => void
@@ -15,20 +17,12 @@ export default function StopConfirmPopup({
           <p className="p4">현재 세션은 저장되지 않습니다.</p>
         </div>
         <div className="flex gap-6 w-full">
-          <button
-            type="button"
-            onClick={onContinue}
-            className="flex-1 py-3 rounded-lg border border-primary text-primary bg-secondary h3 cursor-pointer"
-          >
+          <Button variant="outlined" onClick={onContinue} className="flex-1 h3">
             계속하기
-          </button>
-          <button
-            type="button"
-            onClick={onStop}
-            className="flex-1 py-3 rounded-lg bg-primary text-white h3 cursor-pointer"
-          >
+          </Button>
+          <Button variant="primary" onClick={onStop} className="flex-1 h3">
             종료
-          </button>
+          </Button>
         </div>
       </div>
     </div>

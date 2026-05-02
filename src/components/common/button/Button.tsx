@@ -1,7 +1,7 @@
 import { ButtonHTMLAttributes } from 'react'
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: 'primary' | 'secondary'
+  variant?: 'primary' | 'secondary' | 'outlined'
 }
 
 export default function Button({
@@ -13,6 +13,7 @@ export default function Button({
   const variantStyle = {
     primary: 'bg-primary text-white',
     secondary: 'bg-gray-5',
+    outlined: 'bg-secondary text-primary border border-primary',
   }[variant]
 
   return (

@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, Fragment } from 'react'
+import { useState, useRef, Fragment } from 'react'
 import { useRouter, useParams } from 'next/navigation'
 import Image from 'next/image'
 import playIcon from '@/assets/icon/play-icon.svg'
@@ -58,6 +58,7 @@ export default function QuestionSection({
 
   const [isPaused, setIsPaused] = useState(false)
   const [isStopPopupOpen, setIsStopPopupOpen] = useState(false)
+  const wasPausedBeforePopupRef = useRef(false)
   const {
     elapsedMs,
     elapsedMsRef,
@@ -95,6 +96,27 @@ export default function QuestionSection({
       audioPause()
       setIsPaused(true)
     }
+  }
+
+  function handleOpenStopPopup() {
+    wasPausedBeforePopupRef.current = isPaused
+    if (!isPaused) {
+      stopwatchPause()
+      speechPause()
+      audioPause()
+      setIsPaused(true)
+    }
+    setIsStopPopupOpen(true)
+  }
+
+  function handleContinue() {
+    if (!wasPausedBeforePopupRef.current) {
+      stopwatchResume()
+      speechResume()
+      audioResume()
+      setIsPaused(false)
+    }
+    setIsStopPopupOpen(false)
   }
 
   return (
@@ -142,7 +164,7 @@ export default function QuestionSection({
             </button>
             <button
               type="button"
-              onClick={() => setIsStopPopupOpen(true)}
+              onClick={handleOpenStopPopup}
               className="relative group cursor-pointer w-6 h-6 shrink-0"
               aria-label="닫기"
             >
@@ -244,7 +266,7 @@ export default function QuestionSection({
 
       {isStopPopupOpen && (
         <StopConfirmPopup
-          onContinue={() => setIsStopPopupOpen(false)}
+          onContinue={handleContinue}
           onStop={() => router.push('/interview')}
         />
       )}
