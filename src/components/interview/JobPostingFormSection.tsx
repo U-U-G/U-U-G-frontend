@@ -3,21 +3,19 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
-import { IconCalendar } from '@tabler/icons-react'
 import { useMutation } from '@tanstack/react-query'
 import InputBox from '@/components/common/input/InputBox'
 import HelperText from '@/components/common/text/HelperText'
 import Button from '@/components/common/button/Button'
 import character3 from '@/assets/image/uug-character3-img.png'
-import { useDatePicker } from '@/hooks/useDatePicker'
 import { useModal } from '@/hooks/useModal'
 import { createJobPosting } from '@/apis/job-postings'
 import GeneratingPopup from '@/components/common/popup/GeneratingPopup'
-import CalendarDropdown from '@/components/common/date/CalendarDropdown'
 
 const JOB_URL_PATTERNS = [
   /^https?:\/\/(www\.)?wanted\.co\.kr\/wd\/\d+/,
   /^https?:\/\/(www\.)?saramin\.co\.kr\/zf_user\/jobs\//,
+  /^https?:\/\/(www\.)?jobkorea\.co\.kr\/[Rr]ecruit\/[Gg][Ii]_[Rr]ead\//,
 ]
 
 function isValidUrl(value: string): boolean {
@@ -62,33 +60,15 @@ function CompletePopup({
 export default function JobPostingFormSection() {
   const router = useRouter()
   const [url, setUrl] = useState('')
-  const [company, setCompany] = useState('')
   const [popupState, setPopupState] = useState<
     'generating' | 'complete' | null
   >(null)
 
   const { ref: popupRef } = useModal(popupState !== null)
-  const {
-    calendarRef,
-    selectedDate,
-    dateInput,
-    showCalendar,
-    calendarYear,
-    calendarMonth,
-    tempDate,
-    setTempDate,
-    openCalendar,
-    handleDateInputChange,
-    handlePrevMonth,
-    handleNextMonth,
-    handleConfirm,
-    handleCancel,
-  } = useDatePicker()
 
   const urlError = url.trim().length > 0 && !isValidUrl(url)
   const urlValid = url.trim().length > 0 && isValidUrl(url)
-  const isComplete =
-    url.trim().length > 0 && company.trim().length > 0 && selectedDate !== null
+  const isComplete = urlValid
 
   const createJobPostingMutation = useMutation({
     mutationFn: createJobPosting,
@@ -117,7 +97,7 @@ export default function JobPostingFormSection() {
                 value={url}
                 onChange={(e) => setUrl(e.target.value)}
                 status={urlError ? 'error' : 'default'}
-                placeholder="원티드,사람인 사이트의 채용공고만 가능합니다."
+                placeholder="원티드, 사람인, 잡코리아 사이트의 채용공고만 가능합니다."
                 focusPrimary
               />
               <div className="absolute left-0 top-full pt-1">
@@ -130,56 +110,6 @@ export default function JobPostingFormSection() {
                 </HelperText>
               </div>
             </div>
-          </div>
-
-          <div className="flex flex-col gap-5">
-            <label className="p3 border-b border-gray-5 h-10">
-              <span className="text-primary">회사명</span>을 입력해주세요
-            </label>
-            <InputBox
-              className="bg-white"
-              value={company}
-              onChange={(e) => setCompany(e.target.value)}
-              focusPrimary
-            />
-          </div>
-
-          <div className="flex flex-col gap-5 relative">
-            <label className="p3 border-b border-gray-5 h-10">
-              <span className="text-primary">면접 일정</span>을 입력해주세요
-            </label>
-            <div className="relative">
-              <InputBox
-                className="bg-white"
-                value={dateInput}
-                onChange={(e) => handleDateInputChange(e.target.value)}
-                status="default"
-                focusPrimary
-                placeholder="0000년 00월 00일"
-                rightElement={
-                  <button
-                    type="button"
-                    onClick={openCalendar}
-                    className="cursor-pointer text-gray-4 hover:text-text-primary"
-                  >
-                    <IconCalendar size={24} />
-                  </button>
-                }
-              />
-            </div>
-            {showCalendar && (
-              <CalendarDropdown
-                calendarRef={calendarRef}
-                year={calendarYear}
-                month={calendarMonth}
-                tempDate={tempDate}
-                onPrevMonth={handlePrevMonth}
-                onNextMonth={handleNextMonth}
-                onSelectDate={setTempDate}
-                onConfirm={handleConfirm}
-                onCancel={handleCancel}
-              />
-            )}
           </div>
 
           <Button
