@@ -11,6 +11,7 @@ import character3 from '@/assets/image/uug-character3-img.png'
 import { useModal } from '@/hooks/useModal'
 import { createJobPosting } from '@/apis/job-postings'
 import GeneratingPopup from '@/components/common/popup/GeneratingPopup'
+import CompanyNamePopup from '@/components/common/popup/CompanyNamePopup'
 
 const JOB_URL_PATTERNS = [
   /^https?:\/\/(www\.)?wanted\.co\.kr\/wd\/\d+/,
@@ -24,9 +25,11 @@ function isValidUrl(value: string): boolean {
 
 function CompletePopup({
   popupRef,
+  companyName,
   onStart,
 }: {
   popupRef: React.RefObject<HTMLDivElement | null>
+  companyName: string
   onStart: () => void
 }) {
   return (
@@ -44,7 +47,7 @@ function CompletePopup({
         />
         <div className="flex flex-col items-center gap-1.75">
           <p className="h1 text-primary">질문 생성이 완료되었어요!</p>
-          <p className="p1 text-gray-2">면접을 시작해주세요.</p>
+          <p className="p1 text-gray-2">{companyName} 면접을 시작해주세요.</p>
         </div>
         <Button
           className="w-70 rounded-full! py-3 cursor-pointer mt-12"
@@ -61,8 +64,9 @@ export default function JobPostingFormSection() {
   const router = useRouter()
   const [url, setUrl] = useState('')
   const [popupState, setPopupState] = useState<
-    'generating' | 'complete' | null
+    'generating' | 'companyName' | 'complete' | null
   >(null)
+  const [companyName, setCompanyName] = useState('')
 
   const { ref: popupRef } = useModal(popupState !== null)
 
@@ -72,7 +76,7 @@ export default function JobPostingFormSection() {
 
   const createJobPostingMutation = useMutation({
     mutationFn: createJobPosting,
-    onSuccess: (jobPosting) => {
+    onSuccess: () => {
       setPopupState('complete')
     },
     onError: (error) => {
@@ -136,9 +140,20 @@ export default function JobPostingFormSection() {
           onClose={() => setPopupState(null)}
         />
       )}
+      {popupState === 'companyName' && (
+        <CompanyNamePopup
+          popupRef={popupRef}
+          onClose={() => setPopupState(null)}
+          onSubmit={(name) => {
+            setCompanyName(name)
+            setPopupState('complete')
+          }}
+        />
+      )}
       {popupState === 'complete' && (
         <CompletePopup
           popupRef={popupRef}
+          companyName={companyName}
           onStart={() => router.push('/interview/job-posting/countdown')}
         />
       )}
