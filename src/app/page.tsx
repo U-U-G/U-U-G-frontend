@@ -7,7 +7,7 @@ import { homeMockData, emptyHomeMockData } from '@/mocks/homeMockData'
 export default function Home() {
   const data = homeMockData
   //const data = emptyHomeMockData
-
+  throw new Error('test')
   return (
     <main className="h-screen overflow-hidden flex flex-col">
       <Header />
