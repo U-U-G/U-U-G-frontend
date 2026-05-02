@@ -17,12 +17,12 @@ export default function Error({ error, unstable_retry }: Props) {
   return (
     <div
       role="alert"
-      className="min-h-screen flex items-center justify-center to-gray-900 p-4"
+      className="min-h-screen flex items-center justify-center p-4"
     >
       <div className="p-6">
-        <div className="flex items-center justify-center w-16 h-16 mx-auto mb-6">
+        <div className="flex items-center justify-center w-24 h-24 mx-auto mb-6">
           <IconAlertTriangle
-            className="w-28 h-28 text-primary"
+            className="w-full h-full text-primary"
             aria-hidden="true"
           />
         </div>

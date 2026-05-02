@@ -46,6 +46,19 @@ export default function InterviewPlanSection({
     // TODO: 삭제 확인 및 API 연동
   }, [])
 
+  const closeActionsMenu = useCallback(() => {
+    setActionsMenu(null)
+  }, [])
+
+  const openCreateSchedulePopup = useCallback(() => {
+    setSchedulePopupMode('create')
+    setIsSchedulePopupOpen(true)
+  }, [])
+
+  const closeSchedulePopup = useCallback(() => {
+    setIsSchedulePopupOpen(false)
+  }, [])
+
   return (
     <section className="min-h-[clamp(320px,36vh,420px)] rounded-2xl bg-secondary p-[clamp(16px,2vw,28px)]">
       <div className="flex h-full min-h-0 gap-5">
@@ -53,10 +66,7 @@ export default function InterviewPlanSection({
           data={data}
           isEmpty={isEmpty}
           onToggleMenu={toggleActionsMenu}
-          onOpenAddSchedule={() => {
-            setSchedulePopupMode('create')
-            setIsSchedulePopupOpen(true)
-          }}
+          onOpenAddSchedule={openCreateSchedulePopup}
         />
         <InterviewPlanCurriculumColumn
           isEmpty={isEmpty}
@@ -66,7 +76,7 @@ export default function InterviewPlanSection({
 
       <InterviewPlanActionsMenuPortal
         menu={actionsMenu}
-        onClose={() => setActionsMenu(null)}
+        onClose={closeActionsMenu}
         onEdit={handleEdit}
         onDelete={handleDelete}
       />
@@ -74,7 +84,7 @@ export default function InterviewPlanSection({
       {isSchedulePopupOpen && (
         <InterviewScheduleRegisterPopup
           mode={schedulePopupMode}
-          onClose={() => setIsSchedulePopupOpen(false)}
+          onClose={closeSchedulePopup}
         />
       )}
     </section>
