@@ -1,4 +1,8 @@
+'use client'
+
+import { useState } from 'react'
 import { IconPlus } from '@tabler/icons-react'
+import InterviewScheduleRegisterPopup from '@/components/home/InterviewScheduleRegisterPopup'
 
 type CurriculumItem = {
   id: number
@@ -23,6 +27,7 @@ type InterviewPlanSectionProps = {
 export default function InterviewPlanSection({
   data,
 }: InterviewPlanSectionProps) {
+  const [isSchedulePopupOpen, setIsSchedulePopupOpen] = useState(false)
   const isEmpty = data.length === 0
 
   const selectedPlan = data.find((plan) => plan.isSelected) ?? data[0] ?? null
@@ -37,6 +42,7 @@ export default function InterviewPlanSection({
               type="button"
               className="text-primary"
               aria-label="면접 일정 추가"
+              onClick={() => setIsSchedulePopupOpen(true)}
             >
               <IconPlus className="h-5 w-5" />
             </button>
@@ -110,6 +116,12 @@ export default function InterviewPlanSection({
           )}
         </div>
       </div>
+
+      {isSchedulePopupOpen && (
+        <InterviewScheduleRegisterPopup
+          onClose={() => setIsSchedulePopupOpen(false)}
+        />
+      )}
     </section>
   )
 }
