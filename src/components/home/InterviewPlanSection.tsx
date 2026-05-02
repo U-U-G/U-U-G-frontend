@@ -1,8 +1,12 @@
 'use client'
 
-import { useState } from 'react'
-import { IconPlus } from '@tabler/icons-react'
+import { useCallback, useState } from 'react'
+import { IconDotsVertical, IconPlus } from '@tabler/icons-react'
 import InterviewScheduleRegisterPopup from '@/components/home/InterviewScheduleRegisterPopup'
+import InterviewPlanActionsMenuPortal, {
+  computeMenuPosition,
+  type InterviewPlanMenuPosition,
+} from '@/components/home/InterviewPlanActionsMenuPortal'
 
 type CurriculumItem = {
   id: number
@@ -24,13 +28,55 @@ type InterviewPlanSectionProps = {
   data: readonly InterviewPlanItem[]
 }
 
+function DotsMenuTrigger({
+  menuKey,
+  onToggleMenu,
+}: {
+  menuKey: string
+  onToggleMenu: (key: string, el: HTMLElement) => void
+}) {
+  return (
+    <button
+      type="button"
+      className="shrink-0 cursor-pointer rounded p-0.5 text-primary"
+      aria-label="일정 메뉴"
+      aria-haspopup="menu"
+      onClick={(e) => {
+        e.stopPropagation()
+        onToggleMenu(menuKey, e.currentTarget)
+      }}
+    >
+      <IconDotsVertical size={22} aria-hidden />
+    </button>
+  )
+}
+
 export default function InterviewPlanSection({
   data,
 }: InterviewPlanSectionProps) {
   const [isSchedulePopupOpen, setIsSchedulePopupOpen] = useState(false)
+  const [actionsMenu, setActionsMenu] =
+    useState<InterviewPlanMenuPosition | null>(null)
   const isEmpty = data.length === 0
 
   const selectedPlan = data.find((plan) => plan.isSelected) ?? data[0] ?? null
+
+  const toggleActionsMenu = useCallback((key: string, el: HTMLElement) => {
+    setActionsMenu((prev) => {
+      if (prev?.key === key) return null
+      const row = el.closest('[data-interview-plan-row]')
+      if (!(row instanceof HTMLElement)) return null
+      return { key, ...computeMenuPosition(el, row) }
+    })
+  }, [])
+
+  const handleEdit = useCallback((_key: string) => {
+    setIsSchedulePopupOpen(true)
+  }, [])
+
+  const handleDelete = useCallback((_key: string) => {
+    // TODO: 삭제 확인 및 API 연동
+  }, [])
 
   return (
     <section className="min-h-[clamp(320px,36vh,420px)] rounded-2xl bg-secondary p-[clamp(16px,2vw,28px)]">
@@ -50,33 +96,75 @@ export default function InterviewPlanSection({
 
           {isEmpty ? (
             <div className="space-y-3.5">
-              <div className="flex h-16 items-center rounded-lg border border-primary bg-white px-5 py-4">
-                <span className="mr-4 h2 text-primary">D-day</span>
-                <span className="p4 text-gray-3">면접 일정을 등록해주세요</span>
+              <div
+                data-interview-plan-row
+                className="flex h-16 items-center justify-between rounded-lg border border-gray-5 bg-white px-5 py-4 gap-3"
+              >
+                <div className="flex items-center gap-3 min-w-0">
+                  <span className="h2 text-primary shrink-0">D-day</span>
+                  <span className="p4 text-gray-3 truncate">
+                    면접 일정을 등록해주세요
+                  </span>
+                </div>
+                <DotsMenuTrigger
+                  menuKey="empty-0"
+                  onToggleMenu={toggleActionsMenu}
+                />
               </div>
-              <div className="h-14 rounded-lg bg-white" />
-              <div className="h-14 rounded-lg bg-white" />
-              <div className="h-10 rounded-t-lg bg-white" />
+              <div
+                data-interview-plan-row
+                className="flex h-14 items-center justify-end rounded-lg border border-gray-5 bg-white px-5 py-3"
+              >
+                <DotsMenuTrigger
+                  menuKey="empty-1"
+                  onToggleMenu={toggleActionsMenu}
+                />
+              </div>
+              <div
+                data-interview-plan-row
+                className="flex h-14 items-center justify-end rounded-lg border border-gray-5 bg-white px-5 py-3"
+              >
+                <DotsMenuTrigger
+                  menuKey="empty-2"
+                  onToggleMenu={toggleActionsMenu}
+                />
+              </div>
+              <div
+                data-interview-plan-row
+                className="flex h-10 items-center justify-end rounded-t-lg border border-gray-5 bg-white px-5 py-3"
+              >
+                <DotsMenuTrigger
+                  menuKey="empty-3"
+                  onToggleMenu={toggleActionsMenu}
+                />
+              </div>
             </div>
           ) : (
             <div className="max-h-[248px] overflow-y-auto space-y-4 pr-2">
               {data.map((plan) => (
                 <div
                   key={plan.id}
+                  data-interview-plan-row
                   className={[
-                    'flex h-14 items-center justify-between rounded-lg bg-white px-5 py-3',
-                    plan.isSelected ? 'border border-primary' : '',
+                    'flex h-14 items-center justify-between rounded-lg border bg-white px-5 py-3 gap-3',
+                    plan.isSelected ? 'border-primary' : 'border-gray-5',
                   ].join(' ')}
                 >
-                  <div className="flex items-center gap-4 overflow-hidden">
-                    <span className="h4 text-primary">{plan.dDay}</span>
+                  <div className="flex items-center gap-4 overflow-hidden min-w-0 flex-1">
+                    <span className="h4 text-primary shrink-0">{plan.dDay}</span>
 
-                    <span className="shrink-0 p2 text-text-primary">
+                    <span className="shrink-0 p2 text-text-primary truncate">
                       {plan.companyName} {plan.title}
                     </span>
                   </div>
 
-                  <span className="p4 text-gray-3">{plan.date}</span>
+                  <div className="flex items-center gap-3 shrink-0">
+                    <span className="p4 text-gray-3">{plan.date}</span>
+                    <DotsMenuTrigger
+                      menuKey={`plan-${plan.id}`}
+                      onToggleMenu={toggleActionsMenu}
+                    />
+                  </div>
                 </div>
               ))}
             </div>
@@ -116,6 +204,13 @@ export default function InterviewPlanSection({
           )}
         </div>
       </div>
+
+      <InterviewPlanActionsMenuPortal
+        menu={actionsMenu}
+        onClose={() => setActionsMenu(null)}
+        onEdit={handleEdit}
+        onDelete={handleDelete}
+      />
 
       {isSchedulePopupOpen && (
         <InterviewScheduleRegisterPopup
