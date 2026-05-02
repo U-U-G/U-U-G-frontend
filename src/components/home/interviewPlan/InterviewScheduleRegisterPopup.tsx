@@ -8,12 +8,16 @@ import FormPopupLayout from '@/components/common/popup/FormPopupLayout'
 import { useDatePicker } from '@/hooks/useDatePicker'
 import { useModal } from '@/hooks/useModal'
 
+export type InterviewSchedulePopupMode = 'create' | 'edit'
+
 interface InterviewScheduleRegisterPopupProps {
   onClose: () => void
+  mode?: InterviewSchedulePopupMode
 }
 
 export default function InterviewScheduleRegisterPopup({
   onClose,
+  mode = 'create',
 }: InterviewScheduleRegisterPopupProps) {
   const { ref: popupRef } = useModal(true)
   const [companyAndRole, setCompanyAndRole] = useState('')
@@ -40,17 +44,21 @@ export default function InterviewScheduleRegisterPopup({
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     if (!canSubmit) return
-    // TODO: 면접 일정 등록 API 연동
+    // TODO: 면접 일정 등록·수정 API 연동
     onClose()
   }
 
+  const title =
+    mode === 'edit' ? '면접 일정 수정' : '새로운 면접 일정 등록'
+  const submitLabel = mode === 'edit' ? '수정하기' : '일정등록'
+
   return (
     <FormPopupLayout
-      title="새로운 면접 일정 등록"
+      title={title}
       onClose={onClose}
       popupRef={popupRef}
       onSubmit={handleSubmit}
-      submitLabel="일정등록"
+      submitLabel={submitLabel}
       canSubmit={canSubmit}
     >
       <div className="flex flex-col gap-4">

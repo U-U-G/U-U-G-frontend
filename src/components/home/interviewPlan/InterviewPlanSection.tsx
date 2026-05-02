@@ -4,10 +4,12 @@ import { useCallback, useState } from 'react'
 import InterviewPlanActionsMenuPortal, {
   computeMenuPosition,
   type InterviewPlanMenuPosition,
-} from '@/components/home/InterviewPlanActionsMenuPortal'
-import InterviewPlanCurriculumColumn from '@/components/home/InterviewPlanCurriculumColumn'
-import InterviewPlanScheduleColumn from '@/components/home/InterviewPlanScheduleColumn'
-import InterviewScheduleRegisterPopup from '@/components/home/InterviewScheduleRegisterPopup'
+} from '@/components/home/interviewPlan/InterviewPlanActionsMenuPortal'
+import InterviewPlanCurriculumColumn from '@/components/home/interviewPlan/InterviewPlanCurriculumColumn'
+import InterviewPlanScheduleColumn from '@/components/home/interviewPlan/InterviewPlanScheduleColumn'
+import InterviewScheduleRegisterPopup, {
+  type InterviewSchedulePopupMode,
+} from '@/components/home/interviewPlan/InterviewScheduleRegisterPopup'
 import type { InterviewPlanItem } from '@/types/interviewPlan'
 
 type InterviewPlanSectionProps = {
@@ -18,6 +20,8 @@ export default function InterviewPlanSection({
   data,
 }: InterviewPlanSectionProps) {
   const [isSchedulePopupOpen, setIsSchedulePopupOpen] = useState(false)
+  const [schedulePopupMode, setSchedulePopupMode] =
+    useState<InterviewSchedulePopupMode>('create')
   const [actionsMenu, setActionsMenu] =
     useState<InterviewPlanMenuPosition | null>(null)
   const isEmpty = data.length === 0
@@ -34,6 +38,7 @@ export default function InterviewPlanSection({
   }, [])
 
   const handleEdit = useCallback((_key: string) => {
+    setSchedulePopupMode('edit')
     setIsSchedulePopupOpen(true)
   }, [])
 
@@ -48,7 +53,10 @@ export default function InterviewPlanSection({
           data={data}
           isEmpty={isEmpty}
           onToggleMenu={toggleActionsMenu}
-          onOpenAddSchedule={() => setIsSchedulePopupOpen(true)}
+          onOpenAddSchedule={() => {
+            setSchedulePopupMode('create')
+            setIsSchedulePopupOpen(true)
+          }}
         />
         <InterviewPlanCurriculumColumn
           isEmpty={isEmpty}
@@ -65,6 +73,7 @@ export default function InterviewPlanSection({
 
       {isSchedulePopupOpen && (
         <InterviewScheduleRegisterPopup
+          mode={schedulePopupMode}
           onClose={() => setIsSchedulePopupOpen(false)}
         />
       )}

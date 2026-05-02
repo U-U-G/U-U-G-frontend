@@ -1,7 +1,7 @@
 import Header from '@/components/common/header/Header'
-import HeroGoalSection from '@/components/home/HeroGoalSection'
-import InterviewPlanSection from '@/components/home/InterviewPlanSection'
-import TodayScheduleSection from '@/components/home/TodayScheduleSection'
+import HeroGoalSection from '@/components/home/hero/HeroGoalSection'
+import InterviewPlanSection from '@/components/home/interviewPlan/InterviewPlanSection'
+import TodayScheduleSection from '@/components/home/todaySchedule/TodayScheduleSection'
 import { homeMockData, emptyHomeMockData } from '@/mocks/homeMockData'
 
 export default function Home() {

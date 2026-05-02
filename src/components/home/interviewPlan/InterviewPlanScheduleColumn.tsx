@@ -1,7 +1,7 @@
 'use client'
 
 import { IconPlus } from '@tabler/icons-react'
-import InterviewPlanDotsTrigger from '@/components/home/InterviewPlanDotsTrigger'
+import InterviewPlanDotsTrigger from '@/components/home/interviewPlan/InterviewPlanDotsTrigger'
 import { EMPTY_INTERVIEW_PLAN_ROWS } from '@/constants/interviewPlanEmptyRows'
 import type { InterviewPlanItem } from '@/types/interviewPlan'
 
