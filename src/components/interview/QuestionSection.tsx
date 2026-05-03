@@ -76,6 +76,7 @@ export default function QuestionSection({
     dbValue,
     silenceMs,
     isSilenceWarning,
+    silencePeriodsRef,
     pause: audioPause,
     resume: audioResume,
   } = useAudioAnalyzer(elapsedMsRef)
@@ -107,6 +108,51 @@ export default function QuestionSection({
       setIsPaused(true)
     }
     setIsStopPopupOpen(true)
+  }
+
+  function handleCompleteAnswer() {
+    stopwatchPause()
+    speechPause()
+    audioPause()
+
+    const finalElapsedMs = elapsedMsRef.current
+    const periods = [...silencePeriodsRef.current]
+    if (isSilenceWarning) {
+      periods.push({
+        startMs: Math.max(0, finalElapsedMs - silenceMs),
+        endMs: finalElapsedMs,
+      })
+    }
+
+    const fillerWords = transcript
+      .trim()
+      .split(/\s+/)
+      .filter((w) => FILLER_SET.has(w))
+
+    const speechPeriods: { startMs: number; endMs: number }[] = []
+    let cursor = 0
+    for (const p of periods) {
+      if (cursor < p.startMs) {
+        speechPeriods.push({ startMs: cursor, endMs: p.startMs })
+      }
+      cursor = p.endMs
+    }
+    if (cursor < finalElapsedMs) {
+      speechPeriods.push({ startMs: cursor, endMs: finalElapsedMs })
+    }
+
+    const payload = {
+      totalElapsedMs: finalElapsedMs,
+      transcript,
+      fillerWords,
+      silencePeriods: periods,
+      speechPeriods,
+    }
+
+    // TODO: POST /api/interview/answer with payload
+    console.log('answer payload:', payload)
+
+    router.push(`/interview/job-posting/${uuid}/complete?q=${questionNumber}`)
   }
 
   function handleContinue() {
@@ -202,11 +248,7 @@ export default function QuestionSection({
             </span>
             <Button
               className="w-44.75 rounded-full! py-3!"
-              onClick={() =>
-                router.push(
-                  `/interview/job-posting/${uuid}/complete?q=${questionNumber}`,
-                )
-              }
+              onClick={handleCompleteAnswer}
             >
               <span className="h3">답변 완료</span>
             </Button>
