@@ -65,7 +65,10 @@ export default function UserInfoSection() {
         nickname,
         profileImageUrl: profile?.profileImageUrl ?? '',
       }),
-    onSuccess: () => handleNicknameConfirm(),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ['profile'] })
+      handleNicknameConfirm()
+    },
     onError: (e) => {
       if (getHttpStatus(e) === 409) {
         setNicknameDuplicate(true)
