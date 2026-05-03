@@ -124,10 +124,10 @@ export default function QuestionSection({
       })
     }
 
-    const fillerCount = transcript
+    const fillerWords = transcript
       .trim()
       .split(/\s+/)
-      .filter((w) => FILLER_SET.has(w)).length
+      .filter((w) => FILLER_SET.has(w))
 
     const speechPeriods: { startMs: number; endMs: number }[] = []
     let cursor = 0
@@ -144,7 +144,7 @@ export default function QuestionSection({
     const payload = {
       totalElapsedMs: finalElapsedMs,
       transcript,
-      fillerCount,
+      fillerWords,
       silencePeriods: periods,
       speechPeriods,
     }
