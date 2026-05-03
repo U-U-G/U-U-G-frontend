@@ -27,7 +27,7 @@ export default function UserInfoSection() {
     mutationFn: logout,
     onSuccess: () => router.push('/login'),
     onError: (e) => {
-      console.log('로그 아웃에 실패하였습니다', e) //TODO: 토스트로 변경
+      console.log('로그아웃에 실패하였습니다', e) //TODO: 토스트로 변경
     },
   })
 

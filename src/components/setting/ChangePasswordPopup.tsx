@@ -34,7 +34,7 @@ export default function ChangePasswordPopup({
       }),
     onSuccess: () => onClose(),
     onError: (e) => {
-      if (getHttpStatus(e) === 401) {
+      if (getHttpStatus(e) === 400) {
         setIsCurrentPasswordError(true)
       }
     },
@@ -73,7 +73,9 @@ export default function ChangePasswordPopup({
           value={currentPassword}
           placeholder="현재 비밀번호를 입력해주세요."
           status={currentPasswordStatus}
-          helperText={isCurrentPasswordError ? '현재 비밀번호가 올바르지 않습니다.' : ' '}
+          helperText={
+            isCurrentPasswordError ? '현재 비밀번호가 올바르지 않습니다.' : ' '
+          }
           onChange={(val) => {
             setIsCurrentPasswordError(false)
             setCurrentPassword(val)
