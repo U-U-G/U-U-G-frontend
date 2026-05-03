@@ -1,7 +1,7 @@
 export interface UpdateProfileRequest {
   email: string
   nickname: string
-  profileImageUrl: string
+  profileImageUrl?: string | null
 }
 
 export interface UserProfile {
