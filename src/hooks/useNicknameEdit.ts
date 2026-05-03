@@ -20,15 +20,7 @@ export function useNicknameEdit(initialNickname: string) {
     setIsDuplicate(false)
   }
 
-  const onConfirm = async () => {
-    // TODO: API 연동 후 실제 중복 검사로 교체
-    const duplicate = false
-
-    if (duplicate) {
-      setIsDuplicate(true)
-      return
-    }
-
+  const onConfirm = () => {
     setValue(input)
     setIsEditing(false)
     setInput('')

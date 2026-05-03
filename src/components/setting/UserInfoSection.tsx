@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
-import { useQuery, useMutation } from '@tanstack/react-query'
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import InputBox from '@/components/common/input/InputBox'
 import HelperText from '@/components/common/text/HelperText'
 import ChangePasswordPopup from '@/components/setting/ChangePasswordPopup'
@@ -16,6 +16,7 @@ import { formatDateToLocale } from '@/utils/date'
 
 export default function UserInfoSection() {
   const router = useRouter()
+  const queryClient = useQueryClient()
   const [isPasswordPopupOpen, setIsPasswordPopupOpen] = useState(false)
 
   const { data: profile, isLoading } = useQuery({
@@ -25,7 +26,10 @@ export default function UserInfoSection() {
 
   const { mutate: handleLogout } = useMutation({
     mutationFn: logout,
-    onSuccess: () => router.push('/login'),
+    onSuccess: () => {
+      queryClient.clear()
+      router.push('/login')
+    },
     onError: (e) => {
       console.log('로그아웃에 실패하였습니다', e) //TODO: 토스트로 변경
     },
@@ -33,7 +37,10 @@ export default function UserInfoSection() {
 
   const { mutate: handleSignout } = useMutation({
     mutationFn: signout,
-    onSuccess: () => router.push('/login'),
+    onSuccess: () => {
+      queryClient.clear()
+      router.push('/login')
+    },
     onError: (e) => {
       console.log('회원 탈퇴에 실패하였습니다', e) //TODO: 토스트로 변경
     },
