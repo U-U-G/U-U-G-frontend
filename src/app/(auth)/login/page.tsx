@@ -6,6 +6,8 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useMutation } from '@tanstack/react-query'
 import { loginApi } from '@/apis/auth'
+import { getHttpStatus } from '@/apis/common/httpError'
+import HelperText from '@/components/common/text/HelperText'
 import { setAccessToken } from '@/utils/tokenStorage'
 import KakaoLogoIcon from '@/assets/icon/kakao-logo.svg'
 import GoogleLogoIcon from '@/assets/icon/google-logo.svg'
@@ -15,6 +17,7 @@ export default function Login() {
   const router = useRouter()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [isLoginError, setIsLoginError] = useState(false)
 
   const loginMutation = useMutation({
     mutationFn: loginApi.login,
@@ -25,7 +28,11 @@ export default function Login() {
     },
 
     onError: (error) => {
-      console.error('로그인 실패', error)
+      const status = getHttpStatus(error)
+      if (status !== 401 && status !== 404) {
+        return
+      }
+      setIsLoginError(true)
     },
   })
 
@@ -64,7 +71,7 @@ export default function Login() {
             />
           </div>
 
-          <div className="mb-16">
+          <div className="mb-4">
             <label htmlFor="password" className="sr-only">
               비밀번호
             </label>
@@ -79,9 +86,24 @@ export default function Login() {
             />
           </div>
 
+          <div className="mb-10 min-h-[22px]">
+            {isLoginError ? (
+              <HelperText status="error">
+                아이디 또는 비밀번호가 틀렸습니다.
+              </HelperText>
+            ) : (
+              '\u00a0'
+            )}
+          </div>
+
           <button
             type="submit"
-            className="mb-10 h-[56px] w-full rounded-md bg-primary h4 text-white cursor-pointer"
+            disabled={loginMutation.isPending}
+            className={`mb-10 h-[56px] w-full rounded-md h4 text-white ${
+              loginMutation.isPending
+                ? 'cursor-not-allowed bg-gray-5 text-text-primary'
+                : 'cursor-pointer bg-primary'
+            }`}
           >
             로그인
           </button>

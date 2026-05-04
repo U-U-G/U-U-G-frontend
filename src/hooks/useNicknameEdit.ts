@@ -1,8 +1,14 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
 export function useNicknameEdit(initialNickname: string) {
   const [isEditing, setIsEditing] = useState(false)
   const [value, setValue] = useState(initialNickname)
+
+  useEffect(() => {
+    if (!isEditing) {
+      setValue(initialNickname)
+    }
+  }, [initialNickname])
   const [input, setInput] = useState('')
   const [isDuplicate, setIsDuplicate] = useState(false)
 
@@ -14,15 +20,7 @@ export function useNicknameEdit(initialNickname: string) {
     setIsDuplicate(false)
   }
 
-  const onConfirm = async () => {
-    // TODO: API 연동 후 실제 중복 검사로 교체
-    const duplicate = false
-
-    if (duplicate) {
-      setIsDuplicate(true)
-      return
-    }
-
+  const onConfirm = () => {
     setValue(input)
     setIsEditing(false)
     setInput('')
@@ -43,5 +41,6 @@ export function useNicknameEdit(initialNickname: string) {
     onEdit,
     onConfirm,
     onInputChange,
+    setIsDuplicate,
   }
 }

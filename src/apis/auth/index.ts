@@ -68,7 +68,7 @@ export const verifyEmailVerification = async (
 }
 
 export const changePassword = async (body: ChangePasswordRequest) => {
-  const { data } = await privateClient.post<ApiResponse<string>>(
+  const { data } = await privateClient.patch<ApiResponse<string>>(
     '/auth/password',
     body,
   )

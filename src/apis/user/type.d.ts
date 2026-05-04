@@ -1,7 +1,7 @@
 export interface UpdateProfileRequest {
   email: string
   nickname: string
-  profileImageUrl?: string
+  profileImageUrl?: string | null
 }
 
 export interface UserProfile {
@@ -9,4 +9,5 @@ export interface UserProfile {
   nickname: string
   provider: 'LOCAL' | 'KAKAO' | 'GOOGLE' | 'NAVER'
   profileImageUrl: string
+  createdAt: string
 }
