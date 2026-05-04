@@ -17,6 +17,9 @@
 
   --text-primary: #111111;
   --text-point-red: #f73030;
+
+  --point-yellow: #ffcc00;
+  --point-green: #34c759;
 }
 
 @theme inline {
@@ -35,6 +38,9 @@
 
   --color-text-primary: var(--text-primary);
   --color-text-point-red: var(--text-point-red);
+
+  --color-point-yellow: var(--point-yellow);
+  --color-point-green: var(--point-green);
 
   --font-sans: var(--font-pretendard);
 }

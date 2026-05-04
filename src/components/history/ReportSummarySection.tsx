@@ -14,14 +14,15 @@ function scoreToCharacterImage(score: number): StaticImageData {
   return characterAwesomeImage
 }
 
+//TODO: 백엔드 명세에 따라 수정 예정
 export interface MetricItem {
   label: string
   value: string
-  percent: number
-  color: string
+  score: number
   background?: string
 }
 
+//TODO: 백엔드 명세에 따라 수정 예정
 export interface ReportSummarySectionProps {
   totalScore: string
   feedback: string
