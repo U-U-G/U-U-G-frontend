@@ -18,6 +18,15 @@ export default function SignUpForm() {
   const [passwordValid, setPasswordValid] = useState(false)
   const [nicknameChecked, setNicknameChecked] = useState(false)
   const [termsAccepted, setTermsAccepted] = useState(false)
+  const [agreedTerms, setAgreedTerms] = useState<string[]>([])
+
+  const handleTermsChange = useCallback(
+    (uuids: string[], allRequiredAgreed: boolean) => {
+      setAgreedTerms(uuids)
+      setTermsAccepted(allRequiredAgreed)
+    },
+    [],
+  )
   const [submitError, setSubmitError] = useState('')
   const [emailError, setEmailError] = useState('')
 
@@ -62,6 +71,7 @@ export default function SignUpForm() {
       password: formData.get('password') as string,
       confirmPassword: formData.get('passwordConfirm') as string,
       nickname: formData.get('nickname') as string,
+      agreedTerms,
     })
   }
 
@@ -74,7 +84,7 @@ export default function SignUpForm() {
       />
       <PasswordSection onPasswordValid={handlePasswordValid} />
       <NicknameSection onNicknameChecked={setNicknameChecked} />
-      <TermsSection onAcceptChange={setTermsAccepted} />
+      <TermsSection onChange={handleTermsChange} />
       {submitError && <HelperText status="error">{submitError}</HelperText>}
       <Button
         type="submit"
