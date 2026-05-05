@@ -1,15 +1,28 @@
 import Image from 'next/image'
-import character5 from '@/assets/image/uug-character5-img.png'
+import type { StaticImageData } from 'next/image'
+import characterAngryImage from '@/assets/image/uug-character-angry-img.png'
+import characterSadImage from '@/assets/image/uug-character-sad-img.png'
+import characterHappyImage from '@/assets/image/uug-character-happy-img.png'
+import characterAwesomeImage from '@/assets/image/uug-character-awesome-img.png'
+import { getScoreBand, type ScoreBand } from '@/utils/reportScore'
 import Metric from './Metric'
 
+const SCORE_BAND_CHARACTER: Record<ScoreBand, StaticImageData> = {
+  low: characterAngryImage,
+  mid: characterSadImage,
+  high: characterHappyImage,
+  top: characterAwesomeImage,
+}
+
+//TODO: 백엔드 명세에 따라 수정 예정
 export interface MetricItem {
   label: string
   value: string
-  percent: number
-  color: string
+  score: number
   background?: string
 }
 
+//TODO: 백엔드 명세에 따라 수정 예정
 export interface ReportSummarySectionProps {
   totalScore: string
   feedback: string
@@ -21,6 +34,9 @@ export default function ReportSummarySection({
   feedback,
   metrics,
 }: ReportSummarySectionProps) {
+  const scoreNum = parseFloat(totalScore)
+  const characterSrc = SCORE_BAND_CHARACTER[getScoreBand(scoreNum)]
+
   return (
     <section className="grid grid-cols-[2fr_1fr] gap-6 mb-8">
       <div className="bg-secondary rounded-2xl p-6 flex justify-between items-center">
@@ -30,8 +46,8 @@ export default function ReportSummarySection({
           <p className="text-sm text-gray-600 leading-relaxed">{feedback}</p>
         </div>
         <Image
-          src={character5}
-          alt="캐릭터"
+          src={characterSrc}
+          alt="종합 점수에 따른 결과 캐릭터"
           width={200}
           height={200}
           className="object-contain"

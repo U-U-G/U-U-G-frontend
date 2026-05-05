@@ -2,6 +2,7 @@ import { IconChevronLeft } from '@tabler/icons-react'
 import Header from '@/components/common/header/Header'
 import HistoryReportSection from '@/components/history/HistoryReportSection'
 
+//TODO: 백엔드 명세에 따라 수정 예정
 const questionAnalyses = Array.from({ length: 5 }, (_, index) => ({
   questionNumber: index + 1,
   question:
@@ -11,8 +12,8 @@ const questionAnalyses = Array.from({ length: 5 }, (_, index) => ({
   feedback:
     "목표 얼라인부터 RICE 기법을 활용한 지표 비교, 그리고 타 부서 설득으로 이어지는 논리 흐름이 매우 훌륭해 실무 경험이 돋보이는 답변입니다. 다만, 문장의 주제가 전환되는 구간마다 '어', '그' 같은 습관어가 감지되었습니다. 다음 말을 이어갈 때 접속사나 습관어 대신 1초 정도 가볍게 쉬어가는 포즈(Pause) 기법을 사용해 보세요. 또한, '타 부서를 설득한다'는 표현보다는 '데이터를 바탕으로 합의점을 도출한다'라고 다듬는다면 협업 능력이 한층 더 부각될 수 있습니다.",
   score: 80,
-  silence: '1초',
-  fillerWord: '3회',
+  silence: 34,
+  fillerWord: 90,
   logicScore: 95,
 }))
 
@@ -39,9 +40,9 @@ export default function HistoryDetailPage() {
           totalScore="64점"
           feedback="서비스에 대한 애정과 열정은 충분히 느껴졌지만, 질문의 핵심 의도를 파악하고 논리적으로 설득하는 과정에서 큰 아쉬움이 남는 면접이었습니다. 특히 당황스러운 질문을 받았을 때 습관어가 급격히 늘어나고 말끝을 흐리는 패턴이 반복되어, 기획자에게 가장 중요한 '신뢰감'과 '전문성'이 다소 부족해 보일 수 있습니다."
           metrics={[
-            { label: '침묵', value: '평균 4초', percent: 60, color: 'bg-red-500' },
-            { label: '습관어', value: '평균 5회', percent: 45, color: 'bg-red-500' },
-            { label: '논리/구조', value: '평균 64점', percent: 70, color: 'bg-purple-500' },
+            { label: '침묵', value: '평균 34점', score: 34 },
+            { label: '습관어', value: '평균 45점', score: 45 },
+            { label: '논리/구조', value: '평균 90점', score: 90 },
           ]}
           questionAnalyses={questionAnalyses}
         />

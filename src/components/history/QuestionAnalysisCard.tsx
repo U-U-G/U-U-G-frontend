@@ -1,13 +1,14 @@
 import AnalysisBadge from './AnalysisBadge'
 
+//TODO: 백엔드 명세에 따라 수정 예정
 export interface QuestionAnalysisCardProps {
   questionNumber: number
   question: string
   answer: string
   feedback: string
   score: number
-  silence: string
-  fillerWord: string
+  silence: number
+  fillerWord: number
   logicScore: number
 }
 
@@ -45,8 +46,8 @@ export default function QuestionAnalysisCard({
         </p>
         <div className="flex flex-wrap gap-4">
           <AnalysisBadge label="총점" value={`${score}점`} active />
-          <AnalysisBadge label="침묵" value={silence} />
-          <AnalysisBadge label="습관어" value={fillerWord} />
+          <AnalysisBadge label="침묵" value={`${silence}점`} />
+          <AnalysisBadge label="습관어" value={`${fillerWord}점`} />
           <AnalysisBadge label="논리/구조" value={`${logicScore}점`} />
         </div>
       </div>
