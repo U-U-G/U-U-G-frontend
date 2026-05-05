@@ -25,6 +25,8 @@ function isValidUrl(value: string): boolean {
   return JOB_URL_PATTERNS.some((pattern) => pattern.test(value))
 }
 
+const GENERATING_DELAY_MS = 2000
+
 type PopupState =
   | 'analyzing'
   | 'analysisFailed'
@@ -88,7 +90,7 @@ export default function JobPostingFormSection() {
 
   const { data: jobPostingDetail } = useQuery({
     queryKey: ['job-posting', jobPostingUuid],
-    queryFn: () => getJobPosting(jobPostingUuid!),
+    queryFn: ({ queryKey }) => getJobPosting(queryKey[1] as string),
     enabled: !!jobPostingUuid && isPolling,
     refetchInterval: isPolling ? 2000 : false,
     refetchIntervalInBackground: true,
@@ -105,7 +107,7 @@ export default function JobPostingFormSection() {
         setPopupState('generating')
         generatingTimerRef.current = setTimeout(
           () => setPopupState('complete'),
-          2000,
+          GENERATING_DELAY_MS,
         )
       } else {
         setPopupState('companyName')
@@ -151,7 +153,7 @@ export default function JobPostingFormSection() {
     setPopupState('generating')
     generatingTimerRef.current = setTimeout(
       () => setPopupState('complete'),
-      2000,
+      GENERATING_DELAY_MS,
     )
   }
 

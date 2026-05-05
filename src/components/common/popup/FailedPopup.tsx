@@ -1,6 +1,7 @@
 import Image from 'next/image'
 import bangImg from '@/assets/image/bang-img.png'
 import PopupShell from './PopupShell'
+import Button from '@/components/common/button/Button'
 
 export default function FailedPopup({
   popupRef,
@@ -25,13 +26,13 @@ export default function FailedPopup({
         className="object-contain mb-10"
       />
       <p className="h1 text-primary mb-20">{title}</p>
-      <button
-        type="button"
+      <Button
+        variant="outlined"
+        className="w-70 rounded-full! py-3 bg-white hover:bg-secondary"
         onClick={onClose}
-        className="w-70 rounded-full border border-primary text-primary h3 py-3 cursor-pointer hover:bg-secondary"
       >
-        링크 다시 입력하기
-      </button>
+        <span className="h3">링크 다시 입력하기</span>
+      </Button>
     </PopupShell>
   )
 }

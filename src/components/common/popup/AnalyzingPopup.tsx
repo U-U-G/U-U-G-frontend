@@ -2,6 +2,7 @@ import Image from 'next/image'
 import character2 from '@/assets/image/uug-character2-img.png'
 import speechBubble from '@/assets/image/speech-bubble-img.png'
 import PopupShell from './PopupShell'
+import Button from '@/components/common/button/Button'
 
 export default function AnalyzingPopup({
   popupRef,
@@ -38,13 +39,13 @@ export default function AnalyzingPopup({
           공고에 담긴 정보를 꼼꼼히 분석 중이에요.
         </p>
       </div>
-      <button
-        type="button"
+      <Button
+        variant="outlined"
+        className="w-70 rounded-full! py-3 bg-white hover:bg-secondary"
         onClick={onClose}
-        className="w-70 rounded-full border border-primary text-primary h3 py-3 cursor-pointer hover:bg-secondary"
       >
-        중단 하기
-      </button>
+        <span className="h3">중단 하기</span>
+      </Button>
     </PopupShell>
   )
 }
