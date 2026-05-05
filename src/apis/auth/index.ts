@@ -12,6 +12,8 @@ import { EmailField, EmailVerificationConfirmRequest } from '@/apis/common/type'
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL
 
+const OAUTH_ORIGIN = BASE_URL ? new URL(BASE_URL).origin : ''
+
 export const login = async (body: LoginRequest) => {
   const { data } = await publicClient.post<ApiResponse<LoginResponse>>(
     '/auth/login',
@@ -75,11 +77,12 @@ export const changePassword = async (body: ChangePasswordRequest) => {
   return data.data
 }
 
-export const loginWithKakao = () => `${BASE_URL}/oauth2/authorization/kakao`
+export const loginWithKakao = () => `${OAUTH_ORIGIN}/oauth2/authorization/kakao`
 
-export const loginWithGoogle = () => `${BASE_URL}/oauth2/authorization/google`
+export const loginWithGoogle = () =>
+  `${OAUTH_ORIGIN}/oauth2/authorization/google`
 
-export const loginWithNaver = () => `${BASE_URL}/oauth2/authorization/naver`
+export const loginWithNaver = () => `${OAUTH_ORIGIN}/oauth2/authorization/naver`
 
 export const loginApi = {
   login,
