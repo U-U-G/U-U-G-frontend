@@ -3,7 +3,7 @@ import character2 from '@/assets/image/uug-character2-img.png'
 import speechBubble from '@/assets/image/speech-bubble-img.png'
 import PopupShell from './PopupShell'
 
-export default function GeneratingPopup({
+export default function AnalyzingPopup({
   popupRef,
   onClose,
 }: {
@@ -33,9 +33,9 @@ export default function GeneratingPopup({
         />
       </div>
       <div className="flex flex-col items-center gap-1.75 mb-12">
-        <p className="h1 text-primary">질문을 생성 중이에요</p>
+        <p className="h1 text-primary">채용 공고 링크를 분석 중이에요</p>
         <p className="p1 text-gray-2">
-          공고에 특화된 질문을 AI가 생성하고 있습니다.
+          공고에 담긴 정보를 꼼꼼히 분석 중이에요.
         </p>
       </div>
       <button
