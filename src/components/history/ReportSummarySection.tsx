@@ -4,14 +4,14 @@ import characterAngryImage from '@/assets/image/uug-character-angry-img.png'
 import characterSadImage from '@/assets/image/uug-character-sad-img.png'
 import characterHappyImage from '@/assets/image/uug-character-happy-img.png'
 import characterAwesomeImage from '@/assets/image/uug-character-awesome-img.png'
+import { getScoreBand, type ScoreBand } from '@/utils/reportScore'
 import Metric from './Metric'
 
-function scoreToCharacterImage(score: number): StaticImageData {
-  const n = Number.isFinite(score) ? score : 0
-  if (n < 40) return characterAngryImage
-  if (n < 80) return characterSadImage
-  if (n < 90) return characterHappyImage
-  return characterAwesomeImage
+const SCORE_BAND_CHARACTER: Record<ScoreBand, StaticImageData> = {
+  low: characterAngryImage,
+  mid: characterSadImage,
+  high: characterHappyImage,
+  top: characterAwesomeImage,
 }
 
 //TODO: 백엔드 명세에 따라 수정 예정
@@ -35,7 +35,7 @@ export default function ReportSummarySection({
   metrics,
 }: ReportSummarySectionProps) {
   const scoreNum = parseFloat(totalScore)
-  const characterSrc = scoreToCharacterImage(scoreNum)
+  const characterSrc = SCORE_BAND_CHARACTER[getScoreBand(scoreNum)]
 
   return (
     <section className="grid grid-cols-[2fr_1fr] gap-6 mb-8">
