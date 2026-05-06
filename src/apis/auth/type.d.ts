@@ -21,6 +21,17 @@ interface NewPasswordConfirmFields {
 export interface SignupRequest extends PasswordConfirmFields {
   email: string
   nickname: string
+  agreedTerms: string[]
+}
+
+export interface Term {
+  uuid: string
+  title: string
+  version: string
+  content: string
+  type: 'TERMS_OF_SERVICE' | 'PRIVACY_POLICY'
+  required: boolean
+  isActive: boolean
 }
 
 export interface ResetPasswordRequest extends NewPasswordConfirmFields {

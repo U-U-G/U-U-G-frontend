@@ -7,6 +7,7 @@ import {
   ResetPasswordRequest,
   ChangePasswordRequest,
   SignupRequest,
+  Term,
 } from './type'
 import { EmailField, EmailVerificationConfirmRequest } from '@/apis/common/type'
 
@@ -89,6 +90,13 @@ export const loginApi = {
   loginWithKakao,
   loginWithGoogle,
   loginWithNaver,
+}
+
+export const getActiveTerms = async (): Promise<Term[]> => {
+  const { data } = await publicClient.get<ApiResponse<Term[]>>(
+    '/terms?isActive=true',
+  )
+  return data.data
 }
 
 export const signupApi = {
