@@ -1,16 +1,14 @@
 'use client'
 
-import { useState, useEffect, useRef, useCallback } from 'react'
+import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
-import { useMutation } from '@tanstack/react-query'
 import InputBox from '@/components/common/input/InputBox'
 import HelperText from '@/components/common/text/HelperText'
 import Button from '@/components/common/button/Button'
 import character3 from '@/assets/image/uug-character3-img.png'
 import { useModal } from '@/hooks/useModal'
-import { jobPostingAnalysisFlowApi } from '@/apis/job-postings'
-import type { JobPostingDetail } from '@/apis/job-postings/type'
+import { useJobPostingAnalysisFlow } from '@/components/interview/jobPostingAnalysis/useJobPostingAnalysisFlow'
 import AnalyzingPopup from '@/components/common/popup/AnalyzingPopup'
 import GeneratingPopup from '@/components/common/popup/GeneratingPopup'
 import CompanyNamePopup from '@/components/common/popup/CompanyNamePopup'
@@ -25,17 +23,6 @@ const JOB_URL_PATTERNS = [
 function isValidUrl(value: string): boolean {
   return JOB_URL_PATTERNS.some((pattern) => pattern.test(value))
 }
-
-const GENERATING_DELAY_MS = 2000
-
-type PopupState =
-  | 'analyzing'
-  | 'analysisFailed'
-  | 'companyName'
-  | 'generating'
-  | 'questionFailed'
-  | 'complete'
-  | null
 
 function CompletePopup({
   popupRef,
@@ -77,187 +64,20 @@ function CompletePopup({
 export default function JobPostingFormSection() {
   const router = useRouter()
   const [url, setUrl] = useState('')
-  const [popupState, setPopupState] = useState<PopupState>(null)
-  const [companyName, setCompanyName] = useState('')
-  const [jobPostingUuid, setJobPostingUuid] = useState<string | null>(null)
-  const [isPolling, setIsPolling] = useState(false)
-  const generatingTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const {
+    popupState,
+    setPopupState,
+    companyName,
+    createJobPostingMutation,
+    handleClose,
+    handleCompanyNameSubmit,
+  } = useJobPostingAnalysisFlow()
 
   const { ref: popupRef } = useModal(popupState !== null)
 
   const urlError = url.trim().length > 0 && !isValidUrl(url)
   const urlValid = url.trim().length > 0 && isValidUrl(url)
   const isComplete = urlValid
-
-  const applyJobPostingDetail = useCallback((detail: JobPostingDetail) => {
-    if (detail.status === 'DONE') {
-      setIsPolling(false)
-      const name = detail.companyName || ''
-      if (name) {
-        setCompanyName(name)
-        setPopupState('generating')
-        generatingTimerRef.current = setTimeout(
-          () => setPopupState('complete'),
-          GENERATING_DELAY_MS,
-        )
-      } else {
-        setPopupState('companyName')
-      }
-    } else if (detail.status === 'FAILED') {
-      setIsPolling(false)
-      const reason = (detail.failureReason ?? '').toLowerCase()
-      if (reason.includes('question')) {
-        setPopupState('questionFailed')
-      } else {
-        setPopupState('analysisFailed')
-      }
-    }
-  }, [])
-
-  useEffect(() => {
-    if (!jobPostingUuid || !isPolling) return
-
-    const controller = new AbortController()
-    let streamFinished = false
-
-    const stopPolling = () => {
-      controller.abort()
-      setIsPolling(false)
-    }
-
-    void jobPostingAnalysisFlowApi.createJobPostingAnalysisEventSource(
-      jobPostingUuid,
-      {
-        signal: controller.signal,
-
-        async onmessage(ev) {
-          if (streamFinished) return
-
-          if (ev.event === 'JOB_POSTING_ANALYSIS_DONE') {
-            streamFinished = true
-            stopPolling()
-
-            try {
-              const { jobPostingUuid: uuidFromPayload } = JSON.parse(
-                ev.data,
-              ) as {
-                jobPostingUuid: string
-              }
-              const id = uuidFromPayload ?? jobPostingUuid
-              const detail = await jobPostingAnalysisFlowApi.getJobPosting(id)
-              applyJobPostingDetail(detail)
-            } catch {
-              setPopupState('analysisFailed')
-            }
-            return
-          }
-
-          if (ev.event === 'ERROR') {
-            streamFinished = true
-            stopPolling()
-
-            try {
-              const data = ev.data?.trim()
-                ? (JSON.parse(ev.data) as { message?: string })
-                : {}
-              const reason = (data.message ?? '').toLowerCase()
-              setPopupState(
-                reason.includes('question')
-                  ? 'questionFailed'
-                  : 'analysisFailed',
-              )
-            } catch {
-              setPopupState('analysisFailed')
-            }
-            return
-          }
-        },
-
-        onerror(error) {
-          if (streamFinished || controller.signal.aborted) return
-          console.error(error)
-        },
-      },
-    )
-
-    return () => {
-      controller.abort()
-    }
-  }, [jobPostingUuid, isPolling, applyJobPostingDetail])
-
-  useEffect(() => {
-    return () => {
-      if (generatingTimerRef.current) clearTimeout(generatingTimerRef.current)
-    }
-  }, [])
-
-  const createJobPostingMutation = useMutation({
-    mutationFn: jobPostingAnalysisFlowApi.createJobPosting,
-    onSuccess: async (data) => {
-      setJobPostingUuid(data.uuid)
-
-      if (data.status === 'DONE' || data.status === 'FAILED') {
-        try {
-          const detail = await jobPostingAnalysisFlowApi.getJobPosting(
-            data.uuid,
-          )
-          applyJobPostingDetail(detail)
-        } catch {
-          setIsPolling(false)
-          setPopupState('analysisFailed')
-        }
-        return
-      }
-
-      setIsPolling(true)
-    },
-    onError: () => {
-      setPopupState('analysisFailed')
-    },
-  })
-
-  const updateCompanyNameMutation = useMutation({
-    mutationFn: ({
-      uuid,
-      companyName,
-    }: {
-      uuid: string
-      companyName: string
-    }) =>
-      jobPostingAnalysisFlowApi.updateJobPostingCompanyName(uuid, {
-        companyName,
-      }),
-  })
-
-  function handleClose() {
-    setIsPolling(false)
-    if (generatingTimerRef.current) clearTimeout(generatingTimerRef.current)
-    setPopupState(null)
-    setJobPostingUuid(null)
-    setCompanyName('')
-  }
-
-  function handleCompanyNameSubmit(name: string) {
-    const trimmed = name.trim()
-    if (!jobPostingUuid || !trimmed) return
-
-    updateCompanyNameMutation.mutate(
-      { uuid: jobPostingUuid, companyName: trimmed },
-      {
-        onSuccess: () => {
-          setCompanyName(trimmed)
-          setPopupState('generating')
-          generatingTimerRef.current = setTimeout(
-            () => setPopupState('complete'),
-            GENERATING_DELAY_MS,
-          )
-        },
-        onError: () => {
-          setPopupState('analysisFailed')
-        },
-      },
-    )
-  }
 
   return (
     <section className="flex flex-col flex-1 min-h-0 gap-5 px-10 pt-6.5 pb-10">
