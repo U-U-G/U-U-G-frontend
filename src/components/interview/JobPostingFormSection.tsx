@@ -136,45 +136,27 @@ export default function JobPostingFormSection() {
       setIsPolling(false)
     }
 
-    createJobPostingAnalysisEventSource(jobPostingUuid, {
+    void createJobPostingAnalysisEventSource(jobPostingUuid, {
       signal: controller.signal,
 
       async onmessage(event) {
-        const data = event.data ? JSON.parse(event.data) : {}
+        if (!event.data?.trim()) return
 
-        if (event.event === 'JOB_POSTING_ANALYSIS_DONE') {
-          stopPolling()
+        let payload: { timeout?: number }
 
-          try {
-            const detail = await getJobPosting(jobPostingUuid)
-            applyJobPostingDetail(detail)
-          } catch {
-            setPopupState('analysisFailed')
-          }
-
+        try {
+          payload = JSON.parse(event.data)
+        } catch {
           return
         }
-
-        if (event.event === 'ERROR') {
-          stopPolling()
-
-          const reason = (
-            data.failureReason ??
-            data.message ??
-            ''
-          ).toLowerCase()
-
-          setPopupState(
-            reason.includes('question') ? 'questionFailed' : 'analysisFailed',
-          )
-        }
-      },
-
-      onerror(error) {
+        if (payload.timeout !== 0) return
         stopPolling()
-        setPopupState('analysisFailed')
-
-        throw error
+        try {
+          const detail = await getJobPosting(jobPostingUuid)
+          applyJobPostingDetail(detail)
+        } catch {
+          setPopupState('analysisFailed')
+        }
       },
     })
 
