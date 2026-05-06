@@ -3,13 +3,17 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
-import { useMutation, useQuery } from '@tanstack/react-query'
+import { useMutation } from '@tanstack/react-query'
 import InputBox from '@/components/common/input/InputBox'
 import HelperText from '@/components/common/text/HelperText'
 import Button from '@/components/common/button/Button'
 import character3 from '@/assets/image/uug-character3-img.png'
 import { useModal } from '@/hooks/useModal'
-import { createJobPosting, getJobPosting } from '@/apis/job-postings'
+import {
+  createJobPosting,
+  createJobPostingAnalysisEventSource,
+  getJobPosting,
+} from '@/apis/job-postings'
 import type { JobPostingDetail } from '@/apis/job-postings/type'
 import AnalyzingPopup from '@/components/common/popup/AnalyzingPopup'
 import GeneratingPopup from '@/components/common/popup/GeneratingPopup'
@@ -89,13 +93,13 @@ export default function JobPostingFormSection() {
   const urlValid = url.trim().length > 0 && isValidUrl(url)
   const isComplete = urlValid
 
-  const { data: jobPostingDetail } = useQuery({
-    queryKey: ['job-posting', jobPostingUuid],
-    queryFn: ({ queryKey }) => getJobPosting(queryKey[1] as string),
-    enabled: !!jobPostingUuid && isPolling,
-    refetchInterval: isPolling ? 2000 : false,
-    refetchIntervalInBackground: true,
-  })
+  // const { data: jobPostingDetail } = useQuery({
+  //   queryKey: ['job-posting', jobPostingUuid],
+  //   queryFn: ({ queryKey }) => getJobPosting(queryKey[1] as string),
+  //   enabled: !!jobPostingUuid && isPolling,
+  //   refetchInterval: isPolling ? 2000 : false,
+  //   refetchIntervalInBackground: true,
+  // })
 
   const applyJobPostingDetail = useCallback((detail: JobPostingDetail) => {
     if (detail.status === 'DONE') {
@@ -123,15 +127,61 @@ export default function JobPostingFormSection() {
   }, [])
 
   useEffect(() => {
-    if (!jobPostingDetail || !isPolling) return
-    if (
-      jobPostingDetail.status !== 'DONE' &&
-      jobPostingDetail.status !== 'FAILED'
-    ) {
-      return
+    if (!jobPostingUuid || !isPolling) return
+
+    const controller = new AbortController()
+
+    const stopPolling = () => {
+      controller.abort()
+      setIsPolling(false)
     }
-    applyJobPostingDetail(jobPostingDetail)
-  }, [jobPostingDetail, isPolling, applyJobPostingDetail])
+
+    createJobPostingAnalysisEventSource(jobPostingUuid, {
+      signal: controller.signal,
+
+      async onmessage(event) {
+        const data = event.data ? JSON.parse(event.data) : {}
+
+        if (event.event === 'JOB_POSTING_ANALYSIS_DONE') {
+          stopPolling()
+
+          try {
+            const detail = await getJobPosting(jobPostingUuid)
+            applyJobPostingDetail(detail)
+          } catch {
+            setPopupState('analysisFailed')
+          }
+
+          return
+        }
+
+        if (event.event === 'ERROR') {
+          stopPolling()
+
+          const reason = (
+            data.failureReason ??
+            data.message ??
+            ''
+          ).toLowerCase()
+
+          setPopupState(
+            reason.includes('question') ? 'questionFailed' : 'analysisFailed',
+          )
+        }
+      },
+
+      onerror(error) {
+        stopPolling()
+        setPopupState('analysisFailed')
+
+        throw error
+      },
+    })
+
+    return () => {
+      controller.abort()
+    }
+  }, [jobPostingUuid, isPolling, applyJobPostingDetail])
 
   useEffect(() => {
     return () => {
