@@ -130,6 +130,7 @@ export default function JobPostingFormSection() {
     if (!jobPostingUuid || !isPolling) return
 
     const controller = new AbortController()
+    let streamFinished = false
 
     const stopPolling = () => {
       controller.abort()
@@ -139,24 +140,48 @@ export default function JobPostingFormSection() {
     void createJobPostingAnalysisEventSource(jobPostingUuid, {
       signal: controller.signal,
 
-      async onmessage(event) {
-        if (!event.data?.trim()) return
+      async onmessage(ev) {
+        if (streamFinished) return
 
-        let payload: { timeout?: number }
+        if (ev.event === 'JOB_POSTING_ANALYSIS_DONE') {
+          streamFinished = true
+          stopPolling()
 
-        try {
-          payload = JSON.parse(event.data)
-        } catch {
+          try {
+            const { jobPostingUuid: uuidFromPayload } = JSON.parse(ev.data) as {
+              jobPostingUuid: string
+            }
+            const id = uuidFromPayload ?? jobPostingUuid
+            const detail = await getJobPosting(id)
+            applyJobPostingDetail(detail)
+          } catch {
+            setPopupState('analysisFailed')
+          }
           return
         }
-        if (payload.timeout !== 0) return
-        stopPolling()
-        try {
-          const detail = await getJobPosting(jobPostingUuid)
-          applyJobPostingDetail(detail)
-        } catch {
-          setPopupState('analysisFailed')
+
+        if (ev.event === 'ERROR') {
+          streamFinished = true
+          stopPolling()
+
+          try {
+            const data = ev.data?.trim()
+              ? (JSON.parse(ev.data) as { message?: string })
+              : {}
+            const reason = (data.message ?? '').toLowerCase()
+            setPopupState(
+              reason.includes('question') ? 'questionFailed' : 'analysisFailed',
+            )
+          } catch {
+            setPopupState('analysisFailed')
+          }
+          return
         }
+      },
+
+      onerror(error) {
+        if (streamFinished || controller.signal.aborted) return
+        console.error(error)
       },
     })
 
