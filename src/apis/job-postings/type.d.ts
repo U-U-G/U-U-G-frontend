@@ -1,9 +1,9 @@
-export type Status = 'PENDING' | 'ANALYZING' | 'DONE' | 'FAILED'
+export type JobPostingStatus = 'PENDING' | 'ANALYZING' | 'DONE' | 'FAILED'
 
 export interface JobPosting {
   uuid: string
   url: string
-  status: Status
+  status: JobPostingStatus
 }
 
 export interface JobPostingDetail extends JobPosting {
@@ -25,6 +25,14 @@ export interface JobPostingListItem extends JobPosting {
   createdAt: string
 }
 
-export interface CreateJobPostingRequest {
+export interface JobPostingAnalysisEvent {
+  timeout: number
+}
+
+export interface JobPostingAnalysisRequest {
   url: string
+}
+
+export interface UpdateJobPostingCompanyNameRequest {
+  companyName: string
 }
