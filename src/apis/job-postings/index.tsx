@@ -8,7 +8,6 @@ import { ApiResponse } from '../common/type'
 import {
   JobPostingAnalysisRequest,
   JobPosting,
-  JobPostingAnalysisEvent,
   JobPostingDetail,
   JobPostingListItem,
   UpdateJobPostingCompanyNameRequest,
@@ -72,12 +71,6 @@ export const createJobPostingAnalysisEventSource = (
       ...options.headers,
     },
   })
-}
-
-export const parseJobPostingAnalysisEvent = (
-  event: MessageEvent<string>,
-): JobPostingAnalysisEvent => {
-  return JSON.parse(event.data)
 }
 
 export const jobPostingAnalysisFlowApi = {

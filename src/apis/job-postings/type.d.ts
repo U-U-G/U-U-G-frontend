@@ -25,8 +25,12 @@ export interface JobPostingListItem extends JobPosting {
   createdAt: string
 }
 
-export interface JobPostingAnalysisEvent {
-  timeout: number
+export interface JobPostingAnalysisDonePayload {
+  jobPostingUuid?: string
+}
+
+export interface JobPostingAnalysisErrorPayload {
+  message?: string
 }
 
 export interface JobPostingAnalysisRequest {
