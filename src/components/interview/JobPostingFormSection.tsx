@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 import { useMutation, useQuery } from '@tanstack/react-query'
@@ -10,6 +10,7 @@ import Button from '@/components/common/button/Button'
 import character3 from '@/assets/image/uug-character3-img.png'
 import { useModal } from '@/hooks/useModal'
 import { createJobPosting, getJobPosting } from '@/apis/job-postings'
+import type { JobPostingDetail } from '@/apis/job-postings/type'
 import AnalyzingPopup from '@/components/common/popup/AnalyzingPopup'
 import GeneratingPopup from '@/components/common/popup/GeneratingPopup'
 import CompanyNamePopup from '@/components/common/popup/CompanyNamePopup'
@@ -96,12 +97,10 @@ export default function JobPostingFormSection() {
     refetchIntervalInBackground: true,
   })
 
-  useEffect(() => {
-    if (!jobPostingDetail || !isPolling) return
-
-    if (jobPostingDetail.status === 'DONE') {
+  const applyJobPostingDetail = useCallback((detail: JobPostingDetail) => {
+    if (detail.status === 'DONE') {
       setIsPolling(false)
-      const name = jobPostingDetail.companyName || ''
+      const name = detail.companyName || ''
       if (name) {
         setCompanyName(name)
         setPopupState('generating')
@@ -112,16 +111,27 @@ export default function JobPostingFormSection() {
       } else {
         setPopupState('companyName')
       }
-    } else if (jobPostingDetail.status === 'FAILED') {
+    } else if (detail.status === 'FAILED') {
       setIsPolling(false)
-      const reason = (jobPostingDetail.failureReason ?? '').toLowerCase()
+      const reason = (detail.failureReason ?? '').toLowerCase()
       if (reason.includes('question')) {
         setPopupState('questionFailed')
       } else {
         setPopupState('analysisFailed')
       }
     }
-  }, [jobPostingDetail, isPolling])
+  }, [])
+
+  useEffect(() => {
+    if (!jobPostingDetail || !isPolling) return
+    if (
+      jobPostingDetail.status !== 'DONE' &&
+      jobPostingDetail.status !== 'FAILED'
+    ) {
+      return
+    }
+    applyJobPostingDetail(jobPostingDetail)
+  }, [jobPostingDetail, isPolling, applyJobPostingDetail])
 
   useEffect(() => {
     return () => {
@@ -131,8 +141,20 @@ export default function JobPostingFormSection() {
 
   const createJobPostingMutation = useMutation({
     mutationFn: createJobPosting,
-    onSuccess: (data) => {
+    onSuccess: async (data) => {
       setJobPostingUuid(data.uuid)
+
+      if (data.status === 'DONE' || data.status === 'FAILED') {
+        try {
+          const detail = await getJobPosting(data.uuid)
+          applyJobPostingDetail(detail)
+        } catch {
+          setIsPolling(false)
+          setPopupState('analysisFailed')
+        }
+        return
+      }
+
       setIsPolling(true)
     },
     onError: () => {
