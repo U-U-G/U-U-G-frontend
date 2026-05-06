@@ -55,10 +55,6 @@ export const updateJobPostingCompanyName = async (
   return data.data
 }
 
-// export const createJobPostingAnalysisEventSource = (uuid: string) => {
-//   return new EventSource(`${API_BASE_URL}/job-postings/${uuid}/stream`)
-// }
-
 export const createJobPostingAnalysisEventSource = (
   uuid: string,
   options: FetchEventSourceInit,
@@ -82,4 +78,11 @@ export const parseJobPostingAnalysisEvent = (
   event: MessageEvent<string>,
 ): JobPostingAnalysisEvent => {
   return JSON.parse(event.data)
+}
+
+export const jobPostingAnalysisFlowApi = {
+  createJobPosting,
+  createJobPostingAnalysisEventSource,
+  getJobPosting,
+  updateJobPostingCompanyName,
 }
