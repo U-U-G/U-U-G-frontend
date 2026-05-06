@@ -1,11 +1,19 @@
+import {
+  fetchEventSource,
+  type FetchEventSourceInit,
+} from '@microsoft/fetch-event-source'
+import { getAccessToken } from '@/utils/tokenStorage'
 import { privateClient } from '@/apis/common/privateClient'
 import { ApiResponse } from '../common/type'
 import {
-  CreateJobPostingRequest,
+  JobPostingAnalysisRequest,
   JobPosting,
   JobPostingDetail,
   JobPostingListItem,
+  UpdateJobPostingCompanyNameRequest,
 } from './type'
+
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL
 
 export const getJobPostingList = async () => {
   const { data } =
@@ -13,7 +21,7 @@ export const getJobPostingList = async () => {
   return data.data
 }
 
-export const createJobPosting = async (body: CreateJobPostingRequest) => {
+export const createJobPosting = async (body: JobPostingAnalysisRequest) => {
   const { data } = await privateClient.post<ApiResponse<JobPosting>>(
     '/job-postings',
     body,
@@ -33,4 +41,41 @@ export const deleteJobPosting = async (uuid: string) => {
     `/job-postings/${uuid}`,
   )
   return data.data
+}
+
+export const updateJobPostingCompanyName = async (
+  uuid: string,
+  body: UpdateJobPostingCompanyNameRequest,
+) => {
+  const { data } = await privateClient.patch<ApiResponse<JobPostingDetail>>(
+    `/job-postings/${uuid}`,
+    body,
+  )
+  return data.data
+}
+
+export const createJobPostingAnalysisEventSource = (
+  uuid: string,
+  options: FetchEventSourceInit,
+) => {
+  const accessToken = getAccessToken()
+
+  return fetchEventSource(`${API_BASE_URL}/job-postings/${uuid}/stream`, {
+    ...options,
+
+    credentials: 'include',
+
+    headers: {
+      Accept: 'text/event-stream',
+      Authorization: `Bearer ${accessToken ?? ''}`,
+      ...options.headers,
+    },
+  })
+}
+
+export const jobPostingAnalysisFlowApi = {
+  createJobPosting,
+  createJobPostingAnalysisEventSource,
+  getJobPosting,
+  updateJobPostingCompanyName,
 }
