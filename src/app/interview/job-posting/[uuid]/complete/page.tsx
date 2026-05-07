@@ -1,6 +1,6 @@
 import Header from '@/components/common/header/Header'
 import CompleteSection from '@/components/interview/CompleteSection'
-import { interviewMockData } from '@/mocks/interviewMockData'
+import { TOTAL_QUESTIONS } from '@/utils/interview'
 
 export default async function CompletePage({
   searchParams,
@@ -15,7 +15,7 @@ export default async function CompletePage({
       <Header />
       <CompleteSection
         currentQuestion={currentQuestion}
-        totalQuestions={interviewMockData.totalQuestions}
+        totalQuestions={TOTAL_QUESTIONS}
       />
     </main>
   )
