@@ -1,8 +1,14 @@
 'use client'
 
 import { useState, useEffect, useRef, useCallback } from 'react'
+import { useRouter } from 'next/navigation'
 import { useMutation } from '@tanstack/react-query'
 import { jobPostingAnalysisFlowApi } from '@/apis/job-postings'
+import {
+  createInterviewSession,
+  createInterviewSessionEventSource,
+  getInterviewQuestions,
+} from '@/apis/interview-sessions'
 import type { JobPostingDetail } from '@/apis/job-postings/type'
 import {
   SSE_EVENT_ERROR,
@@ -10,6 +16,10 @@ import {
   parseErrorPayload,
   parseJobPostingDonePayload,
 } from './sse'
+import {
+  SSE_EVENT_QUESTIONS_READY,
+  SSE_EVENT_ERROR as SESSION_SSE_EVENT_ERROR,
+} from '@/apis/interview-sessions/sse'
 
 const GENERATING_DELAY_MS = 2000
 
@@ -20,15 +30,22 @@ export type JobPostingAnalysisPopupState =
   | 'generating'
   | 'questionFailed'
   | 'complete'
+  | 'sessionCreating'
+  | 'sessionFailed'
   | null
 
 export function useJobPostingAnalysisFlow() {
+  const router = useRouter()
   const [popupState, setPopupState] =
     useState<JobPostingAnalysisPopupState>(null)
   const [companyName, setCompanyName] = useState('')
+  const [position, setPosition] = useState('')
   const [jobPostingUuid, setJobPostingUuid] = useState<string | null>(null)
   const [isPolling, setIsPolling] = useState(false)
+  const [sessionUuid, setSessionUuid] = useState<string | null>(null)
+  const [isSessionPolling, setIsSessionPolling] = useState(false)
   const generatingTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const sessionPollRef = useRef<ReturnType<typeof setInterval> | null>(null)
 
   const applyJobPostingDetail = useCallback((detail: JobPostingDetail) => {
     if (detail.status === 'DONE') {
@@ -36,6 +53,7 @@ export function useJobPostingAnalysisFlow() {
       const name = detail.companyName || ''
       if (name) {
         setCompanyName(name)
+        setPosition(detail.position || '')
         setPopupState('generating')
         generatingTimerRef.current = setTimeout(
           () => setPopupState('complete'),
@@ -55,6 +73,7 @@ export function useJobPostingAnalysisFlow() {
     }
   }, [])
 
+  // Job posting SSE
   useEffect(() => {
     if (!jobPostingUuid || !isPolling) return
 
@@ -66,9 +85,8 @@ export function useJobPostingAnalysisFlow() {
       setIsPolling(false)
     }
 
-    void jobPostingAnalysisFlowApi.createJobPostingAnalysisEventSource(
-      jobPostingUuid,
-      {
+    jobPostingAnalysisFlowApi
+      .createJobPostingAnalysisEventSource(jobPostingUuid, {
         signal: controller.signal,
 
         async onmessage(ev) {
@@ -100,25 +118,92 @@ export function useJobPostingAnalysisFlow() {
             const data = parseErrorPayload(ev.data ?? '')
             const reason = (data.message ?? '').toLowerCase()
             setPopupState(
-              reason.includes('question')
-                ? 'questionFailed'
-                : 'analysisFailed',
+              reason.includes('question') ? 'questionFailed' : 'analysisFailed',
             )
             return
           }
         },
 
-        onerror(error) {
-          if (streamFinished || controller.signal.aborted) return
-          console.error(error)
+        onerror(err) {
+          throw err
         },
-      },
-    )
+      })
+      .catch((err) => {
+        if (streamFinished || controller.signal.aborted) return
+        console.error('Job posting SSE error:', err)
+      })
 
     return () => {
       controller.abort()
     }
   }, [jobPostingUuid, isPolling, applyJobPostingDetail])
+
+  // Interview session SSE
+  useEffect(() => {
+    if (!sessionUuid || !isSessionPolling) return
+
+    const controller = new AbortController()
+    let streamFinished = false
+
+    const stopPolling = () => {
+      controller.abort()
+      setIsSessionPolling(false)
+    }
+
+    const startSessionPolling = () => {
+      if (sessionPollRef.current) return
+      sessionPollRef.current = setInterval(async () => {
+        try {
+          const questions = await getInterviewQuestions(sessionUuid, 1)
+          if (questions && questions.length > 0) {
+            clearInterval(sessionPollRef.current!)
+            sessionPollRef.current = null
+            router.push(`/interview/job-posting/${sessionUuid}/countdown?q=1`)
+          }
+        } catch {
+          // keep polling
+        }
+      }, 3000)
+    }
+
+    createInterviewSessionEventSource(sessionUuid, {
+      signal: controller.signal,
+
+      onmessage(ev) {
+        if (streamFinished) return
+
+        if (ev.event === SSE_EVENT_QUESTIONS_READY) {
+          streamFinished = true
+          stopPolling()
+          router.push(`/interview/job-posting/${sessionUuid}/countdown?q=1`)
+          return
+        }
+
+        if (ev.event === SESSION_SSE_EVENT_ERROR) {
+          streamFinished = true
+          stopPolling()
+          setPopupState('sessionFailed')
+          return
+        }
+      },
+
+      onerror(err) {
+        throw err
+      },
+    }).catch((err) => {
+      if (streamFinished || controller.signal.aborted) return
+      console.warn('Session SSE failed, falling back to polling:', err)
+      startSessionPolling()
+    })
+
+    return () => {
+      controller.abort()
+      if (sessionPollRef.current) {
+        clearInterval(sessionPollRef.current)
+        sessionPollRef.current = null
+      }
+    }
+  }, [sessionUuid, isSessionPolling, router])
 
   useEffect(() => {
     return () => {
@@ -164,12 +249,36 @@ export function useJobPostingAnalysisFlow() {
       }),
   })
 
+  const createSessionMutation = useMutation({
+    mutationFn: createInterviewSession,
+    onSuccess: (data) => {
+      if (companyName || position) {
+        sessionStorage.setItem(
+          `interview-meta-${data.uuid}`,
+          JSON.stringify({ companyName, position }),
+        )
+      }
+      setSessionUuid(data.uuid)
+      setIsSessionPolling(true)
+    },
+    onError: () => {
+      setPopupState('sessionFailed')
+    },
+  })
+
   function handleClose() {
     setIsPolling(false)
+    setIsSessionPolling(false)
     if (generatingTimerRef.current) clearTimeout(generatingTimerRef.current)
+    if (sessionPollRef.current) {
+      clearInterval(sessionPollRef.current)
+      sessionPollRef.current = null
+    }
     setPopupState(null)
     setJobPostingUuid(null)
+    setSessionUuid(null)
     setCompanyName('')
+    setPosition('')
   }
 
   function handleCompanyNameSubmit(name: string) {
@@ -194,6 +303,16 @@ export function useJobPostingAnalysisFlow() {
     )
   }
 
+  function handleStartInterview() {
+    if (!jobPostingUuid) return
+    setPopupState('sessionCreating')
+    createSessionMutation.mutate({
+      jobPostingUuid,
+      interviewDate: new Date().toISOString().split('T')[0],
+      retry: false,
+    })
+  }
+
   return {
     popupState,
     setPopupState,
@@ -201,5 +320,6 @@ export function useJobPostingAnalysisFlow() {
     createJobPostingMutation,
     handleClose,
     handleCompanyNameSubmit,
+    handleStartInterview,
   }
 }
