@@ -24,7 +24,7 @@ export default function HeroSection() {
               alt=""
               width={180}
               height={120}
-              className="-translate-x-3.5 h-auto object-left"
+              className="-translate-x-3.5 h-auto object-left mb-1"
               priority
             />
 

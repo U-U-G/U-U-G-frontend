@@ -2,6 +2,7 @@ import Image from 'next/image'
 import Header from '@/components/common/header/Header'
 import HeroSection from '@/components/landing/HeroSection'
 import LandingConcernsSection from '@/components/landing/LandingConcernsSection'
+import LandingFooterSection from '@/components/landing/LandingFooterSection'
 import FeatureTemplate from '@/components/landing/FeatureTemplate'
 import Feature1Img from '@/assets/image/landing/feature1-img.png'
 import Feature2Img from '@/assets/image/landing/feature2-img.png'
@@ -30,7 +31,7 @@ export default function LandingPage() {
         image={Feature2Img}
         imagePosition="left"
         title={`내 말하기 습관의\n직관적인 데이터화`}
-        subtitle={`무의식적으로 사용하는 '음, 어, 그'와 침묵 시간을 정확하게\n식별합니다. 직관적인 점수와 프로그레스가 바로 제공되며, \n 더불어 답변의 퀄리티를 확인받고 교정할 수 있습니다.`}
+        subtitle={`무의식적으로 사용하는 '음, 어, 그'와 침묵 시간을 정확하게\n식별합니다. 직관적인 점수와 프로그레스가 바로 제공되며,\n 더불어 답변의 퀄리티를 확인받고 교정할 수 있습니다.`}
       />
       <FeatureTemplate
         backgroundClassName="bg-white"
@@ -40,6 +41,7 @@ export default function LandingPage() {
         title={`실시간 랭킹으로\n파악하는 나의 순위`}
         subtitle={`전체 사용자 중 나의 객관적인 위치를 파악하세요.\n 분석 리포트의 총점을 기준으로 실시간 랭킹이 산정됩니다.\n 실전 감각을 유지하고 확실한 동기부여를 얻을 수 있습니다.`}
       />
+      <LandingFooterSection />
     </main>
   )
 }
