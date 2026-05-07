@@ -9,7 +9,7 @@ import {
 } from '@/apis/interview-sessions'
 import Button from '@/components/common/button/Button'
 
-import { TOTAL_QUESTIONS } from '@/constants/interview'
+import { TOTAL_QUESTIONS } from '@/utils/interview'
 
 const TOTAL = TOTAL_QUESTIONS
 const RADIUS = 54

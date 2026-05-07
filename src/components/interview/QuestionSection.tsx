@@ -21,7 +21,7 @@ import {
   abandonInterviewSession,
 } from '@/apis/interview-sessions'
 import { submitAnswer } from '@/apis/questions'
-import { TOTAL_QUESTIONS } from '@/constants/interview'
+import { TOTAL_QUESTIONS } from '@/utils/interview'
 
 const WARNING_MS = 90 * 1000
 const FILLER_SET = new Set(['음', '어', '그'])

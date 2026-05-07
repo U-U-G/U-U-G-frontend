@@ -1,4 +1,4 @@
-import { TOTAL_QUESTIONS } from '@/constants/interview'
+export const TOTAL_QUESTIONS = 5
 
 export function parseQuestionNumber(q: string | undefined): number | null {
   const n = parseInt(q ?? '', 10)
