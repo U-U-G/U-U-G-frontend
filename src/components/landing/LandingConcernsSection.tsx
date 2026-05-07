@@ -42,7 +42,7 @@ export default function LandingConcernsSection() {
           height={45}
           className="shrink-0"
         />
-        <span className="text-center text-4xl text-primary text-semibold">
+        <span className="text-center text-4xl text-primary font-medium">
           모든 고민, <span className="text-4xl font-bold">음어그</span>에서
           해결해드립니다
         </span>

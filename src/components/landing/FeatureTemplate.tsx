@@ -64,7 +64,6 @@ export default function FeatureTemplate({
           alt={imageAlt}
           className="block h-auto w-full"
           sizes="(max-width: 1024px) 100vw, 540px"
-          priority
         />
       </div>
     </div>
