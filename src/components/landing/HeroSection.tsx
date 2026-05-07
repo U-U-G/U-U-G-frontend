@@ -6,7 +6,7 @@ import SpeechBubbleImg from '@/assets/image/landing/speech-bubble-img.png'
 
 export default function HeroSection() {
   return (
-    <div className="relative min-h-0 w-full flex-1">
+    <div className="relative flex-1 min-h-screen shrink-0">
       <Image
         src={LandingBackgroundImg}
         alt=""
