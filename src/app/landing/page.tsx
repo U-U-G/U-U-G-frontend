@@ -13,7 +13,7 @@ import Number3Icon from '@/assets/icon/number3-round-fill-icon.svg'
 
 export default function LandingPage() {
   return (
-    <main className="flex min-h-screen flex-col ">
+    <main className="flex h-screen flex-col ">
       <Header />
       <HeroSection />
       <LandingConcernsSection />
