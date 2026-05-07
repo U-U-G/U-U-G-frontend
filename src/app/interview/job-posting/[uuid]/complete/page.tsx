@@ -1,5 +1,6 @@
 import Header from '@/components/common/header/Header'
 import CompleteSection from '@/components/interview/CompleteSection'
+import { TOTAL_QUESTIONS } from '@/constants/interview'
 
 export default async function CompletePage({
   searchParams,
@@ -12,7 +13,7 @@ export default async function CompletePage({
   return (
     <main className="h-screen flex flex-col overflow-hidden">
       <Header />
-      <CompleteSection currentQuestion={currentQuestion} totalQuestions={5} />
+      <CompleteSection currentQuestion={currentQuestion} totalQuestions={TOTAL_QUESTIONS} />
     </main>
   )
 }

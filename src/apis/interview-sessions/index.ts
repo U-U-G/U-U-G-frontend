@@ -48,10 +48,9 @@ export const getInterviewQuestions = async (
   uuid: string,
   sequenceOrder?: number,
 ) => {
-  const params =
-    sequenceOrder !== undefined ? `?sequenceOrder=${sequenceOrder}` : ''
   const { data } = await privateClient.get<ApiResponse<InterviewQuestion[]>>(
-    `/interview-sessions/${uuid}/questions${params}`,
+    `/interview-sessions/${uuid}/questions`,
+    { params: sequenceOrder !== undefined ? { sequenceOrder } : undefined },
   )
   return data.data
 }
