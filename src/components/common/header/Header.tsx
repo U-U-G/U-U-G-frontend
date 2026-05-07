@@ -3,7 +3,7 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import { useState, useRef, useEffect } from 'react'
-import { useQuery, useMutation } from '@tanstack/react-query'
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import {
   IconChevronDown,
   IconSettingsFilled,
@@ -26,17 +26,18 @@ const NAV_LINKS = [
 
 export default function Header({ className = '' }: HeaderProps) {
   const [open, setOpen] = useState(false)
-  const [isLoggedIn, setIsLoggedIn] = useState(false)
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null)
   const dropdownRef = useRef<HTMLDivElement>(null)
+  const queryClient = useQueryClient()
 
   useEffect(() => {
     setIsLoggedIn(!!getAccessToken())
   }, [])
 
-  const { data: profile } = useQuery({
-    queryKey: ['profile'],
+  const { data: profile, isLoading: isProfileLoading } = useQuery({
+    queryKey: ['user', 'profile'],
     queryFn: getProfile,
-    enabled: isLoggedIn,
+    enabled: !!isLoggedIn,
   })
 
   useEffect(() => {
@@ -56,10 +57,19 @@ export default function Header({ className = '' }: HeaderProps) {
     mutationFn: logout,
     onSettled: () => {
       clearAuthTokens()
+      queryClient.removeQueries({ queryKey: ['user', 'profile'] })
       setIsLoggedIn(false)
       setOpen(false)
     },
   })
+
+  if (isLoggedIn === null) {
+    return (
+      <header
+        className={`w-full h-19.5 px-10 py-5.5 flex items-center justify-between bg-white border-b border-[#E5DDFF] ${className}`}
+      />
+    )
+  }
 
   return (
     <header
@@ -89,14 +99,20 @@ export default function Header({ className = '' }: HeaderProps) {
           </nav>
 
           <div className="flex items-center" ref={dropdownRef}>
-            <Image
-              src={profile?.profileImageUrl || defaultProfileIcon}
-              alt=""
-              width={30}
-              height={30}
-              className="rounded-full mr-3.25"
-            />
-            <span className="p1 mr-3.75">{profile?.nickname ?? ''} 님</span>
+            {isProfileLoading ? (
+              <div className="w-30 h-7.5 rounded-lg bg-gray-100 animate-pulse mr-3.25" />
+            ) : (
+              <>
+                <Image
+                  src={profile?.profileImageUrl || defaultProfileIcon}
+                  alt="프로필 이미지"
+                  width={30}
+                  height={30}
+                  className="rounded-full mr-3.25"
+                />
+                <span className="p1 mr-3.75">{profile?.nickname} 님</span>
+              </>
+            )}
 
             <div className="relative">
               <button
