@@ -1,6 +1,8 @@
 'use client'
 
 import { useCallback, useState } from 'react'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { deleteInterviewSchedule, getInterviewSchedule } from '@/apis/schedules'
 import InterviewPlanActionsMenuPortal, {
   computeMenuPosition,
   type InterviewPlanMenuPosition,
@@ -19,6 +21,9 @@ type InterviewPlanSectionProps = {
 export default function InterviewPlanSection({
   data,
 }: InterviewPlanSectionProps) {
+  const [selectedScheduleUuid, setSelectedScheduleUuid] = useState<
+    string | null
+  >(null)
   const [isSchedulePopupOpen, setIsSchedulePopupOpen] = useState(false)
   const [schedulePopupMode, setSchedulePopupMode] =
     useState<InterviewSchedulePopupMode>('create')
@@ -31,6 +36,27 @@ export default function InterviewPlanSection({
   const isEmpty = data.length === 0
 
   const selectedPlan = data.find((plan) => plan.isSelected) ?? data[0] ?? null
+
+  const queryClient = useQueryClient()
+
+  const { data: selectedScheduleDetail } = useQuery({
+    queryKey: ['schedule', selectedScheduleUuid],
+    queryFn: () => getInterviewSchedule(selectedScheduleUuid!),
+    enabled: !!selectedScheduleUuid,
+  })
+
+  const deleteInterviewScheduleMutation = useMutation({
+    mutationFn: deleteInterviewSchedule,
+
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['schedules'] })
+      setActionsMenu(null)
+    },
+
+    onError: (error) => {
+      console.error('삭제 실패', error)
+    },
+  })
 
   const toggleActionsMenu = useCallback((key: string, el: HTMLElement) => {
     setActionsMenu((prev) => {
@@ -47,9 +73,12 @@ export default function InterviewPlanSection({
     setIsSchedulePopupOpen(true)
   }, [])
 
-  const handleDelete = useCallback((scheduleUuid: string) => {
-    // TODO: 삭제 확인 및 API 연동
-  }, [])
+  const handleDelete = useCallback(
+    (scheduleUuid: string) => {
+      deleteInterviewScheduleMutation.mutate(scheduleUuid)
+    },
+    [deleteInterviewScheduleMutation],
+  )
 
   const closeActionsMenu = useCallback(() => {
     setActionsMenu(null)
@@ -69,14 +98,13 @@ export default function InterviewPlanSection({
     <section className="min-h-[clamp(320px,36vh,420px)] rounded-2xl bg-secondary p-[clamp(16px,2vw,28px)]">
       <div className="flex h-full min-h-0 gap-5">
         <InterviewPlanScheduleColumn
-          data={data}
-          isEmpty={isEmpty}
+          selectedScheduleUuid={selectedScheduleUuid}
           onToggleMenu={toggleActionsMenu}
           onOpenAddSchedule={openCreateSchedulePopup}
+          onSelectSchedule={setSelectedScheduleUuid}
         />
         <InterviewPlanCurriculumColumn
-          isEmpty={isEmpty}
-          selectedPlan={selectedPlan}
+          selectedScheduleDetail={selectedScheduleDetail}
         />
       </div>
 

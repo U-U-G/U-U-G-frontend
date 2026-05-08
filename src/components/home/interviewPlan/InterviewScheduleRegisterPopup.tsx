@@ -9,7 +9,10 @@ import CalendarDropdown from '@/components/common/date/CalendarDropdown'
 import FormPopupLayout from '@/components/common/popup/FormPopupLayout'
 import { useDatePicker } from '@/hooks/useDatePicker'
 import { useModal } from '@/hooks/useModal'
-import { scheduleApi } from '@/apis/schedules'
+import {
+  createInterviewSchedule,
+  updateInterviewSchedule,
+} from '@/apis/schedules'
 import {
   CreateScheduleRequest,
   UpdateScheduleRequest,
@@ -52,7 +55,7 @@ export default function InterviewScheduleRegisterPopup({
   const queryClient = useQueryClient()
 
   const createInterviewCurriculumsMutation = useMutation({
-    mutationFn: scheduleApi.createInterviewSchedule,
+    mutationFn: createInterviewSchedule,
     onSuccess: (curriculum) => {
       queryClient.invalidateQueries({ queryKey: ['schedules'] })
       onClose()
@@ -69,7 +72,7 @@ export default function InterviewScheduleRegisterPopup({
     }: {
       uuid: string
       body: UpdateScheduleRequest
-    }) => scheduleApi.updateInterviewSchedule(uuid, body),
+    }) => updateInterviewSchedule(uuid, body),
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ['schedules'] })
       onClose()

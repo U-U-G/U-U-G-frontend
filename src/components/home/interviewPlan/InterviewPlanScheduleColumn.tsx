@@ -2,23 +2,22 @@
 
 import { IconPlus } from '@tabler/icons-react'
 import { useQuery } from '@tanstack/react-query'
-import { scheduleApi } from '@/apis/schedules'
+import { getInterviewScheduleList } from '@/apis/schedules'
 import InterviewPlanDotsTrigger from '@/components/home/interviewPlan/InterviewPlanDotsTrigger'
 import { EMPTY_INTERVIEW_PLAN_ROWS } from '@/constants/interviewPlanEmptyRows'
-import type { InterviewPlanItem } from '@/types/interviewPlan'
 
 type InterviewPlanScheduleColumnProps = {
-  data: readonly InterviewPlanItem[]
-  isEmpty: boolean
+  selectedScheduleUuid: string | null
   onToggleMenu: (key: string, el: HTMLElement) => void
   onOpenAddSchedule: () => void
+  onSelectSchedule: (scheduleUuid: string) => void
 }
 
 export default function InterviewPlanScheduleColumn({
-  data,
-  isEmpty,
+  selectedScheduleUuid,
   onToggleMenu,
   onOpenAddSchedule,
+  onSelectSchedule,
 }: InterviewPlanScheduleColumnProps) {
   const {
     data: schedules,
@@ -26,7 +25,7 @@ export default function InterviewPlanScheduleColumn({
     error,
   } = useQuery({
     queryKey: ['schedules'],
-    queryFn: scheduleApi.getInterviewScheduleList,
+    queryFn: getInterviewScheduleList,
   })
 
   const scheduleList = schedules ?? []
@@ -75,7 +74,13 @@ export default function InterviewPlanScheduleColumn({
             <div
               key={schedule.scheduleUuid}
               data-interview-plan-row
-              className="flex h-14 items-center justify-between rounded-lg border border-gray-5 bg-white px-5 py-3 gap-3"
+              onClick={() => onSelectSchedule(schedule.scheduleUuid)}
+              className={[
+                'flex h-14 items-center justify-between rounded-lg border bg-white px-5 py-3 gap-3 cursor-pointer',
+                selectedScheduleUuid === schedule.scheduleUuid
+                  ? 'border-primary'
+                  : 'border-gray-5',
+              ].join(' ')}
             >
               <div className="flex items-center gap-4 overflow-hidden min-w-0 flex-1">
                 <span className="h4 text-primary shrink-0">D-day</span>
@@ -89,7 +94,7 @@ export default function InterviewPlanScheduleColumn({
                 <span className="p4 text-gray-3">{schedule.interviewDate}</span>
 
                 <InterviewPlanDotsTrigger
-                  menuKey={`plan-${schedule.scheduleUuid}`}
+                  menuKey={`${schedule.scheduleUuid}`}
                   onToggleMenu={onToggleMenu}
                 />
               </div>

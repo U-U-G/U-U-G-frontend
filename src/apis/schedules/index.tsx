@@ -48,11 +48,3 @@ export const deleteInterviewSchedule = async (scheduleUuid: string) => {
   )
   return data.data
 }
-
-export const scheduleApi = {
-  createInterviewSchedule,
-  getInterviewScheduleList,
-  getInterviewSchedule,
-  updateInterviewSchedule,
-  deleteInterviewSchedule,
-}
