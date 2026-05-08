@@ -12,7 +12,6 @@ import InterviewPlanScheduleColumn from '@/components/home/interviewPlan/Intervi
 import InterviewScheduleRegisterPopup, {
   type InterviewSchedulePopupMode,
 } from '@/components/home/interviewPlan/InterviewScheduleRegisterPopup'
-import type { InterviewPlanItem } from '@/types/interviewPlan'
 
 export default function InterviewPlanSection() {
   const [selectedScheduleUuid, setSelectedScheduleUuid] = useState<
@@ -29,11 +28,12 @@ export default function InterviewPlanSection() {
 
   const queryClient = useQueryClient()
 
-  const { data: selectedScheduleDetail } = useQuery({
-    queryKey: ['schedule', selectedScheduleUuid],
-    queryFn: () => getInterviewSchedule(selectedScheduleUuid!),
-    enabled: !!selectedScheduleUuid,
-  })
+  const { data: selectedScheduleDetail, isLoading: isScheduleDetailLoading } =
+    useQuery({
+      queryKey: ['schedule', selectedScheduleUuid],
+      queryFn: () => getInterviewSchedule(selectedScheduleUuid!),
+      enabled: !!selectedScheduleUuid,
+    })
 
   const deleteInterviewScheduleMutation = useMutation({
     mutationFn: deleteInterviewSchedule,
@@ -98,6 +98,8 @@ export default function InterviewPlanSection() {
         />
         <InterviewPlanCurriculumColumn
           selectedScheduleDetail={selectedScheduleDetail}
+          isLoading={isScheduleDetailLoading}
+          hasSelectedSchedule={!!selectedScheduleUuid}
         />
       </div>
 

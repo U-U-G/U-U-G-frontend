@@ -5,13 +5,17 @@ import { formatMonthDay } from '@/utils/date'
 
 type InterviewPlanCurriculumColumnProps = {
   selectedScheduleDetail?: ScheduleDetail
+  isLoading: boolean
+  hasSelectedSchedule: boolean
 }
 
 export default function InterviewPlanCurriculumColumn({
   selectedScheduleDetail,
+  isLoading,
+  hasSelectedSchedule,
 }: InterviewPlanCurriculumColumnProps) {
   const curriculums = selectedScheduleDetail?.curriculums ?? []
-  const isEmpty = curriculums.length === 0
+  const isEmpty = !isLoading && hasSelectedSchedule && curriculums.length === 0
 
   return (
     <div className="flex flex-[1.3] flex-col ">
