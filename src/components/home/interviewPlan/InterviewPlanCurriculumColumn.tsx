@@ -31,12 +31,29 @@ export default function InterviewPlanCurriculumColumn({
           <div className="space-y-4">
             {curriculums.slice(0, 5).map((item) => (
               <div key={item.uuid} className="flex items-start gap-4">
-                <span className="mt-2 inline-block h-1.5 w-1.5 rounded-full bg-[#977AFF]" />
+                <span
+                  className={[
+                    'mt-2 inline-block h-1.5 w-1.5 rounded-full',
+                    item.isPast ? 'bg-[#C0AFFF]' : 'bg-[#977AFF]',
+                  ].join(' ')}
+                />
+
                 <div className="flex min-w-0 flex-1 items-center justify-between gap-4">
-                  <span className="truncate p3 text-text-primary">
+                  <span
+                    className={[
+                      'p3',
+                      item.isPast ? 'text-gray-4' : 'text-text-primary',
+                    ].join(' ')}
+                  >
                     {item.content}
                   </span>
-                  <span className="shrink-0 p4 text-gray-3">
+
+                  <span
+                    className={[
+                      'shrink-0 p4',
+                      item.isPast ? 'text-gray-4' : 'text-gray-3',
+                    ].join(' ')}
+                  >
                     {formatMonthDay(item.scheduledDate)}
                   </span>
                 </div>
