@@ -20,7 +20,7 @@ export default function UserInfoSection() {
   const [isPasswordPopupOpen, setIsPasswordPopupOpen] = useState(false)
 
   const { data: profile, isLoading } = useQuery({
-    queryKey: ['profile'],
+    queryKey: ['user', 'profile'],
     queryFn: getProfile,
   })
 

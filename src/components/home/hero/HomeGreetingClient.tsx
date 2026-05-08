@@ -16,11 +16,11 @@ export default function HomeGreetingClient({
     retry: false,
   })
 
-  const displayName = profile?.nickname ?? fallbackName
+  const userNickname = profile?.nickname ?? fallbackName
 
   return (
     <h1 className="mb-[clamp(6px,1vw,16px)] h1 text-text-primary">
-      {displayName}님, 오늘도 연습해볼까요?
+      {userNickname}님, 오늘도 연습해볼까요?
     </h1>
   )
 }

@@ -1,6 +1,6 @@
 export const emptyHomeMockData = {
   user: {
-    name: '아무개',
+    name: '사용자',
     profileImageUrl: '',
     ranking: null,
     rankingChange: null,
@@ -24,7 +24,7 @@ export const emptyHomeMockData = {
 
 export const homeMockData = {
   user: {
-    name: '아무개',
+    name: '사용자',
     profileImageUrl: '',
     ranking: 32,
     rankingChange: -10,
