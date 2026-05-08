@@ -33,10 +33,6 @@ export default function InterviewPlanSection({
     null,
   )
 
-  const isEmpty = data.length === 0
-
-  const selectedPlan = data.find((plan) => plan.isSelected) ?? data[0] ?? null
-
   const queryClient = useQueryClient()
 
   const { data: selectedScheduleDetail } = useQuery({

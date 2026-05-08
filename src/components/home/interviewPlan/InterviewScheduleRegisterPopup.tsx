@@ -10,6 +10,7 @@ import FormPopupLayout from '@/components/common/popup/FormPopupLayout'
 import { useDatePicker } from '@/hooks/useDatePicker'
 import { useModal } from '@/hooks/useModal'
 import {
+  getInterviewSchedule,
   createInterviewSchedule,
   updateInterviewSchedule,
 } from '@/apis/schedules'
@@ -53,6 +54,12 @@ export default function InterviewScheduleRegisterPopup({
   const canSubmit = companyName.trim().length > 0 && selectedDate !== null
 
   const queryClient = useQueryClient()
+
+  const { data: scheduleDetail } = useQuery({
+    queryKey: ['schedule', scheduleUuid],
+    queryFn: () => getInterviewSchedule(scheduleUuid!),
+    enabled: mode === 'edit' && !!scheduleUuid,
+  })
 
   const createInterviewCurriculumsMutation = useMutation({
     mutationFn: createInterviewSchedule,
@@ -126,7 +133,9 @@ export default function InterviewScheduleRegisterPopup({
           onChange={(e) => setCompanyName(e.target.value)}
           status="default"
           focusPrimary
-          placeholder="지원 회사명과 직무를 입력해주세요"
+          placeholder={
+            scheduleDetail?.companyName ?? '지원 회사명과 직무를 입력해주세요'
+          }
         />
       </div>
 
@@ -142,7 +151,7 @@ export default function InterviewScheduleRegisterPopup({
             onChange={(e) => handleDateInputChange(e.target.value)}
             status="default"
             focusPrimary
-            placeholder="0000년 00월 00일"
+            placeholder={scheduleDetail?.interviewDate ?? '0000년 00월 00일'}
             rightElement={
               <button
                 type="button"
