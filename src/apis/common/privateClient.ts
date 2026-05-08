@@ -75,7 +75,6 @@ privateClient.interceptors.response.use(
         setRefreshToken(nextRefreshToken)
       }
 
-      originalRequest.headers = originalRequest.headers ?? {}
       originalRequest.headers.Authorization = `Bearer ${accessToken}`
 
       return privateClient(originalRequest)
