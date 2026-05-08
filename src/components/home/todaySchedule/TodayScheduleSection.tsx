@@ -7,6 +7,9 @@ import { getCurriculumsByDate } from '@/apis/curriculum'
 import { formatFullDate } from '@/utils/date'
 import { getWeekDates } from '@/utils/getWeekDates'
 
+const formatCompanyName = (name: string) =>
+  name.length > 10 ? `${name.slice(0, 10)}...` : name
+
 export default function TodayScheduleSection() {
   const [isNextWeek, setIsNextWeek] = useState(false)
   const [selectedDate, setSelectedDate] = useState(formatFullDate(new Date()))
@@ -42,10 +45,7 @@ export default function TodayScheduleSection() {
   })
 
   const curriculumList = curriculumData ?? []
-  const isEmpty = curriculumList.length === 0
-
-  const formatCompanyName = (name: string) =>
-    name.length > 10 ? `${name.slice(0, 10)}...` : name
+  const isEmpty = !isLoading && curriculumList.length === 0
 
   return (
     <div className="h-full w-full min-h-0 overflow-hidden rounded-2xl bg-secondary">
@@ -103,7 +103,9 @@ export default function TodayScheduleSection() {
                   className={[
                     'h-14 rounded-lg bg-white px-5 flex items-center justify-between',
                     index === 0 && 'border border-primary',
-                  ].join(' ')}
+                  ]
+                    .filter(Boolean)
+                    .join(' ')}
                 >
                   <div className="flex items-center gap-3">
                     <span className="p4 text-primary">
