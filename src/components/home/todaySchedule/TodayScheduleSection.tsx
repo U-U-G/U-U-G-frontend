@@ -7,20 +7,7 @@ import { getCurriculumsByDate } from '@/apis/curriculum'
 import { formatFullDate } from '@/utils/date'
 import { getWeekDates } from '@/utils/getWeekDates'
 
-type ScheduleItem = {
-  id: number
-  label: string
-  title: string
-  time: string
-}
-
-type TodayScheduleSectionProps = {
-  schedules: readonly ScheduleItem[]
-}
-
-export default function TodayScheduleSection({
-  schedules,
-}: TodayScheduleSectionProps) {
+export default function TodayScheduleSection() {
   const [isNextWeek, setIsNextWeek] = useState(false)
   const [selectedDate, setSelectedDate] = useState(formatFullDate(new Date()))
 
@@ -54,7 +41,7 @@ export default function TodayScheduleSection({
     enabled: Boolean(selectedDate),
   })
 
-  const curriculumList = curriculumData?.curriculums ?? []
+  const curriculumList = curriculumData ?? []
   const isEmpty = curriculumList.length === 0
 
   return (
@@ -97,12 +84,13 @@ export default function TodayScheduleSection({
 
         <div className="mt-auto flex min-h-0 flex-1 flex-col">
           {isEmpty ? (
-            <div className="space-y-3">
-              <div className="p3 w-full rounded-lg border border-primary bg-white px-5 py-4 text-left text-gray-3">
+            <div className="space-y-3 overflow-hidden">
+              <div className="p3 w-full rounded-lg border border-primary bg-white px-5 py-4 text-left text-gray-3 ">
                 일정에 맞게 오늘의 스케줄을 생성해요
               </div>
               <div className="h-14 rounded-lg bg-white" />
-              <div className="h-12 rounded-t-lg bg-white" />
+              <div className="h-14 rounded-lg bg-white" />
+              <div className="h-14 rounded-t-lg bg-white" />
             </div>
           ) : (
             <div className="space-y-3 overflow-y-auto pr-1">

@@ -1,9 +1,9 @@
 import { privateClient } from '../common/privateClient'
 import { ApiResponse } from '../common/type'
-import type { CurriculumList } from './type'
+import type { CurriculumListResponse } from './type'
 
 export const getCurriculumsByDate = async (date: string) => {
-  const { data } = await privateClient.get<ApiResponse<CurriculumList>>(
+  const { data } = await privateClient.get<ApiResponse<CurriculumListResponse>>(
     '/curriculum',
     {
       params: {

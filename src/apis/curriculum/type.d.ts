@@ -3,10 +3,8 @@ export interface Curriculum {
   jobPostingUuid: string | null
   companyName: string
   content: string
-  scheduleDate: string
+  scheduledDate: string
   isPast: boolean
 }
 
-export interface CurriculumList {
-  curriculums: Curriculum[]
-}
+export type CurriculumListResponse = Curriculum[]
