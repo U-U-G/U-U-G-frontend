@@ -51,19 +51,18 @@ export default function InterviewScheduleRegisterPopup({
 
   const queryClient = useQueryClient()
 
-  const createInterviewScheduleMutation = useMutation({
+  const createInterviewCurriculumsMutation = useMutation({
     mutationFn: scheduleApi.createInterviewSchedule,
     onSuccess: (curriculum) => {
-      console.log('생성 성공', curriculum)
       queryClient.invalidateQueries({ queryKey: ['schedules'] })
       onClose()
     },
     onError: (error) => {
-      console.error('생성 실패', error)
+      console.error('생성 실패', error) //TODO: 콘솔
     },
   })
 
-  const updateInterviewScheduleMutation = useMutation({
+  const updateInterviewCurriculumsMutation = useMutation({
     mutationFn: ({
       uuid,
       body,
@@ -72,12 +71,11 @@ export default function InterviewScheduleRegisterPopup({
       body: UpdateScheduleRequest
     }) => scheduleApi.updateInterviewSchedule(uuid, body),
     onSuccess: (data) => {
-      console.log('수정 성공', data)
       queryClient.invalidateQueries({ queryKey: ['schedules'] })
       onClose()
     },
     onError: (error) => {
-      console.error('수정 실패', error)
+      console.error('수정 실패', error) //TODO: 콘솔
     },
   })
 
@@ -92,14 +90,14 @@ export default function InterviewScheduleRegisterPopup({
     }
 
     if (mode === 'edit' && scheduleUuid) {
-      updateInterviewScheduleMutation.mutate({
+      updateInterviewCurriculumsMutation.mutate({
         uuid: scheduleUuid,
         body: request,
       })
       return
     }
 
-    createInterviewScheduleMutation.mutate(request)
+    createInterviewCurriculumsMutation.mutate(request)
   }
 
   const title = mode === 'edit' ? '면접 일정 수정' : '새로운 면접 일정 등록'

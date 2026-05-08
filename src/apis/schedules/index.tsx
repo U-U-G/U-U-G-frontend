@@ -15,11 +15,14 @@ export const createInterviewSchedule = async (body: CreateScheduleRequest) => {
   return data.data
 }
 
-export const getInterviewScheduleList = async () => {
-  const { data } =
-    await privateClient.get<ApiResponse<GetScheduleListResponse>>('/schedules')
-  return data.data
-}
+export const getInterviewScheduleList =
+  async (): Promise<GetScheduleListResponse> => {
+    const { data } =
+      await privateClient.get<ApiResponse<GetScheduleListResponse>>(
+        '/schedules',
+      )
+    return data.data
+  }
 
 export const getInterviewSchedule = async (scheduleUuid: string) => {
   const { data } = await privateClient.get<ApiResponse<ScheduleDetail>>(
