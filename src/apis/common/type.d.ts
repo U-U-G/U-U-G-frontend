@@ -13,7 +13,7 @@ export interface EmailVerificationConfirmRequest {
   code: string
 }
 
-export interface RefreshTokenResponse {
+export interface TokenResponse {
   accessToken: string
   refreshToken: string
 }

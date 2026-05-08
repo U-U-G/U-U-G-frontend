@@ -8,7 +8,7 @@ import { useMutation } from '@tanstack/react-query'
 import { loginApi } from '@/apis/auth'
 import { getHttpStatus } from '@/apis/common/httpError'
 import HelperText from '@/components/common/text/HelperText'
-import { setAccessToken } from '@/utils/tokenStorage'
+import { setAccessToken, setRefreshToken } from '@/utils/tokenStorage'
 import KakaoLogoIcon from '@/assets/icon/kakao-logo.svg'
 import GoogleLogoIcon from '@/assets/icon/google-logo.svg'
 import NaverLogoIcon from '@/assets/icon/naver-logo.svg'
@@ -24,6 +24,7 @@ export default function Login() {
 
     onSuccess: (response) => {
       setAccessToken(response.accessToken)
+      setRefreshToken(response.refreshToken)
       router.push('/')
     },
 
