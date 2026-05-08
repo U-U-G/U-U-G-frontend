@@ -38,8 +38,11 @@ export default function InterviewPlanSection() {
   const deleteInterviewScheduleMutation = useMutation({
     mutationFn: deleteInterviewSchedule,
 
-    onSuccess: () => {
+    onSuccess: (_, deletedUuid) => {
       queryClient.invalidateQueries({ queryKey: ['schedules'] })
+      if (selectedScheduleUuid === deletedUuid) {
+        setSelectedScheduleUuid(null)
+      }
       setActionsMenu(null)
     },
 

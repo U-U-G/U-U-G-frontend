@@ -88,8 +88,9 @@ export default function InterviewScheduleRegisterPopup({
       uuid: string
       body: UpdateScheduleRequest
     }) => updateInterviewSchedule(uuid, body),
-    onSuccess: (data) => {
+    onSuccess: (_, variables) => {
       queryClient.invalidateQueries({ queryKey: ['schedules'] })
+      queryClient.invalidateQueries({ queryKey: ['schedule', variables.uuid] })
       onClose()
     },
     onError: (e) => {
