@@ -66,7 +66,7 @@ export default function UserInfoSection() {
         profileImageUrl: profile?.profileImageUrl ?? '',
       }),
     onSuccess: async () => {
-      await queryClient.invalidateQueries({ queryKey: ['profile'] })
+      await queryClient.invalidateQueries({ queryKey: ['user', 'profile'] })
       handleNicknameConfirm()
     },
     onError: (e) => {

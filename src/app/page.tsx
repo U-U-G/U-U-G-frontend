@@ -1,4 +1,3 @@
-import { getProfile } from '@/apis/user'
 import Header from '@/components/common/header/Header'
 import HomeGreetingClient from '@/components/home/hero/HomeGreetingClient'
 import HeroGoalSection from '@/components/home/hero/HeroGoalSection'
