@@ -1,6 +1,8 @@
 'use client'
 
 import { useCallback, useState } from 'react'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { deleteInterviewSchedule, getInterviewSchedule } from '@/apis/schedules'
 import InterviewPlanActionsMenuPortal, {
   computeMenuPosition,
   type InterviewPlanMenuPosition,
@@ -12,21 +14,42 @@ import InterviewScheduleRegisterPopup, {
 } from '@/components/home/interviewPlan/InterviewScheduleRegisterPopup'
 import type { InterviewPlanItem } from '@/types/interviewPlan'
 
-type InterviewPlanSectionProps = {
-  data: readonly InterviewPlanItem[]
-}
-
-export default function InterviewPlanSection({
-  data,
-}: InterviewPlanSectionProps) {
+export default function InterviewPlanSection() {
+  const [selectedScheduleUuid, setSelectedScheduleUuid] = useState<
+    string | null
+  >(null)
   const [isSchedulePopupOpen, setIsSchedulePopupOpen] = useState(false)
   const [schedulePopupMode, setSchedulePopupMode] =
     useState<InterviewSchedulePopupMode>('create')
   const [actionsMenu, setActionsMenu] =
     useState<InterviewPlanMenuPosition | null>(null)
-  const isEmpty = data.length === 0
+  const [editingScheduleUuid, setEditingScheduleUuid] = useState<string | null>(
+    null,
+  )
 
-  const selectedPlan = data.find((plan) => plan.isSelected) ?? data[0] ?? null
+  const queryClient = useQueryClient()
+
+  const { data: selectedScheduleDetail } = useQuery({
+    queryKey: ['schedule', selectedScheduleUuid],
+    queryFn: () => getInterviewSchedule(selectedScheduleUuid!),
+    enabled: !!selectedScheduleUuid,
+  })
+
+  const deleteInterviewScheduleMutation = useMutation({
+    mutationFn: deleteInterviewSchedule,
+
+    onSuccess: (_, deletedUuid) => {
+      queryClient.invalidateQueries({ queryKey: ['schedules'] })
+      if (selectedScheduleUuid === deletedUuid) {
+        setSelectedScheduleUuid(null)
+      }
+      setActionsMenu(null)
+    },
+
+    onError: (error) => {
+      console.error('삭제 실패', error)
+    },
+  })
 
   const toggleActionsMenu = useCallback((key: string, el: HTMLElement) => {
     setActionsMenu((prev) => {
@@ -37,20 +60,25 @@ export default function InterviewPlanSection({
     })
   }, [])
 
-  const handleEdit = useCallback((_key: string) => {
+  const handleEdit = useCallback((scheduleUuid: string) => {
+    setEditingScheduleUuid(scheduleUuid)
     setSchedulePopupMode('edit')
     setIsSchedulePopupOpen(true)
   }, [])
 
-  const handleDelete = useCallback((_key: string) => {
-    // TODO: 삭제 확인 및 API 연동
-  }, [])
+  const handleDelete = useCallback(
+    (scheduleUuid: string) => {
+      deleteInterviewScheduleMutation.mutate(scheduleUuid)
+    },
+    [deleteInterviewScheduleMutation],
+  )
 
   const closeActionsMenu = useCallback(() => {
     setActionsMenu(null)
   }, [])
 
   const openCreateSchedulePopup = useCallback(() => {
+    setEditingScheduleUuid(null)
     setSchedulePopupMode('create')
     setIsSchedulePopupOpen(true)
   }, [])
@@ -63,14 +91,13 @@ export default function InterviewPlanSection({
     <section className="min-h-[clamp(320px,36vh,420px)] rounded-2xl bg-secondary p-[clamp(16px,2vw,28px)]">
       <div className="flex h-full min-h-0 gap-5">
         <InterviewPlanScheduleColumn
-          data={data}
-          isEmpty={isEmpty}
+          selectedScheduleUuid={selectedScheduleUuid}
           onToggleMenu={toggleActionsMenu}
           onOpenAddSchedule={openCreateSchedulePopup}
+          onSelectSchedule={setSelectedScheduleUuid}
         />
         <InterviewPlanCurriculumColumn
-          isEmpty={isEmpty}
-          selectedPlan={selectedPlan}
+          selectedScheduleDetail={selectedScheduleDetail}
         />
       </div>
 
@@ -84,6 +111,7 @@ export default function InterviewPlanSection({
       {isSchedulePopupOpen && (
         <InterviewScheduleRegisterPopup
           mode={schedulePopupMode}
+          scheduleUuid={editingScheduleUuid ?? undefined}
           onClose={closeSchedulePopup}
         />
       )}

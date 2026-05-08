@@ -2,25 +2,44 @@
 
 import { useState } from 'react'
 import { IconCalendar } from '@tabler/icons-react'
-import InputBox from '@/components/common/input/InputBox'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+
+import {
+  createInterviewSchedule,
+  getInterviewSchedule,
+  updateInterviewSchedule,
+} from '@/apis/schedules'
+import type {
+  CreateScheduleRequest,
+  UpdateScheduleRequest,
+} from '@/apis/schedules/type'
+import { getHttpStatus } from '@/apis/common/httpError'
+
 import CalendarDropdown from '@/components/common/date/CalendarDropdown'
+import InputBox from '@/components/common/input/InputBox'
+import HelperText from '@/components/common/text/HelperText'
 import FormPopupLayout from '@/components/common/popup/FormPopupLayout'
+
 import { useDatePicker } from '@/hooks/useDatePicker'
 import { useModal } from '@/hooks/useModal'
+import { formatFullDate } from '@/utils/date'
 
 export type InterviewSchedulePopupMode = 'create' | 'edit'
 
 interface InterviewScheduleRegisterPopupProps {
   onClose: () => void
   mode?: InterviewSchedulePopupMode
+  scheduleUuid?: string
 }
 
 export default function InterviewScheduleRegisterPopup({
   onClose,
   mode = 'create',
+  scheduleUuid,
 }: InterviewScheduleRegisterPopupProps) {
   const { ref: popupRef } = useModal(true)
-  const [companyAndRole, setCompanyAndRole] = useState('')
+  const [companyName, setCompanyName] = useState('')
+  const [hasInterviewDateError, setHasInterviewDateError] = useState(false)
   const {
     calendarRef,
     selectedDate,
@@ -38,18 +57,71 @@ export default function InterviewScheduleRegisterPopup({
     handleCancel,
   } = useDatePicker()
 
-  const canSubmit =
-    companyAndRole.trim().length > 0 && selectedDate !== null
+  const canSubmit = companyName.trim().length > 0 && selectedDate !== null
+
+  const queryClient = useQueryClient()
+
+  const { data: scheduleDetail } = useQuery({
+    queryKey: ['schedule', scheduleUuid],
+    queryFn: () => getInterviewSchedule(scheduleUuid!),
+    enabled: mode === 'edit' && !!scheduleUuid,
+  })
+
+  const createInterviewCurriculumsMutation = useMutation({
+    mutationFn: createInterviewSchedule,
+    onSuccess: (curriculum) => {
+      queryClient.invalidateQueries({ queryKey: ['schedules'] })
+      onClose()
+    },
+    onError: (e) => {
+      if (getHttpStatus(e) === 400) {
+        setHasInterviewDateError(true)
+      }
+    },
+  })
+
+  const updateInterviewCurriculumsMutation = useMutation({
+    mutationFn: ({
+      uuid,
+      body,
+    }: {
+      uuid: string
+      body: UpdateScheduleRequest
+    }) => updateInterviewSchedule(uuid, body),
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({ queryKey: ['schedules'] })
+      queryClient.invalidateQueries({ queryKey: ['schedule', variables.uuid] })
+      onClose()
+    },
+    onError: (e) => {
+      if (getHttpStatus(e) === 400) {
+        setHasInterviewDateError(true)
+      }
+    },
+  })
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    if (!canSubmit) return
-    // TODO: 면접 일정 등록·수정 API 연동
-    onClose()
+
+    if (!selectedDate) return
+
+    const request: CreateScheduleRequest = {
+      companyName: companyName,
+      interviewDate: formatFullDate(selectedDate),
+    }
+
+    if (mode === 'edit' && scheduleUuid) {
+      updateInterviewCurriculumsMutation.mutate({
+        uuid: scheduleUuid,
+        body: request,
+      })
+      return
+    }
+
+    createInterviewCurriculumsMutation.mutate(request)
   }
 
-  const title =
-    mode === 'edit' ? '면접 일정 수정' : '새로운 면접 일정 등록'
+  const title = mode === 'edit' ? '면접 일정 수정' : '새로운 면접 일정 등록'
   const submitLabel = mode === 'edit' ? '수정하기' : '일정등록'
 
   return (
@@ -68,11 +140,13 @@ export default function InterviewScheduleRegisterPopup({
         <InputBox
           id="interview-company-role"
           className="border-gray-5"
-          value={companyAndRole}
-          onChange={(e) => setCompanyAndRole(e.target.value)}
+          value={companyName}
+          onChange={(e) => setCompanyName(e.target.value)}
           status="default"
           focusPrimary
-          placeholder="지원 회사명과 직무를 입력해주세요"
+          placeholder={
+            scheduleDetail?.companyName ?? '지원 회사명과 직무를 입력해주세요'
+          }
         />
       </div>
 
@@ -83,12 +157,12 @@ export default function InterviewScheduleRegisterPopup({
         <div className="relative">
           <InputBox
             id="interview-date"
-            className="border-gray-5"
+            className="border-gray-5 mb-2"
             value={dateInput}
             onChange={(e) => handleDateInputChange(e.target.value)}
             status="default"
             focusPrimary
-            placeholder="0000년 00월 00일"
+            placeholder={scheduleDetail?.interviewDate ?? '0000년 00월 00일'}
             rightElement={
               <button
                 type="button"
@@ -100,6 +174,13 @@ export default function InterviewScheduleRegisterPopup({
               </button>
             }
           />
+          {hasInterviewDateError ? (
+            <HelperText status="error">
+              면접 일정은 면접일 하루 전까지만 등록할 수 있어요.
+            </HelperText>
+          ) : (
+            '\u00A0'
+          )}
           {showCalendar && (
             <CalendarDropdown
               calendarRef={calendarRef}
