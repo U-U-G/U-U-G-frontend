@@ -20,7 +20,7 @@ export default function UserInfoSection() {
   const [isPasswordPopupOpen, setIsPasswordPopupOpen] = useState(false)
 
   const { data: profile, isLoading } = useQuery({
-    queryKey: ['profile'],
+    queryKey: ['user', 'profile'],
     queryFn: getProfile,
   })
 
@@ -66,7 +66,7 @@ export default function UserInfoSection() {
         profileImageUrl: profile?.profileImageUrl ?? '',
       }),
     onSuccess: async () => {
-      await queryClient.invalidateQueries({ queryKey: ['profile'] })
+      await queryClient.invalidateQueries({ queryKey: ['user', 'profile'] })
       handleNicknameConfirm()
     },
     onError: (e) => {
