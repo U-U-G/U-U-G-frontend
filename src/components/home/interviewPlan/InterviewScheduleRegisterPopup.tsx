@@ -2,23 +2,27 @@
 
 import { useState } from 'react'
 import { IconCalendar } from '@tabler/icons-react'
-import { useQueryClient } from '@tanstack/react-query'
-import { useQuery, useMutation } from '@tanstack/react-query'
-import { formatFullDate } from '@/utils/date'
-import InputBox from '@/components/common/input/InputBox'
-import CalendarDropdown from '@/components/common/date/CalendarDropdown'
-import FormPopupLayout from '@/components/common/popup/FormPopupLayout'
-import { useDatePicker } from '@/hooks/useDatePicker'
-import { useModal } from '@/hooks/useModal'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+
 import {
-  getInterviewSchedule,
   createInterviewSchedule,
+  getInterviewSchedule,
   updateInterviewSchedule,
 } from '@/apis/schedules'
-import {
+import type {
   CreateScheduleRequest,
   UpdateScheduleRequest,
 } from '@/apis/schedules/type'
+import { getHttpStatus } from '@/apis/common/httpError'
+
+import CalendarDropdown from '@/components/common/date/CalendarDropdown'
+import InputBox from '@/components/common/input/InputBox'
+import HelperText from '@/components/common/text/HelperText'
+import FormPopupLayout from '@/components/common/popup/FormPopupLayout'
+
+import { useDatePicker } from '@/hooks/useDatePicker'
+import { useModal } from '@/hooks/useModal'
+import { formatFullDate } from '@/utils/date'
 
 export type InterviewSchedulePopupMode = 'create' | 'edit'
 
@@ -35,6 +39,7 @@ export default function InterviewScheduleRegisterPopup({
 }: InterviewScheduleRegisterPopupProps) {
   const { ref: popupRef } = useModal(true)
   const [companyName, setCompanyName] = useState('')
+  const [hasInterviewDateError, setHasInterviewDateError] = useState(false)
   const {
     calendarRef,
     selectedDate,
@@ -68,8 +73,10 @@ export default function InterviewScheduleRegisterPopup({
       queryClient.invalidateQueries({ queryKey: ['schedules'] })
       onClose()
     },
-    onError: (error) => {
-      console.error('생성 실패', error) //TODO: 콘솔
+    onError: (e) => {
+      if (getHttpStatus(e) === 400) {
+        setHasInterviewDateError(true)
+      }
     },
   })
 
@@ -85,8 +92,10 @@ export default function InterviewScheduleRegisterPopup({
       queryClient.invalidateQueries({ queryKey: ['schedules'] })
       onClose()
     },
-    onError: (error) => {
-      console.error('수정 실패', error) //TODO: 콘솔
+    onError: (e) => {
+      if (getHttpStatus(e) === 400) {
+        setHasInterviewDateError(true)
+      }
     },
   })
 
@@ -147,7 +156,7 @@ export default function InterviewScheduleRegisterPopup({
         <div className="relative">
           <InputBox
             id="interview-date"
-            className="border-gray-5"
+            className="border-gray-5 mb-2"
             value={dateInput}
             onChange={(e) => handleDateInputChange(e.target.value)}
             status="default"
@@ -164,6 +173,13 @@ export default function InterviewScheduleRegisterPopup({
               </button>
             }
           />
+          {hasInterviewDateError ? (
+            <HelperText status="error">
+              면접 일정은 면접일 하루 전까지만 등록할 수 있어요.
+            </HelperText>
+          ) : (
+            '\u00A0'
+          )}
           {showCalendar && (
             <CalendarDropdown
               calendarRef={calendarRef}
