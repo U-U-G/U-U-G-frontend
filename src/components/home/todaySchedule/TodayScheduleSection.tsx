@@ -44,6 +44,9 @@ export default function TodayScheduleSection() {
   const curriculumList = curriculumData ?? []
   const isEmpty = curriculumList.length === 0
 
+  const formatCompanyName = (name: string) =>
+    name.length > 10 ? `${name.slice(0, 10)}...` : name
+
   return (
     <div className="h-full w-full min-h-0 overflow-hidden rounded-2xl bg-secondary">
       <div className="flex h-full flex-col gap-4 p-6">
@@ -103,7 +106,9 @@ export default function TodayScheduleSection() {
                   ].join(' ')}
                 >
                   <div className="flex items-center gap-3">
-                    <span className="p4 text-primary">{item.companyName}</span>
+                    <span className="p4 text-primary">
+                      {formatCompanyName(item.companyName)}
+                    </span>
                     <p className="p3 text-text-primary">{item.content}</p>
                   </div>
                 </div>
