@@ -58,6 +58,34 @@ export function formatMonthDay(dateString: string): string {
 }
 
 /**
+ * ISO 타임스탬프 두 개의 차이를 "N분 N초" 형식으로 반환합니다.
+ */
+export function formatDuration(
+  startedAt: string | null | undefined,
+  endedAt: string | null | undefined,
+): string {
+  if (!startedAt || !endedAt) return '-'
+  const diffSec = Math.floor(
+    (new Date(endedAt).getTime() - new Date(startedAt).getTime()) / 1000,
+  )
+  const min = Math.floor(diffSec / 60)
+  const sec = diffSec % 60
+  if (min === 0) return `${sec}초`
+  return `${min}분 ${sec}초`
+}
+
+/**
+ * YYYY-MM-DD 문자열을 "M월 D일" 형식으로 반환합니다.
+ */
+export function formatMonthDayKo(
+  dateString: string | null | undefined,
+): string {
+  if (!dateString) return '-'
+  const date = parseKoreanDate(dateString)
+  return `${date.getMonth() + 1}월 ${date.getDate()}일`
+}
+
+/**
  * YYYY-MM-DD 문자열 기준 D-Day 문자열을 반환합니다.
  */
 export function getDDay(dateString: string): string {
