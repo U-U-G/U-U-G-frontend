@@ -33,7 +33,7 @@ export default function RankingSection() {
         </div>
         <section className="bg-secondary rounded-t-2xl">
           <div className="flex flex-col gap-4 p-8">
-            {data?.rankingItemResponseList.map((item) => (
+            {data?.rankingItemResponseList?.map((item) => (
               <RankingCard
                 key={item.rank}
                 {...item}
