@@ -36,10 +36,11 @@ export default function RankingSection() {
             {/* TODO: 백엔드 rank 정렬 수정 후 아래로 교체 */}
             {/* {data?.rankingItemResponseList?.map((item) => ( */}
             {data?.rankingItemResponseList
-              ?.toSorted((a, b) => b.bestScore - a.bestScore)
+              ?.slice()
+              .sort((a, b) => b.bestScore - a.bestScore)
               .map((item, index) => (
                 <RankingCard
-                  key={item.rank}
+                  key={item.nickname}
                   {...item}
                   // TODO: 백엔드 rank 수정 후 아래 줄 제거 (rank={index + 1})
                   rank={index + 1}
