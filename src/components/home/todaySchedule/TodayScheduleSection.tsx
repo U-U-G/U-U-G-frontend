@@ -2,6 +2,8 @@
 
 import { IconChevronRight, IconChevronLeft } from '@tabler/icons-react'
 import { useState } from 'react'
+import { useQuery } from '@tanstack/react-query'
+import { getCurriculumsByDate } from '@/apis/curriculum'
 import { formatFullDate } from '@/utils/date'
 import { getWeekDates } from '@/utils/getWeekDates'
 
@@ -46,7 +48,14 @@ export default function TodayScheduleSection({
     setSelectedDate(hasToday ? today : nextWeekDates[0].fullDate)
   }
 
-  const isEmpty = schedules.length === 0
+  const { data: curriculumData, isLoading } = useQuery({
+    queryKey: ['curriculumsByDate', selectedDate],
+    queryFn: () => getCurriculumsByDate(selectedDate),
+    enabled: Boolean(selectedDate),
+  })
+
+  const curriculumList = curriculumData?.curriculums ?? []
+  const isEmpty = curriculumList.length === 0
 
   return (
     <div className="h-full w-full min-h-0 overflow-hidden rounded-2xl bg-secondary">
@@ -97,17 +106,17 @@ export default function TodayScheduleSection({
             </div>
           ) : (
             <div className="space-y-3 overflow-y-auto pr-1">
-              {schedules.map((schedule, index) => (
+              {curriculumList.map((item, index) => (
                 <div
-                  key={schedule.id}
+                  key={item.uuid}
                   className={[
                     'h-14 rounded-lg bg-white px-5 flex items-center justify-between',
                     index === 0 && 'border border-primary',
                   ].join(' ')}
                 >
                   <div className="flex items-center gap-3">
-                    <span className="p4 text-primary">{schedule.label}</span>
-                    <p className="p3 text-text-primary">{schedule.title}</p>
+                    <span className="p4 text-primary">{item.companyName}</span>
+                    <p className="p3 text-text-primary">{item.content}</p>
                   </div>
                 </div>
               ))}
