@@ -14,13 +14,7 @@ import InterviewScheduleRegisterPopup, {
 } from '@/components/home/interviewPlan/InterviewScheduleRegisterPopup'
 import type { InterviewPlanItem } from '@/types/interviewPlan'
 
-type InterviewPlanSectionProps = {
-  data: readonly InterviewPlanItem[]
-}
-
-export default function InterviewPlanSection({
-  data,
-}: InterviewPlanSectionProps) {
+export default function InterviewPlanSection() {
   const [selectedScheduleUuid, setSelectedScheduleUuid] = useState<
     string | null
   >(null)

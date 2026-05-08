@@ -7,6 +7,7 @@ import { homeMockData, emptyHomeMockData } from '@/mocks/homeMockData'
 export default function Home() {
   const data = homeMockData
   //const data = emptyHomeMockData
+
   return (
     <main className="h-screen overflow-hidden flex flex-col">
       <Header />
@@ -27,7 +28,7 @@ export default function Home() {
           </section>
 
           <div className="flex-shrink-0 mt-[clamp(8px,2vw,24px)] mb-[clamp(8px,2vw,24px)]">
-            <InterviewPlanSection data={data.interviewPlans} />
+            <InterviewPlanSection />
           </div>
         </div>
       </div>
