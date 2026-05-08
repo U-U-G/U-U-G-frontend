@@ -24,6 +24,10 @@ export default function InterviewPlanSection({
     useState<InterviewSchedulePopupMode>('create')
   const [actionsMenu, setActionsMenu] =
     useState<InterviewPlanMenuPosition | null>(null)
+  const [editingScheduleUuid, setEditingScheduleUuid] = useState<string | null>(
+    null,
+  )
+
   const isEmpty = data.length === 0
 
   const selectedPlan = data.find((plan) => plan.isSelected) ?? data[0] ?? null
@@ -37,12 +41,13 @@ export default function InterviewPlanSection({
     })
   }, [])
 
-  const handleEdit = useCallback((_key: string) => {
+  const handleEdit = useCallback((scheduleUuid: string) => {
+    setEditingScheduleUuid(scheduleUuid)
     setSchedulePopupMode('edit')
     setIsSchedulePopupOpen(true)
   }, [])
 
-  const handleDelete = useCallback((_key: string) => {
+  const handleDelete = useCallback((scheduleUuid: string) => {
     // TODO: 삭제 확인 및 API 연동
   }, [])
 
@@ -51,6 +56,7 @@ export default function InterviewPlanSection({
   }, [])
 
   const openCreateSchedulePopup = useCallback(() => {
+    setEditingScheduleUuid(null)
     setSchedulePopupMode('create')
     setIsSchedulePopupOpen(true)
   }, [])
@@ -84,6 +90,7 @@ export default function InterviewPlanSection({
       {isSchedulePopupOpen && (
         <InterviewScheduleRegisterPopup
           mode={schedulePopupMode}
+          scheduleUuid={editingScheduleUuid ?? undefined}
           onClose={closeSchedulePopup}
         />
       )}

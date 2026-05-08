@@ -9,7 +9,7 @@ import type {
 
 export const createInterviewSchedule = async (body: CreateScheduleRequest) => {
   const { data } = await privateClient.post<ApiResponse<ScheduleDetail>>(
-    '/api/schedules',
+    '/schedules',
     body,
   )
   return data.data
@@ -17,15 +17,13 @@ export const createInterviewSchedule = async (body: CreateScheduleRequest) => {
 
 export const getInterviewScheduleList = async () => {
   const { data } =
-    await privateClient.get<ApiResponse<GetScheduleListResponse>>(
-      '/api/schedules',
-    )
+    await privateClient.get<ApiResponse<GetScheduleListResponse>>('/schedules')
   return data.data
 }
 
 export const getInterviewSchedule = async (scheduleUuid: string) => {
   const { data } = await privateClient.get<ApiResponse<ScheduleDetail>>(
-    `/api/schedules/${scheduleUuid}`,
+    `/schedules/${scheduleUuid}`,
   )
   return data.data
 }
@@ -35,14 +33,15 @@ export const updateInterviewSchedule = async (
   body: UpdateScheduleRequest,
 ) => {
   const { data } = await privateClient.put<ApiResponse<ScheduleDetail>>(
-    `/api/schedules/${scheduleUuid}`,
+    `/schedules/${scheduleUuid}`,
+    body,
   )
   return data.data
 }
 
 export const deleteInterviewSchedule = async (scheduleUuid: string) => {
   const { data } = await privateClient.delete<ApiResponse<string>>(
-    `/api/schedules/${scheduleUuid}`,
+    `/schedules/${scheduleUuid}`,
   )
   return data.data
 }
