@@ -57,6 +57,15 @@ export default function Login() {
   return (
     <main className="flex min-h-screen items-center justify-center">
       <section className="w-full max-w-[380px]">
+        <div className="mb-12 flex justify-center">
+          <Image
+            src="/logo-primary.png"
+            alt="음어그 로고"
+            width={180}
+            height={120}
+            priority
+          />
+        </div>
         <form className="flex flex-col" onSubmit={handleSubmit}>
           <div className="mb-5">
             <label htmlFor="email" className="sr-only">
