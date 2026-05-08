@@ -10,7 +10,11 @@ import {
   IconUserFilled,
 } from '@tabler/icons-react'
 import defaultProfileIcon from '@/assets/icon/default-profile-icon.svg'
-import { getAccessToken, clearAuthTokens } from '@/utils/tokenStorage'
+import {
+  getAccessToken,
+  hasSessionMarker,
+  clearAuthTokens,
+} from '@/utils/tokenStorage'
 import { getProfile } from '@/apis/user'
 import { logout } from '@/apis/auth'
 
@@ -26,18 +30,19 @@ const NAV_LINKS = [
 
 export default function Header({ className = '' }: HeaderProps) {
   const [open, setOpen] = useState(false)
-  const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null)
+  const [queryEnabled, setQueryEnabled] = useState<boolean | null>(null)
   const dropdownRef = useRef<HTMLDivElement>(null)
   const queryClient = useQueryClient()
 
   useEffect(() => {
-    setIsLoggedIn(!!getAccessToken())
+    setQueryEnabled(!!(getAccessToken() || hasSessionMarker()))
   }, [])
 
   const { data: profile, isLoading: isProfileLoading } = useQuery({
     queryKey: ['user', 'profile'],
     queryFn: getProfile,
-    enabled: !!isLoggedIn,
+    enabled: queryEnabled === true,
+    retry: false,
   })
 
   useEffect(() => {
@@ -58,18 +63,20 @@ export default function Header({ className = '' }: HeaderProps) {
     onSettled: () => {
       clearAuthTokens()
       queryClient.removeQueries({ queryKey: ['user', 'profile'] })
-      setIsLoggedIn(false)
+      setQueryEnabled(false)
       setOpen(false)
     },
   })
 
-  if (isLoggedIn === null) {
+  if (queryEnabled === null || (queryEnabled && isProfileLoading)) {
     return (
       <header
         className={`w-full h-19.5 px-10 py-5.5 flex items-center justify-between bg-white border-b border-[#E5DDFF] ${className}`}
       />
     )
   }
+
+  const isLoggedIn = !!profile
 
   return (
     <header
@@ -140,7 +147,7 @@ export default function Header({ className = '' }: HeaderProps) {
                   className="absolute right-0 mt-8 min-w-max bg-white rounded-lg shadow-[0px_0px_8.8px_0px_rgba(0,0,0,0.10)] overflow-hidden z-50"
                 >
                   <Link
-                    href="/settings"
+                    href="/setting"
                     role="menuitem"
                     onClick={() => setOpen(false)}
                     className="flex items-center justify-center gap-2.5 px-8 py-4.25 p4 hover:text-primary"

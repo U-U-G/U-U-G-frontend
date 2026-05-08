@@ -1,5 +1,6 @@
 const ACCESS_TOKEN_KEY = 'uug:accessToken'
 const REFRESH_TOKEN_KEY = 'uug:refreshToken'
+const SESSION_MARKER_KEY = 'uug:hasSession'
 
 export const getAccessToken = () => localStorage.getItem(ACCESS_TOKEN_KEY)
 
@@ -11,7 +12,14 @@ export const getRefreshToken = () => localStorage.getItem(REFRESH_TOKEN_KEY)
 export const setRefreshToken = (token: string) =>
   localStorage.setItem(REFRESH_TOKEN_KEY, token)
 
+export const hasSessionMarker = () =>
+  !!localStorage.getItem(SESSION_MARKER_KEY)
+
+export const setSessionMarker = () =>
+  localStorage.setItem(SESSION_MARKER_KEY, '1')
+
 export const clearAuthTokens = () => {
   localStorage.removeItem(ACCESS_TOKEN_KEY)
   localStorage.removeItem(REFRESH_TOKEN_KEY)
+  localStorage.removeItem(SESSION_MARKER_KEY)
 }
