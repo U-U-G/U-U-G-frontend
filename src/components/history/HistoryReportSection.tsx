@@ -13,6 +13,7 @@ import GeneratingPopup from '@/components/common/popup/GeneratingPopup'
 import { useModal } from '@/hooks/useModal'
 import { createInterviewSession } from '@/apis/interview-sessions'
 import { useWaitForSessionQuestions } from '@/hooks/useWaitForSessionQuestions'
+import { formatFullDate } from '@/utils/date'
 
 interface HistoryReportSectionProps extends ReportSummarySectionProps {
   attempt: string
@@ -51,7 +52,7 @@ export default function HistoryReportSection({
     mutationFn: () =>
       createInterviewSession({
         jobPostingUuid: jobPostingUuid!,
-        interviewDate: new Date().toISOString().split('T')[0],
+        interviewDate: formatFullDate(new Date()),
         retry: true,
       }),
     onSuccess: (data) => {

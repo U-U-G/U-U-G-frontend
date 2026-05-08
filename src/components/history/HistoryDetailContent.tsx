@@ -1,6 +1,7 @@
 'use client'
 
 import Link from 'next/link'
+import { useMemo } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { IconChevronLeft } from '@tabler/icons-react'
 import { getInterviewReport } from '@/apis/interview-reports'
@@ -31,6 +32,22 @@ export default function HistoryDetailContent({
     queryFn: getJobPostingList,
     enabled: reportResult?.status === 200,
   })
+
+  const matchingPosting = useMemo(() => {
+    const d = reportResult?.data
+    if (!d) return undefined
+    return jobPostings
+      .filter(
+        (p) =>
+          p.companyName === d.companyName &&
+          p.position === d.position &&
+          p.status === 'DONE',
+      )
+      .sort(
+        (a, b) =>
+          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+      )[0]
+  }, [jobPostings, reportResult?.data])
 
   if (isError) {
     return (
@@ -63,18 +80,6 @@ export default function HistoryDetailContent({
   }
 
   const data = reportResult.data
-
-  const matchingPosting = jobPostings
-    .filter(
-      (p) =>
-        p.companyName === data.companyName &&
-        p.position === data.position &&
-        p.status === 'DONE',
-    )
-    .sort(
-      (a, b) =>
-        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
-    )[0]
 
   const attemptNumber = Number(attempt) || 1
   const title = [data.companyName, data.position].filter(Boolean).join(' ')
