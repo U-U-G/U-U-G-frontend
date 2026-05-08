@@ -1,7 +1,6 @@
 'use client'
 
 import { useState } from 'react'
-import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 import InputBox from '@/components/common/input/InputBox'
 import HelperText from '@/components/common/text/HelperText'
@@ -62,7 +61,6 @@ function CompletePopup({
 }
 
 export default function JobPostingFormSection() {
-  const router = useRouter()
   const [url, setUrl] = useState('')
   const {
     popupState,
@@ -71,6 +69,7 @@ export default function JobPostingFormSection() {
     createJobPostingMutation,
     handleClose,
     handleCompanyNameSubmit,
+    handleStartInterview,
   } = useJobPostingAnalysisFlow()
 
   const { ref: popupRef } = useModal(popupState !== null)
@@ -160,7 +159,17 @@ export default function JobPostingFormSection() {
         <CompletePopup
           popupRef={popupRef}
           companyName={companyName}
-          onStart={() => router.push('/interview/job-posting/countdown')}
+          onStart={handleStartInterview}
+        />
+      )}
+      {popupState === 'sessionCreating' && (
+        <GeneratingPopup popupRef={popupRef} onClose={handleClose} />
+      )}
+      {popupState === 'sessionFailed' && (
+        <FailedPopup
+          popupRef={popupRef}
+          title="면접 세션 생성에 실패했어요"
+          onClose={handleClose}
         />
       )}
     </section>

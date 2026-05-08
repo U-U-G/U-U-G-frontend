@@ -1,5 +1,5 @@
 import Image from 'next/image'
-import { IconSchoolFilled, IconFileTextFilled } from '@tabler/icons-react'
+import { /* IconSchoolFilled, */ IconFileTextFilled } from '@tabler/icons-react'
 import defaultProfileIcon from '@/assets/icon/default-profile-icon.svg'
 
 type RankingCardVariant = 'primary' | 'secondary'
@@ -7,11 +7,10 @@ type RankingCardSize = 'md' | 'lg'
 
 type RankingCardProps = {
   rank: number
-  name: string
-  role: string
-  score: number
+  nickname: string
+  jobTitle: string
   bestScore: number
-  practiceCount: number
+  totalSessionCount: number
   profileImage?: string
   variant?: RankingCardVariant
   size?: RankingCardSize
@@ -20,11 +19,10 @@ type RankingCardProps = {
 
 export default function RankingCard({
   rank,
-  name,
-  role,
-  score,
+  nickname,
+  jobTitle,
   bestScore,
-  practiceCount,
+  totalSessionCount,
   profileImage,
   variant = 'secondary',
   size = 'md',
@@ -40,29 +38,39 @@ export default function RankingCard({
         isPrimary
           ? `border-primary text-primary ${bgWhite ? 'bg-white' : 'bg-secondary'}`
           : 'border-gray-5 bg-white text-text-primary',
-        isLarge ? 'min-h-[144px] px-16 py-14' : 'min-h-[104px] px-12 py-8',
+        isLarge ? 'min-h-36 px-16 py-14' : 'min-h-26 px-12 py-8',
       ].join(' ')}
     >
-      <div className={`flex flex-1 items-center ${isPrimary ? 'gap-10' : 'gap-6'}`}>
-        <span className={`w-12 shrink-0 text-primary ${isPrimary ? 'h1' : 'h2'}`}>#{rank}</span>
+      <div
+        className={`flex flex-1 items-center ${isPrimary ? 'gap-10' : 'gap-6'}`}
+      >
+        <span
+          className={`w-12 shrink-0 text-primary ${isPrimary ? 'h1' : 'h2'}`}
+        >
+          #{rank}
+        </span>
 
         <Image
           src={profileImage ?? defaultProfileIcon}
-          alt={`${name} 프로필`}
+          alt={`${nickname} 프로필`}
           width={60}
           height={60}
           className="h-14 w-14 rounded-full object-cover shrink-0"
         />
 
         <div>
-          <div className="h2">{name}</div>
+          <div className="h2">{nickname}</div>
           <div className={`p1 ${isPrimary ? 'text-primary' : 'text-gray-2'}`}>
-            {role}
+            {jobTitle}
           </div>
         </div>
       </div>
 
-      <div className={`text-4xl font-bold ${isPrimary && isLarge ? 'text-primary' : 'text-gray-1'}`}>{score}점</div>
+      <div
+        className={`text-4xl font-bold ${isPrimary && isLarge ? 'text-primary' : 'text-gray-1'}`}
+      >
+        {bestScore}점
+      </div>
 
       <div
         className={[
@@ -70,13 +78,13 @@ export default function RankingCard({
           isPrimary ? 'text-primary' : 'text-gray-2',
         ].join(' ')}
       >
-        <div className="flex items-center gap-3">
+        {/* <div className="flex items-center gap-3">
           <IconSchoolFilled size={20} />
           <span>최고 점수 {bestScore}점</span>
-        </div>
+        </div> */}
         <div className="flex items-center gap-3">
           <IconFileTextFilled size={20} />
-          <span>총 {practiceCount}회 연습</span>
+          <span>총 {totalSessionCount}회 연습</span>
         </div>
       </div>
     </article>

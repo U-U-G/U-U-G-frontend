@@ -8,7 +8,7 @@ import { useMutation } from '@tanstack/react-query'
 import { loginApi } from '@/apis/auth'
 import { getHttpStatus } from '@/apis/common/httpError'
 import HelperText from '@/components/common/text/HelperText'
-import { setAccessToken } from '@/utils/tokenStorage'
+import { setAccessToken, setRefreshToken } from '@/utils/tokenStorage'
 import KakaoLogoIcon from '@/assets/icon/kakao-logo.svg'
 import GoogleLogoIcon from '@/assets/icon/google-logo.svg'
 import NaverLogoIcon from '@/assets/icon/naver-logo.svg'
@@ -24,6 +24,7 @@ export default function Login() {
 
     onSuccess: (response) => {
       setAccessToken(response.accessToken)
+      setRefreshToken(response.refreshToken)
       router.push('/')
     },
 
@@ -56,6 +57,15 @@ export default function Login() {
   return (
     <main className="flex min-h-screen items-center justify-center">
       <section className="w-full max-w-[380px]">
+        <div className="mb-12 flex justify-center">
+          <Image
+            src="/logo-primary.png"
+            alt="음어그 로고"
+            width={180}
+            height={120}
+            priority
+          />
+        </div>
         <form className="flex flex-col" onSubmit={handleSubmit}>
           <div className="mb-5">
             <label htmlFor="email" className="sr-only">

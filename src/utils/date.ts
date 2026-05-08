@@ -24,7 +24,16 @@ export function formatDateKo(date: Date): string {
  * YYYY-MM-DD 형식 문자열을 한국 날짜 포맷으로 변환합니다.
  */
 export function formatDateToLocale(dateString: string): string {
-  return formatDateKo(parseKoreanDate(dateString))
+  if (/^\d{4}-\d{2}-\d{2}$/.test(dateString)) {
+    return formatDateKo(parseKoreanDate(dateString))
+  }
+
+  const date = new Date(dateString)
+  if (Number.isNaN(date.getTime())) {
+    return '-'
+  }
+
+  return formatDateKo(date)
 }
 
 /**

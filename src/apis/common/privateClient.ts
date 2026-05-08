@@ -1,6 +1,5 @@
 import axios, { AxiosError, InternalAxiosRequestConfig } from 'axios'
-import { publicClient } from '@/apis/common/publicClient'
-import type { ApiResponse, RefreshTokenResponse } from '@/apis/common/type'
+import { refreshAccessToken } from '@/apis/common/refresh'
 import {
   getAccessToken,
   getRefreshToken,
@@ -50,7 +49,9 @@ privateClient.interceptors.response.use(
 
     if (originalRequest._retry) {
       clearAuthTokens()
+
       window.location.href = '/login'
+
       return Promise.reject(error)
     }
 
@@ -59,16 +60,14 @@ privateClient.interceptors.response.use(
     try {
       const refreshToken = getRefreshToken()
 
-      const refreshRes = await publicClient.post<
-        ApiResponse<RefreshTokenResponse>
-      >('/auth/refresh', refreshToken ? { refreshToken } : undefined)
-
-      if (!refreshRes.data.success) {
-        throw new Error(refreshRes.data.message || 'refresh 실패')
+      if (!refreshToken) {
+        clearAuthTokens()
+        window.location.href = '/login'
+        return Promise.reject(error)
       }
 
       const { accessToken, refreshToken: nextRefreshToken } =
-        refreshRes.data.data
+        await refreshAccessToken(refreshToken)
 
       setAccessToken(accessToken)
 

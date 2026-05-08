@@ -1,4 +1,5 @@
 import Header from '@/components/common/header/Header'
+import HomeGreetingClient from '@/components/home/hero/HomeGreetingClient'
 import HeroGoalSection from '@/components/home/hero/HeroGoalSection'
 import InterviewPlanSection from '@/components/home/interviewPlan/InterviewPlanSection'
 import TodayScheduleSection from '@/components/home/todaySchedule/TodayScheduleSection'
@@ -14,9 +15,7 @@ export default function Home() {
 
       <div className="flex-1 min-h-0 flex flex-col pt-4">
         <div className="w-full max-w-[1440px] mx-auto px-[clamp(16px,2.5vw,80px)] flex flex-col flex-1 min-h-0">
-          <h1 className="mb-[clamp(6px,1vw,16px)] h1 text-text-primary">
-            {data.user.name}님, 오늘도 연습해볼까요?
-          </h1>
+          <HomeGreetingClient fallbackName={data.user.name} />
 
           <section className="flex flex-1 gap-[clamp(8px,2vw,24px)] min-h-0">
             <div className="flex-[2] min-h-0 flex">

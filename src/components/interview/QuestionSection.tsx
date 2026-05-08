@@ -3,6 +3,7 @@
 import { useState, useRef, Fragment } from 'react'
 import { useRouter, useParams } from 'next/navigation'
 import Image from 'next/image'
+import { useMutation, useQuery } from '@tanstack/react-query'
 import playIcon from '@/assets/icon/play-icon.svg'
 import playColorIcon from '@/assets/icon/play-color-icon.svg'
 import stopIcon from '@/assets/icon/stop-icon.svg'
@@ -11,12 +12,17 @@ import quitIcon from '@/assets/icon/quit-icon.svg'
 import quitColorIcon from '@/assets/icon/quit-color-icon.svg'
 import Button from '@/components/common/button/Button'
 import StopConfirmPopup from '@/components/interview/StopConfirmPopup'
-import { interviewMockData } from '@/mocks/interviewMockData'
 import { useStopwatch } from '@/hooks/useStopwatch'
 import { useAudioAnalyzer } from '@/hooks/useAudioAnalyzer'
 import { useSpeechRecognition } from '@/hooks/useSpeechRecognition'
+import {
+  getInterviewQuestions,
+  completeInterviewSession,
+  abandonInterviewSession,
+} from '@/apis/interview-sessions'
+import { submitAnswer } from '@/apis/questions'
+import { TOTAL_QUESTIONS } from '@/utils/interview'
 
-const TOTAL_QUESTIONS = interviewMockData.totalQuestions
 const WARNING_MS = 90 * 1000
 const FILLER_SET = new Set(['음', '어', '그'])
 
@@ -52,13 +58,13 @@ interface QuestionSectionProps {
 export default function QuestionSection({
   questionNumber,
 }: QuestionSectionProps) {
-  const question = interviewMockData.questions[questionNumber - 1]!
   const router = useRouter()
   const { uuid } = useParams<{ uuid: string }>()
 
   const [isPaused, setIsPaused] = useState(false)
   const [isStopPopupOpen, setIsStopPopupOpen] = useState(false)
   const wasPausedBeforePopupRef = useRef(false)
+
   const {
     elapsedMs,
     elapsedMsRef,
@@ -80,6 +86,26 @@ export default function QuestionSection({
     pause: audioPause,
     resume: audioResume,
   } = useAudioAnalyzer(elapsedMsRef)
+
+  const { data: questions } = useQuery({
+    queryKey: ['interview-questions', uuid, questionNumber],
+    queryFn: () => getInterviewQuestions(uuid, questionNumber),
+  })
+  const question = questions?.[0]
+
+  const submitAnswerMutation = useMutation({
+    mutationFn: (payload: Parameters<typeof submitAnswer>[1]) =>
+      submitAnswer(question!.uuid, payload),
+  })
+
+  const completeSessionMutation = useMutation({
+    mutationFn: () => completeInterviewSession(uuid),
+  })
+
+  const abandonMutation = useMutation({
+    mutationFn: () => abandonInterviewSession(uuid),
+    onSettled: () => router.push('/interview'),
+  })
 
   const isOverTime = elapsedMs >= WARNING_MS
   const silenceSec = Math.floor(silenceMs / 1000)
@@ -141,18 +167,27 @@ export default function QuestionSection({
       speechPeriods.push({ startMs: cursor, endMs: finalElapsedMs })
     }
 
-    const payload = {
-      totalElapsedMs: finalElapsedMs,
-      transcript,
-      fillerWords,
-      silencePeriods: periods,
-      speechPeriods,
-    }
+    const isLast = questionNumber >= TOTAL_QUESTIONS
 
-    // TODO: POST /api/interview/answer with payload
-    console.log('answer payload:', payload)
-
-    router.push(`/interview/job-posting/${uuid}/complete?q=${questionNumber}`)
+    submitAnswerMutation.mutate(
+      {
+        totalElapsedMs: finalElapsedMs,
+        transcript,
+        fillerWords,
+        silencePeriods: periods,
+        speechPeriods,
+      },
+      {
+        onSuccess: async () => {
+          if (isLast) {
+            await completeSessionMutation.mutateAsync().catch(() => {})
+          }
+          router.push(
+            `/interview/job-posting/${uuid}/complete?q=${questionNumber}`,
+          )
+        },
+      },
+    )
   }
 
   function handleContinue() {
@@ -163,6 +198,10 @@ export default function QuestionSection({
       setIsPaused(false)
     }
     setIsStopPopupOpen(false)
+  }
+
+  function handleStop() {
+    abandonMutation.mutate()
   }
 
   return (
@@ -232,11 +271,11 @@ export default function QuestionSection({
           </div>
 
           {/* 질문 배지 + 텍스트 */}
-          <div className="flex items-center gap-3 shrink-0">
+          <div className="flex items-center gap-4.5 shrink-0">
             <span className="shrink-0 bg-secondary text-primary h4 px-4.25 py-0.75 border rounded-full">
               질문 {questionNumber}
             </span>
-            <p className="h2">{question.text}</p>
+            <p className="h2">{question?.content ?? ''}</p>
           </div>
 
           {/* 스톱워치 + 버튼 */}
@@ -249,9 +288,15 @@ export default function QuestionSection({
             <Button
               className="w-44.75 rounded-full! py-3!"
               onClick={handleCompleteAnswer}
+              disabled={!question || submitAnswerMutation.isPending}
             >
               <span className="h3">답변 완료</span>
             </Button>
+            {submitAnswerMutation.isError && (
+              <p className="p4 text-text-point-red">
+                답변 저장에 실패했어요. 다시 시도해주세요.
+              </p>
+            )}
           </div>
 
           {/* 하단: 스크립트 + 볼륨/침묵 */}
@@ -307,10 +352,7 @@ export default function QuestionSection({
       </section>
 
       {isStopPopupOpen && (
-        <StopConfirmPopup
-          onContinue={handleContinue}
-          onStop={() => router.push('/interview')}
-        />
+        <StopConfirmPopup onContinue={handleContinue} onStop={handleStop} />
       )}
     </>
   )
