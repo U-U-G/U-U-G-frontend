@@ -2,6 +2,7 @@
 
 import { IconPlus } from '@tabler/icons-react'
 import { useQuery } from '@tanstack/react-query'
+import { formatMonthDay, getDDay } from '@/utils/date'
 import { getInterviewScheduleList } from '@/apis/schedules'
 import InterviewPlanDotsTrigger from '@/components/home/interviewPlan/InterviewPlanDotsTrigger'
 import { EMPTY_INTERVIEW_PLAN_ROWS } from '@/constants/interviewPlanEmptyRows'
@@ -83,7 +84,9 @@ export default function InterviewPlanScheduleColumn({
               ].join(' ')}
             >
               <div className="flex items-center gap-4 overflow-hidden min-w-0 flex-1">
-                <span className="h4 text-primary shrink-0">D-day</span>
+                <span className="h4 text-primary shrink-0">
+                  {getDDay(schedule.interviewDate)}
+                </span>
 
                 <span className="shrink-0 p2 text-text-primary truncate">
                   {schedule.companyName}
@@ -91,7 +94,9 @@ export default function InterviewPlanScheduleColumn({
               </div>
 
               <div className="flex items-center gap-3 shrink-0">
-                <span className="p4 text-gray-3">{schedule.interviewDate}</span>
+                <span className="p4 text-gray-3">
+                  {formatMonthDay(schedule.interviewDate)}
+                </span>
 
                 <InterviewPlanDotsTrigger
                   menuKey={`${schedule.scheduleUuid}`}

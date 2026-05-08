@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { IconCalendar } from '@tabler/icons-react'
 import { useQueryClient } from '@tanstack/react-query'
 import { useQuery, useMutation } from '@tanstack/react-query'
+import { formatFullDate } from '@/utils/date'
 import InputBox from '@/components/common/input/InputBox'
 import CalendarDropdown from '@/components/common/date/CalendarDropdown'
 import FormPopupLayout from '@/components/common/popup/FormPopupLayout'
@@ -96,7 +97,7 @@ export default function InterviewScheduleRegisterPopup({
 
     const request: CreateScheduleRequest = {
       companyName: companyName,
-      interviewDate: selectedDate.toISOString().slice(0, 10),
+      interviewDate: formatFullDate(selectedDate),
     }
 
     if (mode === 'edit' && scheduleUuid) {

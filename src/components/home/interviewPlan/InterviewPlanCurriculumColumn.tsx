@@ -1,9 +1,7 @@
 'use client'
 
-import { useState } from 'react'
-import { useQuery } from '@tanstack/react-query'
-import { getInterviewSchedule } from '@/apis/schedules'
 import type { ScheduleDetail } from '@/apis/schedules/type'
+import { formatMonthDay } from '@/utils/date'
 
 type InterviewPlanCurriculumColumnProps = {
   selectedScheduleDetail?: ScheduleDetail
@@ -39,7 +37,7 @@ export default function InterviewPlanCurriculumColumn({
                     {item.content}
                   </span>
                   <span className="shrink-0 p4 text-gray-3">
-                    {item.scheduledDate}
+                    {formatMonthDay(item.scheduledDate)}
                   </span>
                 </div>
               </div>
