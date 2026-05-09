@@ -5,6 +5,7 @@ import Image from 'next/image'
 import { useRouter, useParams } from 'next/navigation'
 import robotImg from '@/assets/image/uug-character4-img.png'
 import analysisImg from '@/assets/image/analysis-img.png'
+import Link from 'next/link'
 import Button from '@/components/common/button/Button'
 import { createInterviewSessionEventSource } from '@/apis/interview-sessions'
 import {
@@ -172,12 +173,9 @@ export default function AnalysisSection() {
             <p className="h1 text-primary">면접 분석이 완료되었어요!</p>
             <p className="p1 text-gray-1">
               생성된 리포트는{' '}
-              <span
-                className="text-primary cursor-pointer"
-                onClick={() => router.push('/history')}
-              >
+              <Link href="/history" className="text-primary">
                 연습 이력
-              </span>{' '}
+              </Link>{' '}
               에서 저장되었습니다.
             </p>
           </div>
@@ -214,12 +212,9 @@ export default function AnalysisSection() {
             </p>
             <p className="p1 text-gray-1">
               페이지를 벗어나도 분석은 중단되지 않으며,{' '}
-              <span
-                className="text-primary cursor-pointer"
-                onClick={() => router.push('/history')}
-              >
+              <Link href="/history" className="text-primary">
                 연습 이력
-              </span>{' '}
+              </Link>{' '}
               에서 확인하실 수 있습니다.
             </p>
           </div>
