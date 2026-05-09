@@ -34,18 +34,17 @@ export default function RankingSection() {
         <section className="bg-secondary rounded-t-2xl">
           <div className="flex flex-col gap-4 p-8">
             {data?.rankingItemResponseList?.map((item) => (
-                <RankingCard
-                  key={item.nickname}
-                  {...item}
-                  rank={item.rank}
-                  variant={
-                    item.nickname === data.myRankingResponse?.nickname
-                      ? 'primary'
-                      : 'secondary'
-                  }
-                  bgWhite={item.nickname === data.myRankingResponse?.nickname}
-                />
-              ))}
+              <RankingCard
+                key={item.nickname}
+                {...item}
+                variant={
+                  item.nickname === data.myRankingResponse?.nickname
+                    ? 'primary'
+                    : 'secondary'
+                }
+                bgWhite={item.nickname === data.myRankingResponse?.nickname}
+              />
+            ))}
           </div>
         </section>
       </div>
