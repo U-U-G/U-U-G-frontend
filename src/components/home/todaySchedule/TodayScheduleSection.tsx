@@ -2,23 +2,15 @@
 
 import { IconChevronRight, IconChevronLeft } from '@tabler/icons-react'
 import { useState } from 'react'
+import { useQuery } from '@tanstack/react-query'
+import { getCurriculumsByDate } from '@/apis/curriculum'
 import { formatFullDate } from '@/utils/date'
 import { getWeekDates } from '@/utils/getWeekDates'
 
-type ScheduleItem = {
-  id: number
-  label: string
-  title: string
-  time: string
-}
+const formatCompanyName = (name: string) =>
+  name.length > 10 ? `${name.slice(0, 10)}...` : name
 
-type TodayScheduleSectionProps = {
-  schedules: readonly ScheduleItem[]
-}
-
-export default function TodayScheduleSection({
-  schedules,
-}: TodayScheduleSectionProps) {
+export default function TodayScheduleSection() {
   const [isNextWeek, setIsNextWeek] = useState(false)
   const [selectedDate, setSelectedDate] = useState(formatFullDate(new Date()))
 
@@ -46,7 +38,14 @@ export default function TodayScheduleSection({
     setSelectedDate(hasToday ? today : nextWeekDates[0].fullDate)
   }
 
-  const isEmpty = schedules.length === 0
+  const { data: curriculumData, isLoading } = useQuery({
+    queryKey: ['curriculumsByDate', selectedDate],
+    queryFn: () => getCurriculumsByDate(selectedDate),
+    enabled: Boolean(selectedDate),
+  })
+
+  const curriculumList = curriculumData ?? []
+  const isEmpty = !isLoading && curriculumList.length === 0
 
   return (
     <div className="h-full w-full min-h-0 overflow-hidden rounded-2xl bg-secondary">
@@ -88,26 +87,31 @@ export default function TodayScheduleSection({
 
         <div className="mt-auto flex min-h-0 flex-1 flex-col">
           {isEmpty ? (
-            <div className="space-y-3">
-              <div className="p3 w-full rounded-lg border border-primary bg-white px-5 py-4 text-left text-gray-3">
+            <div className="space-y-3 overflow-hidden">
+              <div className="p3 w-full rounded-lg border border-primary bg-white px-5 py-4 text-left text-gray-3 ">
                 일정에 맞게 오늘의 스케줄을 생성해요
               </div>
               <div className="h-14 rounded-lg bg-white" />
-              <div className="h-12 rounded-t-lg bg-white" />
+              <div className="h-14 rounded-lg bg-white" />
+              <div className="h-14 rounded-t-lg bg-white" />
             </div>
           ) : (
             <div className="space-y-3 overflow-y-auto pr-1">
-              {schedules.map((schedule, index) => (
+              {curriculumList.map((item, index) => (
                 <div
-                  key={schedule.id}
+                  key={item.uuid}
                   className={[
                     'h-14 rounded-lg bg-white px-5 flex items-center justify-between',
                     index === 0 && 'border border-primary',
-                  ].join(' ')}
+                  ]
+                    .filter(Boolean)
+                    .join(' ')}
                 >
                   <div className="flex items-center gap-3">
-                    <span className="p4 text-primary">{schedule.label}</span>
-                    <p className="p3 text-text-primary">{schedule.title}</p>
+                    <span className="p4 text-primary">
+                      {formatCompanyName(item.companyName)}
+                    </span>
+                    <p className="p3 text-text-primary">{item.content}</p>
                   </div>
                 </div>
               ))}

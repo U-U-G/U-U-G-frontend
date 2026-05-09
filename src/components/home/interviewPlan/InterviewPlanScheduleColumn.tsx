@@ -30,7 +30,7 @@ export default function InterviewPlanScheduleColumn({
   })
 
   const scheduleList = schedules ?? []
-  const isScheduleEmpty = scheduleList.length === 0
+  const isScheduleEmpty = !isLoading && scheduleList.length === 0
 
   return (
     <div className="flex-1 flex flex-col min-h-0">
