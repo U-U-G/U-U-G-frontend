@@ -7,6 +7,7 @@ export interface CreateInterviewSessionRequest {
 export interface InterviewSession {
   uuid: string
   status: 'READY' | 'IN_PROGRESS' | 'COMPLETED' | 'ABANDONED'
+  questions?: InterviewQuestion[]
 }
 
 export interface InterviewQuestion {

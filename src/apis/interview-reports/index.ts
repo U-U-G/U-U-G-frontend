@@ -1,6 +1,31 @@
 import { privateClient } from '@/apis/common/privateClient'
 import type { ApiResponse } from '@/apis/common/type'
 
+export interface InterviewReportListItem {
+  sessionUuid: string
+  companyName: string | null
+  position: string | null
+  interviewDate: string | null
+  startedAt: string | null
+  endedAt: string | null
+  questionCount: number
+  analysisComplete: boolean
+  totalScore: number
+  silenceScore: number
+  fillerScore: number
+  logicScore: number
+}
+
+export const getInterviewReports = async (): Promise<
+  InterviewReportListItem[]
+> => {
+  const { data } =
+    await privateClient.get<ApiResponse<InterviewReportListItem[]>>(
+      '/interview-reports',
+    )
+  return data.data
+}
+
 export interface InterviewReportDetail {
   sessionUuid: string
   companyName: string | null
