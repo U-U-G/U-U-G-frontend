@@ -82,7 +82,7 @@ export default function Header({ className = '' }: HeaderProps) {
     <header
       className={`w-full h-19.5 px-10 py-5.5 flex items-center justify-between bg-white border-b border-[#E5DDFF] ${className}`}
     >
-      <Link href="/home" aria-label="홈으로 이동">
+      <Link href={isLoggedIn ? '/home' : '/'} aria-label="홈으로 이동">
         <Image
           src="/logo.png"
           alt="음어그 로고"
