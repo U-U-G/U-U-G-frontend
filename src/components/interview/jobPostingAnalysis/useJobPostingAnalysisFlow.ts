@@ -22,7 +22,8 @@ export type JobPostingAnalysisPopupState =
   | 'companyName'
   | 'generating'
   | 'questionFailed'
-  | 'complete'
+  | 'analysisComplete'
+  | 'generateQuestioncomplete'
   | 'sessionCreating'
   | 'sessionFailed'
   | null
@@ -45,9 +46,8 @@ export function useJobPostingAnalysisFlow() {
       if (name) {
         setCompanyName(name)
         setPosition(detail.position || '')
-        setPopupState('generating')
         generatingTimerRef.current = setTimeout(
-          () => setPopupState('complete'),
+          () => setPopupState('analysisComplete'),
           GENERATING_DELAY_MS,
         )
       } else {
@@ -222,7 +222,7 @@ export function useJobPostingAnalysisFlow() {
           setCompanyName(trimmed)
           setPopupState('generating')
           generatingTimerRef.current = setTimeout(
-            () => setPopupState('complete'),
+            () => setPopupState('analysisComplete'),
             GENERATING_DELAY_MS,
           )
         },
