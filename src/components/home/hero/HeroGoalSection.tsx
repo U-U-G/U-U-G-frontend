@@ -1,4 +1,7 @@
+'use client'
+
 import Image from 'next/image'
+import { useRouter } from 'next/navigation'
 import UUGCharacterImage from '@/assets/image/uug-character-img.png'
 import NoteImage from '@/assets/image/note-img.png'
 
@@ -10,6 +13,7 @@ type HeroGoalData = {
 } | null
 
 export default function HeroGoalSection({ data }: { data: HeroGoalData }) {
+  const router = useRouter()
   const isEmpty = !data
 
   return (
@@ -43,12 +47,13 @@ export default function HeroGoalSection({ data }: { data: HeroGoalData }) {
       <div className="flex justify-between gap-4 min-w-0">
         <button
           type="button"
-          className="flex-shrink-0 self-end mb-8 ml-6 h4 h-[clamp(40px,5.5vh,56px)] px-[clamp(20px,3vw,48px)] rounded-full bg-primary text-white whitespace-nowrap min-w-0"
+          onClick={() => router.push('/interview')}
+          className="z-100 flex-shrink-0 self-end mb-8 ml-6 h4 h-[clamp(40px,5.5vh,56px)] px-[clamp(20px,3vw,48px)] rounded-full bg-primary text-white whitespace-nowrap min-w-0"
         >
           {isEmpty ? '지금 시작하기' : data.ctaLabel}
         </button>
 
-        <div className="flex items-center flex-shrink-0 -mt-22">
+        <div className="flex items-center flex-shrink-0 -mt-22 pointer-events-none">
           <Image
             src={NoteImage}
             alt=""
