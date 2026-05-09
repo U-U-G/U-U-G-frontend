@@ -50,7 +50,7 @@ export default function HeroSection() {
             </div>
 
             <Link
-              href="/"
+              href="/home"
               className="mt-14 p2 inline-flex cursor-pointer items-center justify-center self-start rounded-full bg-primary px-10 py-3.5 text-white"
             >
               바로 시작하기
