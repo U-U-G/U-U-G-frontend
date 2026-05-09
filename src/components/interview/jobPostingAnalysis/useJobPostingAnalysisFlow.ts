@@ -23,7 +23,7 @@ export type JobPostingAnalysisPopupState =
   | 'generating'
   | 'questionFailed'
   | 'analysisComplete'
-  | 'generateQuestioncomplete'
+  | 'generateQuestionComplete'
   | 'sessionCreating'
   | 'sessionFailed'
   | null
@@ -137,7 +137,7 @@ export function useJobPostingAnalysisFlow() {
       setPopupState('generating')
 
       generatingTimerRef.current = setTimeout(() => {
-        setPopupState('generateQuestioncomplete')
+        setPopupState('generateQuestionComplete')
       }, GENERATING_DELAY_MS)
     },
 

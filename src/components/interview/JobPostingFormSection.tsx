@@ -169,7 +169,7 @@ export default function JobPostingFormSection() {
           onClose={handleClose}
         />
       )}
-      {popupState === 'generateQuestioncomplete' && (
+      {popupState === 'generateQuestionComplete' && (
         <CompletePopup
           popupRef={popupRef}
           title="질문 생성이 완료되었어요!"
