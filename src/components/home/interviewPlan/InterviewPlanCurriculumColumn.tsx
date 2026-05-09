@@ -15,7 +15,7 @@ export default function InterviewPlanCurriculumColumn({
   hasSelectedSchedule,
 }: InterviewPlanCurriculumColumnProps) {
   const curriculums = selectedScheduleDetail?.curriculums ?? []
-  const isEmpty = !isLoading && hasSelectedSchedule && curriculums.length === 0
+  const isEmpty = !isLoading && curriculums.length === 0
 
   return (
     <div className="flex flex-[1.3] flex-col ">
