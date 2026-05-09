@@ -146,7 +146,7 @@ export default function AnalysisSection() {
 
   if (isFailed) {
     return (
-      <section className="flex flex-col flex-1 min-h-0 gap-5 px-10 pt-6.5 pb-10">
+      <section className="flex flex-col flex-1 min-h-0 gap-5 pt-6.5 pb-10">
         <h1 className="h1 w-full">면접 연습 분석</h1>
 
         <div className="flex flex-col items-center justify-center w-full min-w-200 bg-secondary rounded-2xl border border-primary flex-1 min-h-0 gap-4.5">
@@ -165,7 +165,7 @@ export default function AnalysisSection() {
 
   if (isComplete) {
     return (
-      <section className="flex flex-col flex-1 min-h-0 gap-5 px-10 pt-6.5 pb-10">
+      <section className="flex flex-col flex-1 min-h-0 gap-5 pt-6.5 pb-10">
         <h1 className="h1 w-full">면접 연습 분석</h1>
 
         <div className="flex flex-col items-center justify-center w-full min-w-200 bg-secondary rounded-2xl border border-primary flex-1 min-h-0 gap-4.5">
@@ -200,7 +200,7 @@ export default function AnalysisSection() {
   }
 
   return (
-    <section className="flex flex-col flex-1 min-h-0 gap-5 px-10 pt-6.5 pb-10">
+    <section className="flex flex-col flex-1 min-h-0 gap-5 pt-6.5 pb-10">
       <h1 className="h1 w-full">면접 연습 분석</h1>
 
       <div className="flex flex-col items-center justify-center w-full min-w-200 bg-secondary rounded-2xl border border-primary flex-1 min-h-0 gap-4.5">

@@ -13,7 +13,7 @@ const STEPS = [
 
 export default function InterviewStartSection() {
   return (
-    <section className="flex flex-col flex-1 min-h-0 gap-5 px-10 pt-6.5 pb-10">
+    <section className="flex flex-col flex-1 min-h-0 gap-5 pt-6.5 pb-10">
       <h1 className="h1 w-full">원하는 기업의 공고 링크로 면접을 연습하세요</h1>
 
       <div className="flex-1 min-h-0 w-full min-w-200 bg-secondary rounded-2xl border border-primary flex flex-col items-center justify-center">

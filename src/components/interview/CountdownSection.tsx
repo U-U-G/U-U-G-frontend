@@ -60,7 +60,7 @@ export default function CountdownSection({
 
   if (startFailed) {
     return (
-      <section className="flex flex-col flex-1 min-h-0 gap-5 px-10 pt-6.5 pb-10">
+      <section className="flex flex-col flex-1 min-h-0 gap-5 pt-6.5 pb-10">
         <h1 className="h1 w-full">공고 맞춤 면접 연습</h1>
         <div className="flex flex-col items-center justify-center w-full min-w-200 bg-secondary rounded-2xl border border-primary flex-1 min-h-0 gap-4.5">
           <p className="h1 text-text-point-red">면접 시작에 실패했어요</p>
@@ -77,7 +77,7 @@ export default function CountdownSection({
   }
 
   return (
-    <section className="flex flex-col flex-1 min-h-0 gap-5 px-10 pt-6.5 pb-10">
+    <section className="flex flex-col flex-1 min-h-0 gap-5 pt-6.5 pb-10">
       <h1 className="h1 w-full">공고 맞춤 면접 연습</h1>
 
       <div className="flex flex-col items-center justify-center w-full min-w-200 bg-secondary rounded-2xl border border-primary flex-1 min-h-0 gap-6 px-12">

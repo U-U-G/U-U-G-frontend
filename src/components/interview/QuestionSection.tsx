@@ -206,7 +206,7 @@ export default function QuestionSection({
 
   return (
     <>
-      <section className="flex flex-col flex-1 min-h-0 gap-5 px-10 pt-6.5 pb-10">
+      <section className="flex flex-col flex-1 min-h-0 gap-5 pt-6.5 pb-10">
         <h1 className="h1 w-full">공고 맞춤 면접 연습</h1>
 
         <div className="flex flex-col w-full min-w-200 bg-white rounded-2xl border border-primary px-9.5 pt-6 pb-10 flex-1 min-h-0 gap-4">
