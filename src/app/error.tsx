@@ -34,7 +34,7 @@ export default function Error({ error, unstable_retry }: Props) {
 
         <div className="flex justify-center gap-6">
           <Link
-            href="/"
+            href="/home"
             className="h3 px-10 py-3 text-primary font-medium rounded-lg border border-primary bg-secondary"
           >
             홈으로

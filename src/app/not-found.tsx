@@ -10,7 +10,7 @@ export default function NotFound() {
     if (window.history.length > 1) {
       router.back()
     } else {
-      router.push('/')
+      router.push('/home')
     }
   }
 
@@ -38,7 +38,7 @@ export default function NotFound() {
 
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
           <Link
-            href="/"
+            href="/home"
             className={
               'cursor-pointer px-6 py-3 bg-blue-600 text-white font-medium rounded-lg transition-all duration-600 transform hover:scale-101 hover:bg-blue-700'
             }
