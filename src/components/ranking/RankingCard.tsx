@@ -51,7 +51,7 @@ export default function RankingCard({
         </span>
 
         <Image
-          src={profileImageUrl ?? defaultProfileIcon}
+          src={profileImageUrl || defaultProfileIcon}
           alt={`${nickname} 프로필`}
           width={60}
           height={60}
