@@ -34,7 +34,7 @@ export default function OAuth2CallbackPage() {
 
     // 쿠키가 HttpOnly라서 읽지 못한 경우에도 로그인 상태를 유지하기 위한 마커
     setSessionMarker()
-    router.replace('/')
+    router.replace('/home')
   }, [router, searchParams])
 
   return <main className="p-6">로그인 처리 중입니다</main>

@@ -1,0 +1,36 @@
+import Header from '@/components/common/header/Header'
+import HomeGreetingClient from '@/components/home/hero/HomeGreetingClient'
+import HeroGoalSection from '@/components/home/hero/HeroGoalSection'
+import InterviewPlanSection from '@/components/home/interviewPlan/InterviewPlanSection'
+import TodayScheduleSection from '@/components/home/todaySchedule/TodayScheduleSection'
+import { homeMockData, emptyHomeMockData } from '@/mocks/homeMockData'
+
+export default function Home() {
+  const data = homeMockData
+  //const data = emptyHomeMockData
+
+  return (
+    <main className="h-screen overflow-hidden flex flex-col">
+      <Header />
+
+      <div className="flex-1 min-h-0 flex flex-col pt-4">
+        <div className="w-full max-w-[1440px] mx-auto px-[clamp(16px,2.5vw,80px)] flex flex-col flex-1 min-h-0">
+          <HomeGreetingClient fallbackName={data.user.name} />
+
+          <section className="flex flex-1 gap-[clamp(8px,2vw,24px)] min-h-0">
+            <div className="flex-[2] min-h-0 flex">
+              <HeroGoalSection data={data.heroGoal} />
+            </div>
+            <div className="flex-[1] min-h-0 flex">
+              <TodayScheduleSection />
+            </div>
+          </section>
+
+          <div className="flex-shrink-0 mt-[clamp(8px,2vw,24px)] mb-[clamp(8px,2vw,24px)]">
+            <InterviewPlanSection />
+          </div>
+        </div>
+      </div>
+    </main>
+  )
+}

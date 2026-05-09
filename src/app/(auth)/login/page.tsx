@@ -25,7 +25,7 @@ export default function Login() {
     onSuccess: (response) => {
       setAccessToken(response.accessToken)
       setRefreshToken(response.refreshToken)
-      router.push('/')
+      router.push('/home')
     },
 
     onError: (error) => {
@@ -58,13 +58,15 @@ export default function Login() {
     <main className="flex min-h-screen items-center justify-center">
       <section className="w-full max-w-[380px]">
         <div className="mb-12 flex justify-center">
-          <Image
-            src="/logo-primary.png"
-            alt="음어그 로고"
-            width={180}
-            height={120}
-            priority
-          />
+          <Link href="/" aria-label="랜딩페이지로 이동">
+            <Image
+              src="/logo-primary.png"
+              alt="음어그 로고"
+              width={180}
+              height={120}
+              priority
+            />
+          </Link>
         </div>
         <form className="flex flex-col" onSubmit={handleSubmit}>
           <div className="mb-5">
