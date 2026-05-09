@@ -11,7 +11,7 @@ type RankingCardProps = {
   jobTitle: string
   bestScore: number
   totalSessionCount: number
-  profileImage?: string
+  profileImageUrl?: string
   variant?: RankingCardVariant
   size?: RankingCardSize
   bgWhite?: boolean
@@ -23,7 +23,7 @@ export default function RankingCard({
   jobTitle,
   bestScore,
   totalSessionCount,
-  profileImage,
+  profileImageUrl,
   variant = 'secondary',
   size = 'md',
   bgWhite = false,
@@ -51,7 +51,7 @@ export default function RankingCard({
         </span>
 
         <Image
-          src={profileImage ?? defaultProfileIcon}
+          src={profileImageUrl ?? defaultProfileIcon}
           alt={`${nickname} 프로필`}
           width={60}
           height={60}
