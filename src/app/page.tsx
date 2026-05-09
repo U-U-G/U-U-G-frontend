@@ -1,13 +1,4 @@
 import type { Metadata } from 'next'
-
-export const metadata: Metadata = {
-  title: {
-    absolute: '음어그 | UUG',
-  },
-  description:
-    'AI 기반 면접 연습 플랫폼 음어그. 실전처럼 연습하고 분석 받아보세요.',
-}
-
 import Image from 'next/image'
 import Header from '@/components/common/header/Header'
 import HeroSection from '@/components/landing/HeroSection'
@@ -20,6 +11,14 @@ import Feature3Img from '@/assets/image/landing/feature3-img.png'
 import Number1Icon from '@/assets/icon/number1-round-fill-icon.svg'
 import Number2Icon from '@/assets/icon/number2-round-fill-icon.svg'
 import Number3Icon from '@/assets/icon/number3-round-fill-icon.svg'
+
+export const metadata: Metadata = {
+  title: {
+    absolute: '음어그 | UUG',
+  },
+  description:
+    'AI 기반 면접 연습 플랫폼 음어그. 실전처럼 연습하고 분석 받아보세요.',
+}
 
 export default function LandingPage() {
   return (

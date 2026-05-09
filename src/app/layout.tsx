@@ -14,7 +14,8 @@ export const metadata: Metadata = {
     template: '%s | UUG',
     default: 'UUG',
   },
-  description: '',
+  description:
+    'AI 기반 면접 연습 플랫폼 음어그. 실전처럼 연습하고 분석 받아보세요.',
 }
 
 export default function RootLayout({
