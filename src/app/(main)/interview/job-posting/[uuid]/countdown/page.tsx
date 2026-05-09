@@ -1,5 +1,4 @@
 import { notFound } from 'next/navigation'
-import Header from '@/components/common/header/Header'
 import CountdownSection from '@/components/interview/CountdownSection'
 import { parseQuestionNumber } from '@/utils/interview'
 
@@ -12,10 +11,5 @@ export default async function CountdownPage({
   const questionNumber = parseQuestionNumber(q)
   if (questionNumber === null) notFound()
 
-  return (
-    <main className="h-screen flex flex-col overflow-hidden">
-      <Header />
-      <CountdownSection questionNumber={questionNumber} />
-    </main>
-  )
+  return <CountdownSection questionNumber={questionNumber} />
 }

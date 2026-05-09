@@ -78,63 +78,61 @@ export default function HistorySection() {
   }
 
   return (
-    <div className="flex-1 min-h-0 flex flex-col overflow-hidden">
-      <div className="flex-1 min-h-0 max-w-360 w-full mx-auto flex flex-col pt-6.5 px-10">
-        <h1 className="h1 mb-5">연습 이력을 확인해보세요</h1>
+    <div className="flex-1 min-h-0 flex flex-col pt-6.5">
+      <h1 className="h1 mb-5">연습 이력을 확인해보세요</h1>
 
-        <div className="flex min-h-0 flex-1 gap-7.5">
-          <div className="w-60.5 shrink-0 flex flex-col min-h-0">
-            <p className="p2 text-gray-1 pb-4.25 border-b border-gray-5">
-              회사명
-            </p>
-            {isLoading ? (
-              <div className="flex-1 flex items-center justify-center">
-                <span className="p3 text-gray-3">불러오는 중...</span>
+      <div className="flex min-h-0 flex-1 gap-7.5">
+        <div className="w-60.5 shrink-0 flex flex-col min-h-0">
+          <p className="p2 text-gray-1 pb-4.25 border-b border-gray-5">
+            회사명
+          </p>
+          {isLoading ? (
+            <div className="flex-1 flex items-center justify-center">
+              <span className="p3 text-gray-3">불러오는 중...</span>
+            </div>
+          ) : (
+            <ul className="flex flex-col overflow-y-auto py-6 gap-4">
+              {groups.map((group) => (
+                <li key={group.companyName}>
+                  <button
+                    type="button"
+                    onClick={() => setSelectedCompany(group.companyName)}
+                    className={`w-full text-left px-5.5 py-4 rounded-2xl p1 cursor-pointer ${
+                      activeCompany === group.companyName
+                        ? 'bg-secondary text-primary'
+                        : 'text-gray-2 hover:text-primary'
+                    }`}
+                  >
+                    {group.companyName}
+                  </button>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+
+        <div className="flex-1 flex flex-col min-h-0">
+          <p className="p2 text-gray-1 pb-3.5">이력</p>
+          <div className="bg-secondary flex-1 overflow-y-auto p-6 rounded-2xl">
+            {!selectedGroup || selectedGroup.sessions.length === 0 ? (
+              <div className="flex items-center justify-center h-full">
+                <span className="p3 text-gray-3">이력이 없습니다</span>
               </div>
             ) : (
-              <ul className="flex flex-col overflow-y-auto py-6 gap-4">
-                {groups.map((group) => (
-                  <li key={group.companyName}>
-                    <button
-                      type="button"
-                      onClick={() => setSelectedCompany(group.companyName)}
-                      className={`w-full text-left px-5.5 py-4 rounded-2xl p1 cursor-pointer ${
-                        activeCompany === group.companyName
-                          ? 'bg-secondary text-primary'
-                          : 'text-gray-2 hover:text-primary'
-                      }`}
-                    >
-                      {group.companyName}
-                    </button>
-                  </li>
+              <div className="flex flex-col gap-7.25">
+                {selectedGroup.sessions.map((session) => (
+                  <HistoryCard
+                    key={session.sessionUuid}
+                    session={session}
+                    onDetail={() =>
+                      router.push(
+                        `/history/${session.sessionUuid}?attempt=${session.attemptNumber}`,
+                      )
+                    }
+                  />
                 ))}
-              </ul>
+              </div>
             )}
-          </div>
-
-          <div className="flex-1 flex flex-col min-h-0">
-            <p className="p2 text-gray-1 pb-3.5">이력</p>
-            <div className="bg-secondary flex-1 overflow-y-auto p-6 rounded-2xl">
-              {!selectedGroup || selectedGroup.sessions.length === 0 ? (
-                <div className="flex items-center justify-center h-full">
-                  <span className="p3 text-gray-3">이력이 없습니다</span>
-                </div>
-              ) : (
-                <div className="flex flex-col gap-7.25">
-                  {selectedGroup.sessions.map((session) => (
-                    <HistoryCard
-                      key={session.sessionUuid}
-                      session={session}
-                      onDetail={() =>
-                        router.push(
-                          `/history/${session.sessionUuid}?attempt=${session.attemptNumber}`,
-                        )
-                      }
-                    />
-                  ))}
-                </div>
-              )}
-            </div>
           </div>
         </div>
       </div>

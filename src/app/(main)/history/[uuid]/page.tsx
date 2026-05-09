@@ -1,4 +1,3 @@
-import Header from '@/components/common/header/Header'
 import HistoryDetailContent from '@/components/history/HistoryDetailContent'
 
 export default async function HistoryDetailPage({
@@ -12,9 +11,8 @@ export default async function HistoryDetailPage({
   const { attempt } = await searchParams
 
   return (
-    <main className="h-screen flex flex-col overflow-hidden px-6 gap-6">
-      <Header />
+    <div className="flex-1 min-h-0 flex flex-col pt-6">
       <HistoryDetailContent uuid={uuid} attempt={attempt} />
-    </main>
+    </div>
   )
 }
