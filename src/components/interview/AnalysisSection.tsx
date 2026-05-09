@@ -118,7 +118,7 @@ export default function AnalysisSection() {
       onerror(err) {
         throw err
       },
-    }).catch((err) => {
+    }).catch(() => {
       clearInterval(progressTimer)
       if (streamFinished || controller.signal.aborted) return
       startPolling()
@@ -172,7 +172,12 @@ export default function AnalysisSection() {
             <p className="h1 text-primary">면접 분석이 완료되었어요!</p>
             <p className="p1 text-gray-1">
               생성된 리포트는{' '}
-              <span className="text-primary cursor-pointer">연습 이력</span>{' '}
+              <span
+                className="text-primary cursor-pointer"
+                onClick={() => router.push('/history')}
+              >
+                연습 이력
+              </span>{' '}
               에서 저장되었습니다.
             </p>
           </div>
@@ -187,7 +192,7 @@ export default function AnalysisSection() {
 
           <Button
             className="rounded-full! py-3! px-18.25! mt-3.5"
-            onClick={() => router.push('/history')}
+            onClick={() => router.push(`/history/${uuid}`)}
           >
             <span className="h3">리포트 보러가기</span>
           </Button>
@@ -209,7 +214,12 @@ export default function AnalysisSection() {
             </p>
             <p className="p1 text-gray-1">
               페이지를 벗어나도 분석은 중단되지 않으며,{' '}
-              <span className="text-primary cursor-pointer">연습 이력</span>{' '}
+              <span
+                className="text-primary cursor-pointer"
+                onClick={() => router.push('/history')}
+              >
+                연습 이력
+              </span>{' '}
               에서 확인하실 수 있습니다.
             </p>
           </div>
