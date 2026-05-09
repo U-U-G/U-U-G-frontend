@@ -9,7 +9,7 @@ export const EMPTY_INTERVIEW_PLAN_ROWS: readonly EmptyInterviewPlanRowConfig[] =
     {
       menuKey: 'empty-0',
       className:
-        'flex h-16 items-center justify-between rounded-lg border border-gray-5 bg-white px-5 py-4 gap-3',
+        'flex h-14 items-center justify-between rounded-lg border border-gray-5 bg-white px-5 py-4 gap-3',
       leading: 'prompt',
     },
     {
@@ -27,7 +27,7 @@ export const EMPTY_INTERVIEW_PLAN_ROWS: readonly EmptyInterviewPlanRowConfig[] =
     {
       menuKey: 'empty-3',
       className:
-        'flex h-10 items-center justify-end rounded-t-lg border border-gray-5 bg-white px-5 py-3',
+        'flex h-9 items-center justify-end rounded-t-lg border border-gray-5 bg-white px-5 py-3',
       leading: null,
     },
   ]

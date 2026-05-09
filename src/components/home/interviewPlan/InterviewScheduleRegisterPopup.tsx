@@ -157,7 +157,7 @@ export default function InterviewScheduleRegisterPopup({
         <div className="relative">
           <InputBox
             id="interview-date"
-            className="border-gray-5 mb-2"
+            className="border-gray-5"
             value={dateInput}
             onChange={(e) => handleDateInputChange(e.target.value)}
             status="default"

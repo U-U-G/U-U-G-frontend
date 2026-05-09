@@ -1,4 +1,7 @@
+'use client'
+
 import Image from 'next/image'
+import { useRouter } from 'next/navigation'
 import UUGCharacterImage from '@/assets/image/uug-character-img.png'
 import NoteImage from '@/assets/image/note-img.png'
 
@@ -10,10 +13,11 @@ type HeroGoalData = {
 } | null
 
 export default function HeroGoalSection({ data }: { data: HeroGoalData }) {
+  const router = useRouter()
   const isEmpty = !data
 
   return (
-    <div className="h-full w-full overflow-hidden rounded-2xl bg-secondary p-6 flex flex-col justify-between min-h-0">
+    <div className="relative h-full w-full overflow-hidden rounded-2xl bg-secondary p-6 min-h-0">
       <div>
         {isEmpty ? (
           <>
@@ -40,28 +44,23 @@ export default function HeroGoalSection({ data }: { data: HeroGoalData }) {
         )}
       </div>
 
-      <div className="flex justify-between gap-4 min-w-0">
-        <button
-          type="button"
-          className="flex-shrink-0 self-end mb-8 ml-6 h4 h-[clamp(40px,5.5vh,56px)] px-[clamp(20px,3vw,48px)] rounded-full bg-primary text-white whitespace-nowrap min-w-0"
-        >
-          {isEmpty ? '지금 시작하기' : data.ctaLabel}
-        </button>
+      <button
+        type="button"
+        onClick={() => router.push('/interview')}
+        className="absolute left-6 bottom-6 z-10 h4 h-[clamp(40px,5.5vh,56px)] px-[clamp(20px,3vw,48px)] rounded-full bg-primary text-white whitespace-nowrap"
+      >
+        {isEmpty ? '지금 시작하기' : data.ctaLabel}
+      </button>
 
-        <div className="flex items-center flex-shrink-0 -mt-22">
-          <Image
-            src={NoteImage}
-            alt=""
-            className="w-[clamp(56px,8vw,120px)] shrink"
-          />
+      <div className="absolute right-8 bottom-8 flex items-end pointer-events-none">
+        <Image src={NoteImage} alt="" className="w-[clamp(56px,8vw,120px)]" />
 
-          <Image
-            src={UUGCharacterImage}
-            alt="면접 준비 캐릭터"
-            className="w-[clamp(240px,25vw,340px)] shrink"
-            priority
-          />
-        </div>
+        <Image
+          src={UUGCharacterImage}
+          alt="면접 준비 캐릭터"
+          className="translate-y-8 translate-x-2 w-[clamp(240px,25vw,320px)]"
+          priority
+        />
       </div>
     </div>
   )

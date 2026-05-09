@@ -1,8 +1,12 @@
 'use client'
 
-import { useCallback, useState } from 'react'
+import { useCallback, useState, useRef, useEffect } from 'react'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { deleteInterviewSchedule, getInterviewSchedule } from '@/apis/schedules'
+import {
+  deleteInterviewSchedule,
+  getInterviewSchedule,
+  getInterviewScheduleList,
+} from '@/apis/schedules'
 import InterviewPlanActionsMenuPortal, {
   computeMenuPosition,
   type InterviewPlanMenuPosition,
@@ -34,6 +38,11 @@ export default function InterviewPlanSection() {
       queryFn: () => getInterviewSchedule(selectedScheduleUuid!),
       enabled: !!selectedScheduleUuid,
     })
+
+  const { data: schedules, isSuccess: isSchedulesSuccess } = useQuery({
+    queryKey: ['schedules'],
+    queryFn: getInterviewScheduleList,
+  })
 
   const deleteInterviewScheduleMutation = useMutation({
     mutationFn: deleteInterviewSchedule,
@@ -86,6 +95,20 @@ export default function InterviewPlanSection() {
   const closeSchedulePopup = useCallback(() => {
     setIsSchedulePopupOpen(false)
   }, [])
+
+  const hasAutoSelectedRef = useRef(false)
+
+  useEffect(() => {
+    if (!isSchedulesSuccess || !schedules?.length) return
+    if (hasAutoSelectedRef.current) return
+    if (selectedScheduleUuid !== null) return
+
+    const sorted = [...schedules].sort((a, b) =>
+      a.interviewDate.localeCompare(b.interviewDate),
+    )
+    setSelectedScheduleUuid(sorted[0].scheduleUuid)
+    hasAutoSelectedRef.current = true
+  }, [isSchedulesSuccess, schedules, selectedScheduleUuid])
 
   return (
     <section className="min-h-[clamp(320px,36vh,420px)] rounded-2xl bg-secondary p-[clamp(16px,2vw,28px)]">
