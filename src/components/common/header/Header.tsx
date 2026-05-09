@@ -2,6 +2,7 @@
 
 import Image from 'next/image'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import { useState, useRef, useEffect } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import {
@@ -29,6 +30,7 @@ const NAV_LINKS = [
 ]
 
 export default function Header({ className = '' }: HeaderProps) {
+  const router = useRouter()
   const [open, setOpen] = useState(false)
   const [queryEnabled, setQueryEnabled] = useState<boolean | null>(null)
   const dropdownRef = useRef<HTMLDivElement>(null)
@@ -65,6 +67,7 @@ export default function Header({ className = '' }: HeaderProps) {
       queryClient.removeQueries({ queryKey: ['user', 'profile'] })
       setQueryEnabled(false)
       setOpen(false)
+      router.replace('/')
     },
   })
 
