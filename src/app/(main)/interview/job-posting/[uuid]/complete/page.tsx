@@ -1,4 +1,10 @@
+import type { Metadata } from 'next'
 import CompleteSection from '@/components/interview/CompleteSection'
+
+export const metadata: Metadata = {
+  title: '면접 완료',
+  description: '면접이 완료되었어요. 결과를 확인해보세요.',
+}
 import { TOTAL_QUESTIONS } from '@/utils/interview'
 
 export default async function CompletePage({

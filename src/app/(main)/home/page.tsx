@@ -1,4 +1,10 @@
+import type { Metadata } from 'next'
 import HomeGreetingClient from '@/components/home/hero/HomeGreetingClient'
+
+export const metadata: Metadata = {
+  title: '홈',
+  description: '오늘의 면접 일정과 학습 현황을 확인하세요.',
+}
 import HeroGoalSection from '@/components/home/hero/HeroGoalSection'
 import InterviewPlanSection from '@/components/home/interviewPlan/InterviewPlanSection'
 import TodayScheduleSection from '@/components/home/todaySchedule/TodayScheduleSection'

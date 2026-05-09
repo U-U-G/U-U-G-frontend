@@ -1,4 +1,10 @@
+import type { Metadata } from 'next'
 import SignUpForm from '@/components/auth/signup/SignUpForm'
+
+export const metadata: Metadata = {
+  title: '회원가입',
+  description: '음어그 회원가입 후 AI 면접 연습을 시작하세요.',
+}
 
 export default function SignUpPage() {
   return (

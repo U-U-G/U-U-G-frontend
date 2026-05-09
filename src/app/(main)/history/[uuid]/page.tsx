@@ -1,4 +1,10 @@
+import type { Metadata } from 'next'
 import HistoryDetailContent from '@/components/history/HistoryDetailContent'
+
+export const metadata: Metadata = {
+  title: '리포트',
+  description: '면접 연습 결과와 피드백을 상세히 확인하세요.',
+}
 
 export default async function HistoryDetailPage({
   params,

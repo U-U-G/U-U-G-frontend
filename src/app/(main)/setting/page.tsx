@@ -1,4 +1,10 @@
+import type { Metadata } from 'next'
 import UserInfoSection from '@/components/setting/UserInfoSection'
+
+export const metadata: Metadata = {
+  title: '설정',
+  description: '계정 정보와 프로필을 관리하세요.',
+}
 
 export default function SettingPage() {
   return (

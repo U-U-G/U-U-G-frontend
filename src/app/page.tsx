@@ -1,3 +1,13 @@
+import type { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: {
+    absolute: '음어그 | UUG',
+  },
+  description:
+    'AI 기반 면접 연습 플랫폼 음어그. 실전처럼 연습하고 분석 받아보세요.',
+}
+
 import Image from 'next/image'
 import Header from '@/components/common/header/Header'
 import HeroSection from '@/components/landing/HeroSection'
