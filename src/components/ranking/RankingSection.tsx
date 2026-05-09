@@ -33,17 +33,11 @@ export default function RankingSection() {
         </div>
         <section className="bg-secondary rounded-t-2xl">
           <div className="flex flex-col gap-4 p-8">
-            {/* TODO: 백엔드 rank 정렬 수정 후 아래로 교체 */}
-            {/* {data?.rankingItemResponseList?.map((item) => ( */}
-            {data?.rankingItemResponseList
-              ?.slice()
-              .sort((a, b) => b.bestScore - a.bestScore)
-              .map((item, index) => (
+            {data?.rankingItemResponseList?.map((item) => (
                 <RankingCard
                   key={item.nickname}
                   {...item}
-                  // TODO: 백엔드 rank 수정 후 아래 줄 제거 (rank={index + 1})
-                  rank={index + 1}
+                  rank={item.rank}
                   variant={
                     item.nickname === data.myRankingResponse?.nickname
                       ? 'primary'
