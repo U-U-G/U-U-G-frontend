@@ -2,6 +2,7 @@
 
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
+import { IconFileUnknown } from '@tabler/icons-react'
 
 export default function NotFound() {
   const router = useRouter()
@@ -15,44 +16,36 @@ export default function NotFound() {
   }
 
   return (
-    <div
-      className={
-        'flex-1 flex flex-col items-center justify-center bg-linear-to-r from-slate-50 to-slate-100'
-      }
-    >
-      <div
-        className={
-          'max-w-md mx-auto rounded-xl shadow-lg p-8 bg-white text-center transform transition-all'
-        }
-      >
-        <h1 className="text-2xl font-bold mb-4 text-slate-800 dark:text-slate-100">
-          <span role="presentation" className="flex justify-center mb-6">
-            ❌
-          </span>
-          페이지를 찾을 수 없습니다.
-        </h1>
+    <div className="min-h-screen flex items-center justify-center p-4">
+      <div className="p-6">
+        <div className="flex items-center justify-center w-24 h-24 mx-auto mb-6">
+          <IconFileUnknown
+            className="w-full h-full text-primary"
+            aria-hidden="true"
+          />
+        </div>
 
-        <p className="text-slate-600 dark:text-slate-300 mb-8 text-md">
-          요청하신 페이지가 존재하지 않거나 이동되었을 수 있습니다.
-        </p>
+        <div className="text-center mb-12 font-light">
+          <p className="h1 text-primary mb-2">페이지를 찾을 수 없습니다</p>
+          <p className="h3 text-text-primary">
+            요청하신 페이지가 존재하지 않거나 이동되었을 수 있습니다
+          </p>
+        </div>
 
-        <div className="flex flex-col sm:flex-row gap-4 justify-center">
+        <div className="flex justify-center gap-6">
           <Link
             href="/home"
-            className={
-              'cursor-pointer px-6 py-3 bg-blue-600 text-white font-medium rounded-lg transition-all duration-600 transform hover:scale-101 hover:bg-blue-700'
-            }
+            className="h3 px-10 py-3 text-primary font-medium rounded-lg border border-primary bg-secondary"
           >
-            홈으로 돌아가기
+            홈으로
           </Link>
-
           <button
+            type="button"
             onClick={handleGoBack}
-            className={
-              'cursor-pointer px-6 py-3 bg-slate-200 text-slate-800 font-medium rounded-lg transition-all duration-600 transform hover:scale-101 hover:bg-slate-300'
-            }
+            aria-label="이전 페이지로 돌아가기"
+            className="h3 cursor-pointer px-8 py-3 bg-primary text-white font-medium rounded-lg"
           >
-            이전 페이지로 돌아가기
+            이전 페이지
           </button>
         </div>
       </div>
