@@ -22,7 +22,8 @@ export type JobPostingAnalysisPopupState =
   | 'companyName'
   | 'generating'
   | 'questionFailed'
-  | 'complete'
+  | 'analysisComplete'
+  | 'generateQuestionComplete'
   | 'sessionCreating'
   | 'sessionFailed'
   | null
@@ -45,9 +46,8 @@ export function useJobPostingAnalysisFlow() {
       if (name) {
         setCompanyName(name)
         setPosition(detail.position || '')
-        setPopupState('generating')
         generatingTimerRef.current = setTimeout(
-          () => setPopupState('complete'),
+          () => setPopupState('analysisComplete'),
           GENERATING_DELAY_MS,
         )
       } else {
@@ -132,9 +132,18 @@ export function useJobPostingAnalysisFlow() {
   // Interview session SSE (공통 훅으로 위임)
   useWaitForSessionQuestions({
     sessionUuid,
-    onReady: (uuid) =>
-      router.push(`/interview/job-posting/${uuid}/countdown?q=1`),
-    onError: () => setPopupState('sessionFailed'),
+
+    onReady: () => {
+      setPopupState('generating')
+
+      generatingTimerRef.current = setTimeout(() => {
+        setPopupState('generateQuestionComplete')
+      }, GENERATING_DELAY_MS)
+    },
+
+    onError: () => {
+      setPopupState('sessionFailed')
+    },
   })
 
   useEffect(() => {
@@ -222,7 +231,7 @@ export function useJobPostingAnalysisFlow() {
           setCompanyName(trimmed)
           setPopupState('generating')
           generatingTimerRef.current = setTimeout(
-            () => setPopupState('complete'),
+            () => setPopupState('analysisComplete'),
             GENERATING_DELAY_MS,
           )
         },
@@ -233,7 +242,7 @@ export function useJobPostingAnalysisFlow() {
     )
   }
 
-  function handleStartInterview() {
+  function handleStartQuestionGeneration() {
     if (!jobPostingUuid) return
     setPopupState('sessionCreating')
     createSessionMutation.mutate({
@@ -241,6 +250,12 @@ export function useJobPostingAnalysisFlow() {
       interviewDate: new Date().toISOString().split('T')[0],
       retry: false,
     })
+  }
+
+  function handleStartInterview() {
+    if (!sessionUuid) return
+
+    router.push(`/interview/job-posting/${sessionUuid}/countdown?q=1`)
   }
 
   return {
@@ -251,5 +266,6 @@ export function useJobPostingAnalysisFlow() {
     handleClose,
     handleCompanyNameSubmit,
     handleStartInterview,
+    handleStartQuestionGeneration,
   }
 }

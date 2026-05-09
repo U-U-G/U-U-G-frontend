@@ -25,12 +25,16 @@ function isValidUrl(value: string): boolean {
 
 function CompletePopup({
   popupRef,
-  companyName,
-  onStart,
+  title,
+  subtitle,
+  actionLabel,
+  onAction,
 }: {
   popupRef: React.RefObject<HTMLDivElement | null>
-  companyName: string
-  onStart: () => void
+  title: string
+  subtitle: string
+  actionLabel: string
+  onAction: () => void
 }) {
   return (
     <div className="fixed inset-0 bg-black/13 flex items-center justify-center z-50">
@@ -40,20 +44,20 @@ function CompletePopup({
       >
         <Image
           src={character3}
-          alt="캐릭터"
+          alt=""
           width={163}
           height={163}
           className="object-contain mb-5.5"
         />
-        <div className="flex flex-col items-center gap-1.75">
-          <p className="h1 text-primary">질문 생성이 완료되었어요!</p>
-          <p className="p1 text-gray-2">{companyName} 면접을 시작해주세요.</p>
+        <div className="flex flex-col items-center gap-1.75 text-center px-6">
+          <p className="h1 text-primary">{title}</p>
+          <p className="p1 text-gray-2">{subtitle}</p>
         </div>
         <Button
           className="w-70 rounded-full! py-3 cursor-pointer mt-12"
-          onClick={onStart}
+          onClick={onAction}
         >
-          <span className="h3">시작 하기</span>
+          <span className="h3">{actionLabel}</span>
         </Button>
       </div>
     </div>
@@ -70,6 +74,7 @@ export default function JobPostingFormSection() {
     handleClose,
     handleCompanyNameSubmit,
     handleStartInterview,
+    handleStartQuestionGeneration,
   } = useJobPostingAnalysisFlow()
 
   const { ref: popupRef } = useModal(popupState !== null)
@@ -145,6 +150,15 @@ export default function JobPostingFormSection() {
           onSubmit={handleCompanyNameSubmit}
         />
       )}
+      {popupState === 'analysisComplete' && (
+        <CompletePopup
+          popupRef={popupRef}
+          title="채용 공고 분석이 완료되었어요!"
+          subtitle={`${companyName} 질문 생성을 시작해주세요.`}
+          actionLabel="시작하기"
+          onAction={handleStartQuestionGeneration}
+        />
+      )}
       {popupState === 'generating' && (
         <GeneratingPopup popupRef={popupRef} onClose={handleClose} />
       )}
@@ -155,11 +169,13 @@ export default function JobPostingFormSection() {
           onClose={handleClose}
         />
       )}
-      {popupState === 'complete' && (
+      {popupState === 'generateQuestionComplete' && (
         <CompletePopup
           popupRef={popupRef}
-          companyName={companyName}
-          onStart={handleStartInterview}
+          title="질문 생성이 완료되었어요!"
+          subtitle={`${companyName} 면접을 시작해주세요.`}
+          actionLabel="시작하기"
+          onAction={handleStartInterview}
         />
       )}
       {popupState === 'sessionCreating' && (
