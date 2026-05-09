@@ -4,7 +4,7 @@ export interface RankingItem {
   jobTitle: string
   bestScore: number
   totalSessionCount: number
-  profileImage?: string
+  profileImageUrl?: string
 }
 
 export interface RankingResponse {
