@@ -27,6 +27,10 @@ export const checkNicknameAvailability = async (nickname: string) => {
   await publicClient.get('/users/nickname-check', { params: { nickname } })
 }
 
+export const checkEmailAvailability = async (email: string) => {
+  await publicClient.get('/users/email-check', { params: { email } })
+}
+
 export const sendEmailVerificationCode = async (body: EmailField) => {
   const { data } = await privateClient.post<ApiResponse<string>>(
     '/users/email-verifications',

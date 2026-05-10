@@ -2,8 +2,10 @@
 
 import { useEffect, useRef, useState } from 'react'
 import { useMutation } from '@tanstack/react-query'
+import { isAxiosError } from 'axios'
 import { EMAIL_REGEX } from '@/constants/regex'
 import { signupApi } from '@/apis/auth'
+import { checkEmailAvailability } from '@/apis/user'
 import Button from '@/components/common/button/Button'
 import InputBox from '@/components/common/input/InputBox'
 import HelperText from '@/components/common/text/HelperText'
@@ -28,15 +30,9 @@ function formatTime(seconds: number) {
 
 interface EmailSectionProps {
   onEmailVerified?: (verified: boolean) => void
-  serverError?: string
-  onClearServerError?: () => void
 }
 
-export default function EmailSection({
-  onEmailVerified,
-  serverError,
-  onClearServerError,
-}: EmailSectionProps) {
+export default function EmailSection({ onEmailVerified }: EmailSectionProps) {
   const [email, setEmail] = useState('')
   const [code, setCode] = useState('')
   const [emailStatus, setEmailStatus] = useState<FieldStatus>('default')
@@ -44,40 +40,71 @@ export default function EmailSection({
   const [emailHelper, setEmailHelper] = useState<HelperState>(EMPTY)
   const [codeHelper, setCodeHelper] = useState<HelperState>(EMPTY)
   const [timeLeft, setTimeLeft] = useState<number | null>(null)
+  const [cooldownLeft, setCooldownLeft] = useState(0)
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null)
+  const cooldownRef = useRef<ReturnType<typeof setInterval> | null>(null)
 
   const codeSent = timeLeft !== null
   const timerExpired = timeLeft === 0
 
   useEffect(() => {
+    if (timerExpired) {
+      if (timerRef.current) {
+        clearInterval(timerRef.current)
+        timerRef.current = null
+      }
+      setCodeHelper({ text: '인증시간이 만료되었습니다.', status: 'error' })
+      setCodeStatus('error')
+    }
+  }, [timerExpired])
+
+  useEffect(() => {
     return () => {
       if (timerRef.current) clearInterval(timerRef.current)
+      if (cooldownRef.current) clearInterval(cooldownRef.current)
     }
   }, [])
+
+  useEffect(() => {
+    if (cooldownLeft === 0 && cooldownRef.current) {
+      clearInterval(cooldownRef.current)
+      cooldownRef.current = null
+    }
+  }, [cooldownLeft])
+
+  function startCooldown() {
+    if (cooldownRef.current) clearInterval(cooldownRef.current)
+    setCooldownLeft(30)
+    cooldownRef.current = setInterval(() => {
+      setCooldownLeft((c) => (c <= 1 ? 0 : c - 1))
+    }, 1000)
+  }
 
   function startTimer() {
     if (timerRef.current) clearInterval(timerRef.current)
     setTimeLeft(180)
     timerRef.current = setInterval(() => {
-      setTimeLeft((t) => {
-        if (t === null || t <= 1) {
-          clearInterval(timerRef.current!)
-          return 0
-        }
-        return t - 1
-      })
+      setTimeLeft((t) => (t === null || t <= 1 ? 0 : t - 1))
     }, 1000)
   }
 
   const sendCodeMutation = useMutation({
-    mutationFn: signupApi.sendEmailVerificationCode,
+    mutationFn: async (email: string) => {
+      await checkEmailAvailability(email)
+      await signupApi.sendEmailVerificationCode({ email })
+    },
     onSuccess: () => {
       setEmailHelper({ text: '전송 완료', status: 'success' })
       setEmailStatus('success')
       startTimer()
+      startCooldown()
     },
-    onError: () => {
-      setEmailHelper({ text: '이메일 전송에 실패했습니다.', status: 'error' })
+    onError: (err) => {
+      const message =
+        isAxiosError(err) && err.response?.data?.message
+          ? err.response.data.message
+          : '이메일 전송에 실패했습니다.'
+      setEmailHelper({ text: message, status: 'error' })
       setEmailStatus('error')
     },
   })
@@ -85,7 +112,10 @@ export default function EmailSection({
   const verifyCodeMutation = useMutation({
     mutationFn: signupApi.verifyEmailVerification,
     onSuccess: () => {
-      if (timerRef.current) clearInterval(timerRef.current)
+      if (timerRef.current) {
+        clearInterval(timerRef.current)
+        timerRef.current = null
+      }
       setTimeLeft(null)
       setCodeHelper({ text: '인증 완료', status: 'success' })
       setCodeStatus('success')
@@ -106,7 +136,13 @@ export default function EmailSection({
       setEmailStatus('error')
       return
     }
-    sendCodeMutation.mutate({ email })
+    setCode('')
+    setCodeStatus('default')
+    setCodeHelper(EMPTY)
+    setEmailHelper(EMPTY)
+    setEmailStatus('default')
+    onEmailVerified?.(false)
+    sendCodeMutation.mutate(email)
   }
 
   function handleVerifyCode() {
@@ -135,22 +171,23 @@ export default function EmailSection({
               setEmailStatus('default')
               setEmailHelper(EMPTY)
               onEmailVerified?.(false)
-              onClearServerError?.()
             }}
             placeholder="이메일을 입력해주세요."
             status={emailStatus}
           />
           <Button
             onClick={handleSendCode}
-            disabled={sendCodeMutation.isPending || (codeSent && !timerExpired)}
+            disabled={sendCodeMutation.isPending || cooldownLeft > 0}
             variant={codeSent ? 'secondary' : 'primary'}
             className={codeSent ? 'bg-primary-light text-primary' : ''}
           >
             {codeSent ? '재전송' : '인증번호'}
           </Button>
         </div>
-        <HelperText status={serverError ? 'error' : emailHelper.status}>
-          {serverError || emailHelper.text}
+        <HelperText status={cooldownLeft > 0 ? 'default' : emailHelper.status}>
+          {cooldownLeft > 0
+            ? `${cooldownLeft}초 후에 다시 전송할 수 있습니다.`
+            : emailHelper.text}
         </HelperText>
       </div>
       <div className="flex flex-col gap-2">
@@ -172,7 +209,7 @@ export default function EmailSection({
           />
           <Button
             onClick={handleVerifyCode}
-            disabled={verifyCodeMutation.isPending}
+            disabled={verifyCodeMutation.isPending || timerExpired || !codeSent}
           >
             인증확인
           </Button>
