@@ -6,9 +6,9 @@ import { useQuery } from '@tanstack/react-query'
 import { getCurriculumsByDate } from '@/apis/curriculum'
 import { formatFullDate } from '@/utils/date'
 import { getWeekDates } from '@/utils/getWeekDates'
+import { ellipsizeText } from '@/utils/ellipsizeText'
 
-const formatCompanyName = (name: string) =>
-  name.length > 10 ? `${name.slice(0, 10)}...` : name
+const COMPANY_NAME_MAX_CHARS = 10
 
 export default function TodayScheduleSection() {
   const [isNextWeek, setIsNextWeek] = useState(false)
@@ -109,7 +109,7 @@ export default function TodayScheduleSection() {
                 >
                   <div className="flex items-center gap-3">
                     <span className="p4 text-primary">
-                      {formatCompanyName(item.companyName)}
+                      {ellipsizeText(item.companyName, COMPANY_NAME_MAX_CHARS)}
                     </span>
                     <p className="p3 text-text-primary">{item.content}</p>
                   </div>
