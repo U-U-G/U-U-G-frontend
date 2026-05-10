@@ -36,6 +36,9 @@ export function useSpeechRecognition() {
     recognition.continuous = true
     recognition.interimResults = true
 
+    const accumulatedRef = { current: '' }
+    const latestFinalRef = { current: '' }
+
     recognition.onresult = (e: ISpeechRecognitionEvent) => {
       let final = ''
       let interim = ''
@@ -43,11 +46,20 @@ export function useSpeechRecognition() {
         if (e.results[i].isFinal) final += e.results[i][0].transcript
         else interim += e.results[i][0].transcript
       }
-      setTranscript(final)
+      latestFinalRef.current = final
+      setTranscript(
+        accumulatedRef.current ? accumulatedRef.current + ' ' + final : final,
+      )
       setInterimTranscript(interim)
     }
 
     recognition.onend = () => {
+      accumulatedRef.current = (
+        accumulatedRef.current +
+        ' ' +
+        latestFinalRef.current
+      ).trim()
+      latestFinalRef.current = ''
       if (!isPausedRef.current) recognition.start()
     }
 
