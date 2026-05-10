@@ -80,7 +80,7 @@ export default function InterviewPlanScheduleColumn({
                 'flex h-14 items-center justify-between rounded-lg border bg-white px-5 py-3 gap-3 cursor-pointer',
                 selectedScheduleUuid === schedule.scheduleUuid
                   ? 'border-primary'
-                  : 'border-gray-5 ',
+                  : 'border-gray-5',
               ].join(' ')}
             >
               <div className="flex items-center gap-4 overflow-hidden min-w-0 flex-1">
