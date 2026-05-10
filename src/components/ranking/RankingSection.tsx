@@ -13,15 +13,17 @@ export default function RankingSection() {
 
   return (
     <div className="flex-1 min-h-0 overflow-auto">
-      <section className="py-8">
-        <div className="h1 mb-4">랭킹을 확인해보세요</div>
-        <div className="p2 mb-2">나의 순위</div>
+      <section className="pt-8">
+        <div className="h1 mb-2">랭킹을 확인해보세요</div>
         {data?.myRankingResponse && (
-          <RankingCard
-            {...data.myRankingResponse}
-            variant="primary"
-            size="lg"
-          />
+          <section className="mb-2">
+            <div className="p2 mb-2">나의 순위</div>
+            <RankingCard
+              {...data.myRankingResponse}
+              variant="primary"
+              size="lg"
+            />
+          </section>
         )}
       </section>
       <div className="flex flex-col">

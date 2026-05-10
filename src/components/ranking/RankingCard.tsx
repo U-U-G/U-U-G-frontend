@@ -38,7 +38,7 @@ export default function RankingCard({
         isPrimary
           ? `border-primary text-primary ${bgWhite ? 'bg-white' : 'bg-secondary'}`
           : 'border-gray-5 bg-white text-text-primary',
-        isLarge ? 'min-h-36 px-16 py-14' : 'min-h-26 px-12 py-8',
+        isLarge ? 'min-h-36 px-16 py-11 ' : 'min-h-26 px-12 py-7',
       ].join(' ')}
     >
       <div
@@ -67,7 +67,7 @@ export default function RankingCard({
       </div>
 
       <div
-        className={`text-4xl font-bold ${isPrimary && isLarge ? 'text-primary' : 'text-gray-1'}`}
+        className={`text-4xl font-bold ${isPrimary ? 'text-primary' : 'text-gray-1'}`}
       >
         {bestScore}점
       </div>
