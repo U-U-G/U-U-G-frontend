@@ -44,16 +44,40 @@ export default function EmailSection({
   const [emailHelper, setEmailHelper] = useState<HelperState>(EMPTY)
   const [codeHelper, setCodeHelper] = useState<HelperState>(EMPTY)
   const [timeLeft, setTimeLeft] = useState<number | null>(null)
+  const [cooldownLeft, setCooldownLeft] = useState(0)
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null)
+  const cooldownRef = useRef<ReturnType<typeof setInterval> | null>(null)
 
   const codeSent = timeLeft !== null
   const timerExpired = timeLeft === 0
 
   useEffect(() => {
+    if (timerExpired) {
+      setCodeHelper({ text: '인증시간이 만료되었습니다.', status: 'error' })
+      setCodeStatus('error')
+    }
+  }, [timerExpired])
+
+  useEffect(() => {
     return () => {
       if (timerRef.current) clearInterval(timerRef.current)
+      if (cooldownRef.current) clearInterval(cooldownRef.current)
     }
   }, [])
+
+  function startCooldown() {
+    if (cooldownRef.current) clearInterval(cooldownRef.current)
+    setCooldownLeft(30)
+    cooldownRef.current = setInterval(() => {
+      setCooldownLeft((c) => {
+        if (c <= 1) {
+          clearInterval(cooldownRef.current!)
+          return 0
+        }
+        return c - 1
+      })
+    }, 1000)
+  }
 
   function startTimer() {
     if (timerRef.current) clearInterval(timerRef.current)
@@ -75,6 +99,7 @@ export default function EmailSection({
       setEmailHelper({ text: '전송 완료', status: 'success' })
       setEmailStatus('success')
       startTimer()
+      startCooldown()
     },
     onError: () => {
       setEmailHelper({ text: '이메일 전송에 실패했습니다.', status: 'error' })
@@ -106,6 +131,10 @@ export default function EmailSection({
       setEmailStatus('error')
       return
     }
+    setCode('')
+    setCodeStatus('default')
+    setCodeHelper(EMPTY)
+    onEmailVerified?.(false)
     sendCodeMutation.mutate({ email })
   }
 
@@ -142,15 +171,25 @@ export default function EmailSection({
           />
           <Button
             onClick={handleSendCode}
-            disabled={sendCodeMutation.isPending || (codeSent && !timerExpired)}
+            disabled={sendCodeMutation.isPending || cooldownLeft > 0}
             variant={codeSent ? 'secondary' : 'primary'}
             className={codeSent ? 'bg-primary-light text-primary' : ''}
           >
             {codeSent ? '재전송' : '인증번호'}
           </Button>
         </div>
-        <HelperText status={serverError ? 'error' : emailHelper.status}>
-          {serverError || emailHelper.text}
+        <HelperText
+          status={
+            cooldownLeft > 0
+              ? 'default'
+              : serverError
+                ? 'error'
+                : emailHelper.status
+          }
+        >
+          {cooldownLeft > 0
+            ? `${cooldownLeft}초 후에 다시 전송할 수 있습니다.`
+            : serverError || emailHelper.text}
         </HelperText>
       </div>
       <div className="flex flex-col gap-2">
@@ -172,7 +211,7 @@ export default function EmailSection({
           />
           <Button
             onClick={handleVerifyCode}
-            disabled={verifyCodeMutation.isPending}
+            disabled={verifyCodeMutation.isPending || timerExpired || !codeSent}
           >
             인증확인
           </Button>
