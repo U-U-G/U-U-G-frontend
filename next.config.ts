@@ -10,7 +10,9 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       { hostname: 'lh3.googleusercontent.com' },
       { hostname: 'k.kakaocdn.net' },
+      { hostname: 'img1.kakaocdn.net' },
       { hostname: 'phinf.pstatic.net' },
+      { hostname: 'ssl.pstatic.net' },
     ],
   },
 }
