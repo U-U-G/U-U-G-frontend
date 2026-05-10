@@ -4,7 +4,7 @@ export function ellipsizeText(
   suffix = '...',
   empty = '-',
 ): string {
-  const s = text?.trim() ? text : empty
+  const s = text?.trim() || empty
   if (s.length <= maxChars) return s
-  return `${s.slice(0, maxChars)}${suffix}`
+  return s.slice(0, maxChars) + suffix
 }

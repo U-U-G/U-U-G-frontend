@@ -38,7 +38,7 @@ export default function RankingCard({
         isPrimary
           ? `border-primary text-primary ${bgWhite ? 'bg-white' : 'bg-secondary'}`
           : 'border-gray-5 bg-white text-text-primary',
-        isLarge ? 'min-h-36 px-16 py-11 ' : 'min-h-26 px-12 py-7',
+        isLarge ? 'min-h-36 px-16 py-11' : 'min-h-26 px-12 py-7',
       ].join(' ')}
     >
       <div
