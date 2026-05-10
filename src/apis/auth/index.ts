@@ -82,7 +82,7 @@ export const checkEmail = async (email: string) => {
     '/users/email-check',
     { params: { email } },
   )
-  return data.data
+  return data
 }
 export const loginWithKakao = () => `${OAUTH_ORIGIN}/oauth2/authorization/kakao`
 
