@@ -53,6 +53,10 @@ export default function EmailSection({
 
   useEffect(() => {
     if (timerExpired) {
+      if (timerRef.current) {
+        clearInterval(timerRef.current)
+        timerRef.current = null
+      }
       setCodeHelper({ text: '인증시간이 만료되었습니다.', status: 'error' })
       setCodeStatus('error')
     }
@@ -65,17 +69,18 @@ export default function EmailSection({
     }
   }, [])
 
+  useEffect(() => {
+    if (cooldownLeft === 0 && cooldownRef.current) {
+      clearInterval(cooldownRef.current)
+      cooldownRef.current = null
+    }
+  }, [cooldownLeft])
+
   function startCooldown() {
     if (cooldownRef.current) clearInterval(cooldownRef.current)
     setCooldownLeft(30)
     cooldownRef.current = setInterval(() => {
-      setCooldownLeft((c) => {
-        if (c <= 1) {
-          clearInterval(cooldownRef.current!)
-          return 0
-        }
-        return c - 1
-      })
+      setCooldownLeft((c) => (c <= 1 ? 0 : c - 1))
     }, 1000)
   }
 
@@ -83,13 +88,7 @@ export default function EmailSection({
     if (timerRef.current) clearInterval(timerRef.current)
     setTimeLeft(180)
     timerRef.current = setInterval(() => {
-      setTimeLeft((t) => {
-        if (t === null || t <= 1) {
-          clearInterval(timerRef.current!)
-          return 0
-        }
-        return t - 1
-      })
+      setTimeLeft((t) => (t === null || t <= 1 ? 0 : t - 1))
     }, 1000)
   }
 
@@ -134,6 +133,8 @@ export default function EmailSection({
     setCode('')
     setCodeStatus('default')
     setCodeHelper(EMPTY)
+    setEmailHelper(EMPTY)
+    setEmailStatus('default')
     onEmailVerified?.(false)
     sendCodeMutation.mutate({ email })
   }
