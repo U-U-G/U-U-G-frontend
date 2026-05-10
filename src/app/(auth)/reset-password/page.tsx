@@ -3,12 +3,33 @@
 import { useState } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useMutation } from '@tanstack/react-query'
+import Link from 'next/link'
 import Button from '@/components/common/button/Button'
 import ResetPasswordSection from '@/components/auth/resetPassword/ResetPasswordSection'
 import { resetPasswordApi } from '@/apis/auth'
 import type { ResetPasswordRequest } from '@/apis/auth/type'
 
 type ResetPasswordForm = Omit<ResetPasswordRequest, 'token'>
+
+function ExpiredLinkFallback() {
+  return (
+    <main className="min-h-screen py-12 flex flex-col justify-center">
+      <div className="mx-auto flex w-full max-w-102.5 flex-col justify-center gap-6">
+        <div className="pb-3.75 mb-13.5 border-b border-gray-4">
+          <h1 className="h4">비밀번호 재설정</h1>
+        </div>
+        <p className="p5 text-error">
+          만료된 링크입니다. 비밀번호 재설정을 다시 요청해주세요.
+        </p>
+        <Link href="/forgot-password">
+          <Button variant="primary" className="w-full">
+            재설정 메일 다시 받기
+          </Button>
+        </Link>
+      </div>
+    </main>
+  )
+}
 
 export default function ResetPasswordPage() {
   const router = useRouter()
@@ -20,14 +41,15 @@ export default function ResetPasswordPage() {
     newPassword: '',
     confirmPassword: '',
   })
+  const [isTokenExpired, setIsTokenExpired] = useState(false)
 
   const resetMutation = useMutation({
     mutationFn: resetPasswordApi.resetPassword,
     onSuccess: () => {
       router.replace('/login')
     },
-    onError: (error) => {
-      console.error('비밀번호 재설정 실패', error)
+    onError: () => {
+      setIsTokenExpired(true)
     },
   })
 
@@ -44,15 +66,13 @@ export default function ResetPasswordPage() {
     })
   }
 
-  if (!token) {
-    return (
-      <main className="p-6">유효하지 않은 링크입니다. 다시 요청해주세요.</main>
-    )
+  if (!token || isTokenExpired) {
+    return <ExpiredLinkFallback />
   }
 
   return (
     <main className="min-h-screen py-12 flex flex-col justify-center">
-      <div className="mx-auto flex w-full max-w-[410px] flex-col justify-center">
+      <div className="mx-auto flex w-full max-w-102.5 flex-col justify-center">
         <div className="pb-3.75 mb-13.5 border-b border-gray-4">
           <h1 className="h4">비밀번호 재설정</h1>
         </div>
