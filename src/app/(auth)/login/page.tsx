@@ -103,7 +103,7 @@ export default function Login() {
           </div>
 
           <div className="mb-10 min-h-[22px]">
-            {isLoginError || oauthError === 'email_already_exists' ? (
+            {isLoginError || oauthError ? (
               <HelperText status="error">
                 {oauthError === 'email_already_exists'
                   ? '이미 가입된 이메일입니다.'
