@@ -15,7 +15,7 @@ import FailedPopup from '@/components/common/popup/FailedPopup'
 
 const JOB_URL_PATTERNS = [
   /^https?:\/\/(www\.)?wanted\.co\.kr\/wd\/\d+/,
-  /^https?:\/\/(www\.)?saramin\.co\.kr\/zf_user\/jobs\//,
+  // /^https?:\/\/(www\.)?saramin\.co\.kr\/zf_user\/jobs\//,
   /^https?:\/\/(www\.)?jobkorea\.co\.kr\/[Rr]ecruit\/[Gg][Ii]_[Rr]ead\//,
 ]
 
@@ -100,7 +100,7 @@ export default function JobPostingFormSection() {
                 value={url}
                 onChange={(e) => setUrl(e.target.value)}
                 status={urlError ? 'error' : 'default'}
-                placeholder="원티드, 사람인, 잡코리아 사이트의 채용공고만 가능합니다."
+                placeholder="원티드, 잡코리아 사이트의 채용공고만 가능합니다."
                 focusPrimary
               />
               <div className="absolute left-0 top-full pt-1">
