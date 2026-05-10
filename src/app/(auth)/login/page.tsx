@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { useMutation } from '@tanstack/react-query'
 import { loginApi } from '@/apis/auth'
 import { getHttpStatus } from '@/apis/common/httpError'
@@ -15,9 +15,13 @@ import NaverLogoIcon from '@/assets/icon/naver-logo.svg'
 
 export default function Login() {
   const router = useRouter()
+
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [isLoginError, setIsLoginError] = useState(false)
+
+  const searchParams = useSearchParams()
+  const oauthError = searchParams.get('error')
 
   const loginMutation = useMutation({
     mutationFn: loginApi.login,
@@ -99,9 +103,11 @@ export default function Login() {
           </div>
 
           <div className="mb-10 min-h-[22px]">
-            {isLoginError ? (
+            {isLoginError || oauthError ? (
               <HelperText status="error">
-                아이디 또는 비밀번호가 틀렸습니다.
+                {oauthError === 'email_already_exists'
+                  ? '이미 가입된 이메일입니다.'
+                  : '아이디 또는 비밀번호가 틀렸습니다.'}
               </HelperText>
             ) : (
               '\u00a0'

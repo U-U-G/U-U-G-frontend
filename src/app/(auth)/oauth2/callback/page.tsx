@@ -22,7 +22,7 @@ export default function OAuth2CallbackPage() {
   useEffect(() => {
     const error = searchParams.get('error')
     if (error) {
-      router.replace('/login')
+      router.replace(`/login?error=${error}`)
       return
     }
 
