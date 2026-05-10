@@ -28,7 +28,6 @@ export default function SignUpForm() {
     [],
   )
   const [submitError, setSubmitError] = useState('')
-  const [emailError, setEmailError] = useState('')
 
   const handlePasswordValid = useCallback(
     (valid: boolean) => setPasswordValid(valid),
@@ -48,12 +47,7 @@ export default function SignUpForm() {
         isAxiosError(err) && err.response?.data?.message
           ? err.response.data.message
           : '회원가입에 실패했습니다. 다시 시도해주세요.'
-      if (message.includes('이메일')) {
-        setEmailError(message)
-        setEmailVerified(false)
-      } else {
-        setSubmitError(message)
-      }
+      setSubmitError(message)
     },
   })
 
@@ -65,7 +59,6 @@ export default function SignUpForm() {
 
     const formData = new FormData(e.currentTarget)
     setSubmitError('')
-    setEmailError('')
     signupMutation.mutate({
       email: formData.get('email') as string,
       password: formData.get('password') as string,
@@ -77,11 +70,7 @@ export default function SignUpForm() {
 
   return (
     <form className="flex flex-col gap-5.5" onSubmit={handleSubmit}>
-      <EmailSection
-        onEmailVerified={setEmailVerified}
-        serverError={emailError}
-        onClearServerError={() => setEmailError('')}
-      />
+      <EmailSection onEmailVerified={setEmailVerified} />
       <PasswordSection onPasswordValid={handlePasswordValid} />
       <NicknameSection onNicknameChecked={setNicknameChecked} />
       <TermsSection onChange={handleTermsChange} />

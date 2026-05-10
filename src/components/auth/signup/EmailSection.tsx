@@ -2,8 +2,10 @@
 
 import { useEffect, useRef, useState } from 'react'
 import { useMutation } from '@tanstack/react-query'
+import { isAxiosError } from 'axios'
 import { EMAIL_REGEX } from '@/constants/regex'
 import { signupApi } from '@/apis/auth'
+import { checkEmailAvailability } from '@/apis/user'
 import Button from '@/components/common/button/Button'
 import InputBox from '@/components/common/input/InputBox'
 import HelperText from '@/components/common/text/HelperText'
@@ -28,15 +30,9 @@ function formatTime(seconds: number) {
 
 interface EmailSectionProps {
   onEmailVerified?: (verified: boolean) => void
-  serverError?: string
-  onClearServerError?: () => void
 }
 
-export default function EmailSection({
-  onEmailVerified,
-  serverError,
-  onClearServerError,
-}: EmailSectionProps) {
+export default function EmailSection({ onEmailVerified }: EmailSectionProps) {
   const [email, setEmail] = useState('')
   const [code, setCode] = useState('')
   const [emailStatus, setEmailStatus] = useState<FieldStatus>('default')
@@ -93,15 +89,22 @@ export default function EmailSection({
   }
 
   const sendCodeMutation = useMutation({
-    mutationFn: signupApi.sendEmailVerificationCode,
+    mutationFn: async (email: string) => {
+      await checkEmailAvailability(email)
+      await signupApi.sendEmailVerificationCode({ email })
+    },
     onSuccess: () => {
       setEmailHelper({ text: '전송 완료', status: 'success' })
       setEmailStatus('success')
       startTimer()
       startCooldown()
     },
-    onError: () => {
-      setEmailHelper({ text: '이메일 전송에 실패했습니다.', status: 'error' })
+    onError: (err) => {
+      const message =
+        isAxiosError(err) && err.response?.data?.message
+          ? err.response.data.message
+          : '이메일 전송에 실패했습니다.'
+      setEmailHelper({ text: message, status: 'error' })
       setEmailStatus('error')
     },
   })
@@ -109,7 +112,10 @@ export default function EmailSection({
   const verifyCodeMutation = useMutation({
     mutationFn: signupApi.verifyEmailVerification,
     onSuccess: () => {
-      if (timerRef.current) clearInterval(timerRef.current)
+      if (timerRef.current) {
+        clearInterval(timerRef.current)
+        timerRef.current = null
+      }
       setTimeLeft(null)
       setCodeHelper({ text: '인증 완료', status: 'success' })
       setCodeStatus('success')
@@ -136,7 +142,7 @@ export default function EmailSection({
     setEmailHelper(EMPTY)
     setEmailStatus('default')
     onEmailVerified?.(false)
-    sendCodeMutation.mutate({ email })
+    sendCodeMutation.mutate(email)
   }
 
   function handleVerifyCode() {
@@ -165,7 +171,6 @@ export default function EmailSection({
               setEmailStatus('default')
               setEmailHelper(EMPTY)
               onEmailVerified?.(false)
-              onClearServerError?.()
             }}
             placeholder="이메일을 입력해주세요."
             status={emailStatus}
@@ -179,18 +184,10 @@ export default function EmailSection({
             {codeSent ? '재전송' : '인증번호'}
           </Button>
         </div>
-        <HelperText
-          status={
-            cooldownLeft > 0
-              ? 'default'
-              : serverError
-                ? 'error'
-                : emailHelper.status
-          }
-        >
+        <HelperText status={cooldownLeft > 0 ? 'default' : emailHelper.status}>
           {cooldownLeft > 0
             ? `${cooldownLeft}초 후에 다시 전송할 수 있습니다.`
-            : serverError || emailHelper.text}
+            : emailHelper.text}
         </HelperText>
       </div>
       <div className="flex flex-col gap-2">
