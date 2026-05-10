@@ -77,7 +77,13 @@ export const changePassword = async (body: ChangePasswordRequest) => {
   )
   return data.data
 }
-
+export const checkEmail = async (email: string) => {
+  const { data } = await publicClient.get<ApiResponse<string>>(
+    '/users/email-check',
+    { params: { email } },
+  )
+  return data.data
+}
 export const loginWithKakao = () => `${OAUTH_ORIGIN}/oauth2/authorization/kakao`
 
 export const loginWithGoogle = () =>
