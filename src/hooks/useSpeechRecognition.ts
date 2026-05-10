@@ -26,6 +26,8 @@ export function useSpeechRecognition() {
   const [interimTranscript, setInterimTranscript] = useState('')
   const recognitionRef = useRef<ISpeechRecognition | null>(null)
   const isPausedRef = useRef(false)
+  const accumulatedRef = useRef('')
+  const latestFinalRef = useRef('')
 
   useEffect(() => {
     const SR = window.SpeechRecognition ?? window.webkitSpeechRecognition
@@ -43,11 +45,20 @@ export function useSpeechRecognition() {
         if (e.results[i].isFinal) final += e.results[i][0].transcript
         else interim += e.results[i][0].transcript
       }
-      setTranscript(final)
+      latestFinalRef.current = final
+      setTranscript(
+        (accumulatedRef.current + ' ' + final).replace(/\s+/g, ' ').trim(),
+      )
       setInterimTranscript(interim)
     }
 
     recognition.onend = () => {
+      accumulatedRef.current = (
+        accumulatedRef.current +
+        ' ' +
+        latestFinalRef.current
+      ).trim()
+      latestFinalRef.current = ''
       if (!isPausedRef.current) recognition.start()
     }
 

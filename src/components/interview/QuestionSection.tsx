@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useRef, Fragment } from 'react'
+import { useState, useRef, useEffect, Fragment } from 'react'
 import { useRouter, useParams } from 'next/navigation'
 import Image from 'next/image'
 import { useMutation, useQuery } from '@tanstack/react-query'
@@ -65,6 +65,8 @@ export default function QuestionSection({
   const [isStopPopupOpen, setIsStopPopupOpen] = useState(false)
   const wasPausedBeforePopupRef = useRef(false)
 
+  const scriptRef = useRef<HTMLDivElement>(null)
+
   const {
     elapsedMs,
     elapsedMsRef,
@@ -77,6 +79,13 @@ export default function QuestionSection({
     pause: speechPause,
     resume: speechResume,
   } = useSpeechRecognition()
+
+  useEffect(() => {
+    if (scriptRef.current) {
+      scriptRef.current.scrollTop = scriptRef.current.scrollHeight
+    }
+  }, [transcript, interimTranscript])
+
   const {
     volumeBars,
     dbValue,
@@ -302,14 +311,19 @@ export default function QuestionSection({
           {/* 하단: 스크립트 + 볼륨/침묵 */}
           <div className="flex gap-7.75 shrink-0">
             <div className="flex flex-col flex-1">
-              <div className="bg-secondary rounded-xl p-6.75 h-42 overflow-hidden flex flex-col gap-2">
+              <div className="bg-secondary rounded-xl p-6.75 h-42 flex flex-col gap-2">
                 <span className="p2 text-gray-1 shrink-0">스크립트</span>
-                <p className="p4 text-gray-4 leading-relaxed">
-                  <HighlightedText text={transcript} />
-                  <span className="opacity-50">
-                    <HighlightedText text={interimTranscript} />
-                  </span>
-                </p>
+                <div
+                  ref={scriptRef}
+                  className="overflow-y-auto [&::-webkit-scrollbar]:hidden flex-1"
+                >
+                  <p className="p4 text-gray-4 leading-relaxed">
+                    <HighlightedText text={transcript} />
+                    <span className="opacity-50">
+                      <HighlightedText text={interimTranscript} />
+                    </span>
+                  </p>
+                </div>
               </div>
             </div>
 
