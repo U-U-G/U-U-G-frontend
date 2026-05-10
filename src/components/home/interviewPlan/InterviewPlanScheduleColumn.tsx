@@ -56,7 +56,7 @@ export default function InterviewPlanScheduleColumn({
             >
               {row.leading === 'prompt' ? (
                 <div className="flex items-center gap-3 min-w-0">
-                  <span className="h2 text-primary shrink-0">D-day</span>
+                  <span className="h4 text-primary shrink-0">D-day</span>
                   <span className="p4 text-gray-3 truncate">
                     면접 일정을 등록해주세요
                   </span>

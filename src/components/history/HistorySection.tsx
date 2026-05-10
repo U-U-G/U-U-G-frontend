@@ -8,6 +8,9 @@ import {
   type InterviewReportListItem,
 } from '@/apis/interview-reports'
 import { formatMonthDayKo, formatDuration } from '@/utils/date'
+import { ellipsizeText } from '@/utils/ellipsizeText'
+
+const POSITION_DISPLAY_MAX_CHARS = 15
 
 interface CompanyGroup {
   companyName: string
@@ -188,7 +191,9 @@ function HistoryCard({
         <span className="p2 border border-primary text-primary rounded-full px-2.5 py-0.5 bg-secondary whitespace-nowrap self-center">
           {session.attemptNumber}차 시도
         </span>
-        <span className="h3">{session.position ?? '-'}</span>
+        <span className="h3">
+          {ellipsizeText(session.position, POSITION_DISPLAY_MAX_CHARS)}
+        </span>
         <span className="p4 text-gray-4 col-start-2">
           {dateLabel} · {session.questionCount}문항 · {duration}
         </span>
