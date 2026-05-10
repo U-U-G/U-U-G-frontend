@@ -56,7 +56,7 @@ export default function InterviewPlanScheduleColumn({
             >
               {row.leading === 'prompt' ? (
                 <div className="flex items-center gap-3 min-w-0">
-                  <span className="h2 text-primary shrink-0">D-day</span>
+                  <span className="h4 text-primary shrink-0">D-day</span>
                   <span className="p4 text-gray-3 truncate">
                     면접 일정을 등록해주세요
                   </span>
@@ -80,7 +80,7 @@ export default function InterviewPlanScheduleColumn({
                 'flex h-14 items-center justify-between rounded-lg border bg-white px-5 py-3 gap-3 cursor-pointer',
                 selectedScheduleUuid === schedule.scheduleUuid
                   ? 'border-primary'
-                  : 'border-gray-5',
+                  : 'border-gray-5 ',
               ].join(' ')}
             >
               <div className="flex items-center gap-4 overflow-hidden min-w-0 flex-1">
