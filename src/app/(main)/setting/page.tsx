@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import UserInfoSection from '@/components/setting/UserInfoSection'
+import TermsLinks from '@/components/setting/TermsLinks'
 
 export const metadata: Metadata = {
   title: '설정',
@@ -16,10 +17,7 @@ export default function SettingPage() {
       </section>
       <section className="flex flex-row gap-19 py-15">
         <div className="p2 text-gray-1">서비스 정보</div>
-        <div className="flex flex-row gap-5 p4 text-gray-3">
-          <a href="#">이용약관</a>
-          <a href="#">개인정보처리방침</a>
-        </div>
+        <TermsLinks />
       </section>
     </>
   )
