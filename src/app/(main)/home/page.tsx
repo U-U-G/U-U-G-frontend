@@ -26,7 +26,7 @@ export default function Home() {
         </div>
       </section>
 
-      <div className=" mt-[clamp(8px,2vw,24px)] mb-[clamp(8px,2vw,24px)]">
+      <div className="my-4.5">
         <InterviewPlanSection />
       </div>
     </div>
