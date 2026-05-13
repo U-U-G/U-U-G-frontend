@@ -70,7 +70,7 @@ export default function InterviewPlanScheduleColumn({
           ))}
         </div>
       ) : (
-        <div className="max-h-[248px] overflow-y-auto space-y-4 pr-2">
+        <div className="max-h-[230px] overflow-y-auto space-y-3.5 pr-2">
           {scheduleList.map((schedule) => (
             <div
               key={schedule.scheduleUuid}

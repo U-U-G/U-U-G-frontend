@@ -31,8 +31,8 @@ export default function InterviewPlanCurriculumColumn({
           </div>
         </div>
       ) : (
-        <div className="max-h-[248px] flex-1 rounded-lg border border-primary bg-white px-6.5 py-6.5">
-          <div className="space-y-4">
+        <div className="max-h-[230px] flex-1 rounded-lg border border-primary bg-white px-6.5 py-6.5">
+          <div className="space-y-3">
             {curriculums.slice(0, 5).map((item) => (
               <div key={item.uuid} className="flex items-start gap-4">
                 <span
