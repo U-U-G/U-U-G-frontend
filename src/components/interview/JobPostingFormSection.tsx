@@ -90,13 +90,13 @@ export default function JobPostingFormSection() {
       <div className="flex-1 min-h-0 flex flex-col items-center justify-center w-full min-w-200 bg-secondary rounded-2xl border border-primary">
         <div className="flex flex-col gap-8.5 w-115">
           <div className="flex flex-col gap-5">
-            <label className="p3 border-b border-gray-5 h-10">
+            <label className="p3 h-10">
               <span className="text-primary">채용 공고 링크</span>를
               입력해주세요
             </label>
             <div className="relative">
               <InputBox
-                className="bg-white"
+                className="bg-white px-4.75 border-gray-5"
                 value={url}
                 onChange={(e) => setUrl(e.target.value)}
                 status={urlError ? 'error' : 'default'}
