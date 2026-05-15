@@ -295,7 +295,7 @@ export default function QuestionSection({
               {formatTime(elapsedMs)}
             </span>
             <Button
-              className="w-44.75 rounded-full! py-3!"
+              className="p4 w-44.75 rounded-full! py-3!"
               onClick={handleCompleteAnswer}
               disabled={!question || submitAnswerMutation.isPending}
             >

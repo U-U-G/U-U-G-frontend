@@ -46,7 +46,7 @@ export default function CompanyNamePopup({
       </div>
       <Button
         variant="outlined"
-        className="w-70 rounded-full! py-3 cursor-pointer mt-12 disabled:bg-gray-4 disabled:text-gray-3 disabled:border-gray-4"
+        className="p4 w-70 rounded-full! py-3 cursor-pointer mt-12 disabled:bg-gray-4 disabled:text-gray-3 disabled:border-gray-4"
         disabled={!canSubmit}
         onClick={() => onSubmit(companyName.trim())}
       >

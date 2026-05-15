@@ -62,9 +62,7 @@ export const createJobPostingAnalysisEventSource = (
 
   return fetchEventSource(`${API_BASE_URL}/job-postings/${uuid}/stream`, {
     ...options,
-
     credentials: 'include',
-
     headers: {
       Accept: 'text/event-stream',
       Authorization: `Bearer ${accessToken ?? ''}`,

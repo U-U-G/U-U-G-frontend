@@ -7,6 +7,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import InputBox from '@/components/common/input/InputBox'
 import HelperText from '@/components/common/text/HelperText'
 import ChangePasswordPopup from '@/components/setting/ChangePasswordPopup'
+import SignoutConfirmPopup from '@/components/setting/SignoutConfirmPopup'
 import defaultProfileIcon from '@/assets/icon/default-profile-icon.svg'
 import { useNicknameEdit } from '@/hooks/useNicknameEdit'
 import { getProfile, signout, updateProfile } from '@/apis/user'
@@ -18,6 +19,7 @@ export default function UserInfoSection() {
   const router = useRouter()
   const queryClient = useQueryClient()
   const [isPasswordPopupOpen, setIsPasswordPopupOpen] = useState(false)
+  const [isSignoutPopupOpen, setIsSignoutPopupOpen] = useState(false)
 
   const { data: profile, isLoading } = useQuery({
     queryKey: ['user', 'profile'],
@@ -38,6 +40,7 @@ export default function UserInfoSection() {
   const { mutate: handleSignout } = useMutation({
     mutationFn: signout,
     onSuccess: () => {
+      setIsSignoutPopupOpen(false)
       queryClient.clear()
       router.push('/login')
     },
@@ -175,7 +178,7 @@ export default function UserInfoSection() {
         <button
           type="button"
           className="underline"
-          onClick={() => handleSignout()}
+          onClick={() => setIsSignoutPopupOpen(true)}
         >
           회원탈퇴
         </button>
@@ -183,6 +186,14 @@ export default function UserInfoSection() {
 
       {isPasswordPopupOpen && (
         <ChangePasswordPopup onClose={() => setIsPasswordPopupOpen(false)} />
+      )}
+      {isSignoutPopupOpen && (
+        <SignoutConfirmPopup
+          onCancel={() => setIsSignoutPopupOpen(false)}
+          onConfirm={() => {
+            handleSignout()
+          }}
+        />
       )}
     </div>
   )

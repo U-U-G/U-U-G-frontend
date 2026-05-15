@@ -84,6 +84,7 @@ export default function NicknameSection({
         <Button
           onClick={handleCheckNickname}
           disabled={nicknameMutation.isPending}
+          className="p4"
         >
           중복확인
         </Button>

@@ -79,7 +79,7 @@ export default function SignUpForm() {
         type="submit"
         variant={canSubmit ? 'primary' : 'secondary'}
         disabled={!canSubmit || signupMutation.isPending}
-        className="w-full"
+        className="p4 w-full"
       >
         <span className="h4">회원가입</span>
       </Button>

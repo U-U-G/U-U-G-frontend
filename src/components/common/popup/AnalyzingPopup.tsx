@@ -41,7 +41,7 @@ export default function AnalyzingPopup({
       </div>
       <Button
         variant="outlined"
-        className="w-70 rounded-full! py-3 bg-white hover:bg-secondary"
+        className="p4 w-70 rounded-full! py-3 bg-white hover:bg-secondary"
         onClick={onClose}
       >
         <span className="h3">중단 하기</span>

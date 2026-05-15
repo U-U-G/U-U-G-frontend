@@ -66,7 +66,7 @@ export default function CountdownSection({
           <p className="h1 text-text-point-red">면접 시작에 실패했어요</p>
           <p className="p1 text-gray-1">잠시 후 다시 시도해주세요.</p>
           <Button
-            className="rounded-full! py-3! px-15.5! mt-4.75"
+            className="p4 rounded-full! py-3! px-15.5! mt-4.75"
             onClick={() => router.push('/interview')}
           >
             <span className="h3">돌아가기</span>
