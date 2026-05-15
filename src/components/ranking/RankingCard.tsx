@@ -53,9 +53,9 @@ export default function RankingCard({
         <Image
           src={profileImageUrl || defaultProfileIcon}
           alt={`${nickname} 프로필`}
-          width={60}
-          height={60}
-          className="h-16 w-16 rounded-full object-cover shrink-0"
+          width={64}
+          height={64}
+          className="rounded-full object-cover shrink-0"
         />
 
         <div>
