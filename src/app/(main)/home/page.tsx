@@ -17,7 +17,7 @@ export default function Home() {
     <div className="flex-1 min-h-0 flex flex-col pt-4">
       <HomeGreetingClient fallbackName={data.user.name} />
 
-      <section className="flex flex-1 gap-[clamp(8px,2vw,24px)] min-h-0">
+      <section className="flex flex-1 gap-[clamp(10px,14px,18px)] min-h-0">
         <div className="flex-2 min-h-0 flex">
           <HeroGoalSection data={data.heroGoal} />
         </div>
@@ -26,7 +26,7 @@ export default function Home() {
         </div>
       </section>
 
-      <div className="my-4.5">
+      <div className="mt-[clamp(10px,14px,18px)] mb-[clamp(10px,14px,18px)]">
         <InterviewPlanSection />
       </div>
     </div>

@@ -47,7 +47,7 @@ export default function HeroGoalSection({ data }: { data: HeroGoalData }) {
       <button
         type="button"
         onClick={() => router.push('/interview')}
-        className="absolute left-6 bottom-6 z-10 h4 h-[clamp(40px,5.5vh,56px)] px-[clamp(20px,3vw,48px)] rounded-full bg-primary text-white whitespace-nowrap"
+        className="absolute left-10 bottom-6 z-10 h4 h-[clamp(40px,5.5vh,56px)] px-[clamp(20px,3vw,48px)] rounded-full bg-primary text-white whitespace-nowrap"
       >
         {isEmpty ? '지금 시작하기' : data.ctaLabel}
       </button>
