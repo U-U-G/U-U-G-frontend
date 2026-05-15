@@ -110,5 +110,7 @@ export function getDDay(dateString: string): string {
 
   if (diffDay === 0) return 'D-Day'
 
+  if (diffDay < 0) return `D+${Math.abs(diffDay)}`
+
   return `D-${diffDay}`
 }

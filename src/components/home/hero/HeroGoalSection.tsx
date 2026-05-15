@@ -47,7 +47,7 @@ export default function HeroGoalSection({ data }: { data: HeroGoalData }) {
       <button
         type="button"
         onClick={() => router.push('/interview')}
-        className="absolute left-6 bottom-6 z-10 h4 h-[clamp(40px,5.5vh,56px)] px-[clamp(20px,3vw,48px)] rounded-full bg-primary text-white whitespace-nowrap"
+        className="absolute left-10 bottom-6 z-10 h4 h-[clamp(40px,5.5vh,56px)] px-[clamp(20px,3vw,48px)] rounded-full bg-primary text-white whitespace-nowrap"
       >
         {isEmpty ? '지금 시작하기' : data.ctaLabel}
       </button>
@@ -58,7 +58,7 @@ export default function HeroGoalSection({ data }: { data: HeroGoalData }) {
         <Image
           src={UUGCharacterImage}
           alt="면접 준비 캐릭터"
-          className="translate-y-8 translate-x-2 w-[clamp(240px,25vw,320px)]"
+          className="translate-y-8 translate-x-2 w-[clamp(240px,25vw,290px)]"
           priority
         />
       </div>

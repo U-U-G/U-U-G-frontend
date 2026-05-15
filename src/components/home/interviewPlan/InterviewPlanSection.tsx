@@ -111,7 +111,7 @@ export default function InterviewPlanSection() {
   }, [isSchedulesSuccess, schedules, selectedScheduleUuid])
 
   return (
-    <section className="min-h-[clamp(320px,36vh,420px)] rounded-2xl bg-secondary p-[clamp(16px,2vw,28px)]">
+    <section className="min-h-[clamp(320px,36vh,400px)] rounded-2xl bg-secondary p-[clamp(14px,1.6vw,26px)]">
       <div className="flex h-full min-h-0 gap-5">
         <InterviewPlanScheduleColumn
           selectedScheduleUuid={selectedScheduleUuid}

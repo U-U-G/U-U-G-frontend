@@ -54,25 +54,25 @@ body {
 @layer utilities {
   .h1 {
     font-size: 32px;
-    font-weight: 700;
+    font-weight: 600;
     line-height: 150%;
     letter-spacing: -0.03em;
   }
   .h2 {
     font-size: 24px;
-    font-weight: 700;
+    font-weight: 600;
     line-height: 150%;
     letter-spacing: -0.03em;
   }
   .h3 {
     font-size: 22px;
-    font-weight: 700;
+    font-weight: 600;
     line-height: 150%;
     letter-spacing: -0.03em;
   }
   .h4 {
     font-size: 20px;
-    font-weight: 700;
+    font-weight: 600;
     line-height: 150%;
     letter-spacing: -0.03em;
   }
@@ -84,7 +84,7 @@ body {
   }
   .p2 {
     font-size: 18px;
-    font-weight: 700;
+    font-weight: 600;
     line-height: 150%;
     letter-spacing: -0.02em;
   }
