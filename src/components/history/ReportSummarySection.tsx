@@ -40,9 +40,9 @@ export default function ReportSummarySection({
   return (
     <section className="grid grid-cols-[2fr_1fr] gap-6 mb-8">
       <div className="bg-secondary rounded-2xl p-6 flex justify-between items-center">
-        <div className="flex flex-col gap-2 flex-1 mr-5">
+        <div className="flex flex-col flex-1 mr-5">
           <span className="p3 text-primary">종합점수</span>
-          <span className="text-[3.0625rem] font-bold text-primary">
+          <span className="text-[3.0625rem] font-bold leading-normal tracking-[-0.03em] text-primary mb-1">
             {totalScore}
           </span>
           <p className="p4 text-gray-1 leading-relaxed">{feedback}</p>
