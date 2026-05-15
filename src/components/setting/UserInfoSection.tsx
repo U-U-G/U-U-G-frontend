@@ -40,6 +40,7 @@ export default function UserInfoSection() {
   const { mutate: handleSignout } = useMutation({
     mutationFn: signout,
     onSuccess: () => {
+      setIsSignoutPopupOpen(false)
       queryClient.clear()
       router.push('/login')
     },
@@ -191,7 +192,6 @@ export default function UserInfoSection() {
           onCancel={() => setIsSignoutPopupOpen(false)}
           onConfirm={() => {
             handleSignout()
-            setIsSignoutPopupOpen(false)
           }}
         />
       )}

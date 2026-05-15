@@ -153,10 +153,10 @@ export default function AnalysisSection() {
           <p className="h1 text-text-point-red">분석에 실패했어요</p>
           <p className="p1 text-gray-1">연습 이력에서 다시 확인해주세요.</p>
           <Button
-            className="p4 rounded-full! py-3! px-15.5! mt-4.75"
+            className="h3 rounded-full! py-3! px-15.5! mt-4.75"
             onClick={() => router.push('/interview')}
           >
-            <span className="h3 text-white">돌아가기</span>
+            <span className="text-white">돌아가기</span>
           </Button>
         </div>
       </section>
