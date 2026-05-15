@@ -53,9 +53,9 @@ export default function RankingCard({
         <Image
           src={profileImageUrl || defaultProfileIcon}
           alt={`${nickname} 프로필`}
-          width={60}
-          height={60}
-          className="h-14 w-14 rounded-full object-cover shrink-0"
+          width={64}
+          height={64}
+          className="rounded-full object-cover shrink-0"
         />
 
         <div>
@@ -82,7 +82,7 @@ export default function RankingCard({
           <IconSchoolFilled size={20} />
           <span>최고 점수 {bestScore}점</span>
         </div> */}
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2">
           <IconFileTextFilled size={20} />
           <span>총 {totalSessionCount}회 연습</span>
         </div>

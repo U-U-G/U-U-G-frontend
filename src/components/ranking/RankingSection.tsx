@@ -14,9 +14,9 @@ export default function RankingSection() {
   return (
     <div className="flex-1 min-h-0 overflow-auto">
       <section className="pt-8">
-        <div className="h1 mb-2">랭킹을 확인해보세요</div>
+        <div className="h1 mb-5">랭킹을 확인해보세요</div>
         {data?.myRankingResponse && (
-          <section className="mb-2">
+          <section className="mb-5">
             <div className="p2 mb-2">나의 순위</div>
             <RankingCard
               {...data.myRankingResponse}
@@ -33,8 +33,8 @@ export default function RankingSection() {
             {formatDateKo(new Date())} 기준
           </span>
         </div>
-        <section className="bg-secondary rounded-t-2xl">
-          <div className="flex flex-col gap-4 p-8">
+        <section className="bg-secondary rounded-2xl">
+          <div className="flex flex-col gap-9 p-8">
             {data?.rankingItemResponseList?.map((item) => (
               <RankingCard
                 key={item.nickname}
