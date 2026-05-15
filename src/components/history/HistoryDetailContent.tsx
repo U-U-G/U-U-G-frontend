@@ -119,14 +119,14 @@ export default function HistoryDetailContent({
     }))
 
   return (
-    <div className="flex flex-col flex-1 min-h-0 overflow-auto px-[clamp(16px,2.5vw,80px)] max-w-360 mx-auto py-2 gap-3">
-      <section className="flex flex-col gap-2">
+    <div className="flex flex-col flex-1 min-h-0 overflow-auto px-[clamp(16px,2.5vw,80px)] max-w-360 mx-auto pt-2 pb-10.75 gap-3.5">
+      <section className="flex flex-col gap-5.25">
         <h1 className="h1 text-xl font-semibold text-text-primary">
           면접 리포트를 확인해보세요
         </h1>
         <Link
           href="/history"
-          className="p3 flex items-center gap-1 text-gray-400 text-sm"
+          className="p3 flex items-center gap-1 text-gray-2"
         >
           <IconChevronLeft size={18} />
           <span>연습 이력</span>
