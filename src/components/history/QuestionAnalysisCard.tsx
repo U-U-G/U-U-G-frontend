@@ -23,7 +23,7 @@ export default function QuestionAnalysisCard({
 }: QuestionAnalysisCardProps) {
   return (
     <article className="flex flex-col gap-6">
-      <div className="bg-secondary rounded-2xl p-6 flex flex-col gap-5">
+      <div className="bg-secondary rounded-2xl p-6 flex flex-col gap-7.5">
         <div className="flex items-start gap-4">
           <span className="bg-primary text-white rounded-full px-3.5 py-0.5 p4 shrink-0">
             질문 {questionNumber}
@@ -39,7 +39,7 @@ export default function QuestionAnalysisCard({
         </div>
       </div>
 
-      <div className="max-w-310 mx-auto w-full flex flex-col gap-4">
+      <div className="max-w-310 mx-auto w-full flex flex-col gap-6 px-6">
         <p className="p3 text-text-primary leading-relaxed wrap-break-word">
           {feedback}
         </p>

@@ -77,7 +77,7 @@ export default function HistoryReportSection({
   }
 
   return (
-    <section className="flex flex-col gap-2 overflow-auto border border-primary rounded-2xl p-7">
+    <section className="flex flex-col gap-2 overflow-auto border border-primary rounded-2xl pt-6 px-8 pb-12">
       <div className="flex flex-row items-center justify-between mb-6">
         <div className="flex flex-col gap-2">
           <div className="flex flex-row items-center">
@@ -105,8 +105,8 @@ export default function HistoryReportSection({
         metrics={metrics}
       />
 
-      <p className="p2 text-text-primary">질문별 분석</p>
-      <section className="flex flex-col gap-14">
+      <p className="p2 text-gray-1 mb-3.5">질문별 분석</p>
+      <section className="flex flex-col gap-20">
         {questionAnalyses.map(({ uuid, ...item }) => (
           <QuestionAnalysisCard key={uuid} {...item} />
         ))}

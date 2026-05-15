@@ -1,8 +1,4 @@
-import {
-  clampScore,
-  getScoreBand,
-  type ScoreBand,
-} from '@/utils/reportScore'
+import { clampScore, getScoreBand, type ScoreBand } from '@/utils/reportScore'
 
 const SCORE_BAND_BAR_CLASS: Record<ScoreBand, string> = {
   low: 'bg-text-point-red',
@@ -27,8 +23,8 @@ export default function Metric({
   const barClass = SCORE_BAND_BAR_CLASS[getScoreBand(score)]
 
   return (
-    <div className="flex flex-col gap-2">
-      <div className="flex justify-between text-sm text-gray-2">
+    <div className="flex flex-col gap-3">
+      <div className="flex justify-between text-p3 text-gray-2">
         <span>{label}</span>
         <span>{value}</span>
       </div>
