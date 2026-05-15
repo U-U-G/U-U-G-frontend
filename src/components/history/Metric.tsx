@@ -7,7 +7,6 @@ const SCORE_BAND_BAR_CLASS: Record<ScoreBand, string> = {
   top: 'bg-primary',
 }
 
-//TODO: 백엔드 명세에 따라 수정 예정
 export default function Metric({
   label,
   value,
@@ -24,7 +23,7 @@ export default function Metric({
 
   return (
     <div className="flex flex-col gap-3">
-      <div className="flex justify-between text-p3 text-gray-2">
+      <div className="flex justify-between p3 text-gray-2">
         <span>{label}</span>
         <span>{value}</span>
       </div>
