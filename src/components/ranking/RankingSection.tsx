@@ -33,7 +33,7 @@ export default function RankingSection() {
             {formatDateKo(new Date())} 기준
           </span>
         </div>
-        <section className="bg-secondary rounded-t-2xl">
+        <section className="bg-secondary rounded-2xl">
           <div className="flex flex-col gap-9 p-8">
             {data?.rankingItemResponseList?.map((item) => (
               <RankingCard
