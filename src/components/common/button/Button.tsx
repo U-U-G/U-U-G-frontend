@@ -21,7 +21,7 @@ export default function Button({
       type="button"
       {...props}
       className={`
-        p4 rounded-lg whitespace-nowrap min-w-22.25 px-4 py-3.5 cursor-pointer
+        rounded-lg whitespace-nowrap min-w-22.25 px-4 py-3.5 cursor-pointer
         disabled:opacity-50 disabled:cursor-not-allowed
         ${variantStyle}
         ${className ?? ''}

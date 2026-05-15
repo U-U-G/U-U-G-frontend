@@ -54,7 +54,7 @@ function CompletePopup({
           <p className="p1 text-gray-2">{subtitle}</p>
         </div>
         <Button
-          className="w-70 rounded-full! py-3 cursor-pointer mt-12"
+          className="p4 w-70 rounded-full! py-3 cursor-pointer mt-12"
           onClick={onAction}
         >
           <span className="h3">{actionLabel}</span>
@@ -117,7 +117,7 @@ export default function JobPostingFormSection() {
 
           <Button
             disabled={!isComplete}
-            className="mx-auto w-101.5 rounded-full! py-3! mt-11.75 disabled:bg-gray-4 disabled:opacity-100"
+            className="p4 mx-auto w-101.5 rounded-full! py-3! mt-11.75 disabled:bg-gray-4 disabled:opacity-100"
             onClick={() => {
               if (!isComplete || createJobPostingMutation.isPending) return
 

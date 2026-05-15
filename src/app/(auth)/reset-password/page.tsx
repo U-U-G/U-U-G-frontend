@@ -24,7 +24,7 @@ function ExpiredLinkFallback() {
             만료된 링크입니다. 비밀번호 재설정을 다시 요청해주세요.
           </p>
           <Link href="/forgot-password">
-            <Button variant="primary" className="w-full">
+            <Button variant="primary" className="p4 w-full">
               재설정 메일 다시 받기
             </Button>
           </Link>
@@ -97,7 +97,7 @@ export default function ResetPasswordPage() {
             type="submit"
             variant={canSubmit ? 'primary' : 'secondary'}
             disabled={!canSubmit}
-            className="w-full"
+            className="p4 w-full"
           >
             {resetMutation.isPending ? '변경 중' : '변경 완료'}
           </Button>

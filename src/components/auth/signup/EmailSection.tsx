@@ -179,7 +179,7 @@ export default function EmailSection({ onEmailVerified }: EmailSectionProps) {
             onClick={handleSendCode}
             disabled={sendCodeMutation.isPending || cooldownLeft > 0}
             variant={codeSent ? 'secondary' : 'primary'}
-            className={codeSent ? 'bg-primary-light text-primary' : ''}
+            className={codeSent ? 'p4 bg-primary-light text-primary' : 'p4'}
           >
             {codeSent ? '재전송' : '인증번호'}
           </Button>
@@ -210,6 +210,7 @@ export default function EmailSection({ onEmailVerified }: EmailSectionProps) {
           <Button
             onClick={handleVerifyCode}
             disabled={verifyCodeMutation.isPending || timerExpired || !codeSent}
+            className="p4"
           >
             인증확인
           </Button>

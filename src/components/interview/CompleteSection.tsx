@@ -47,7 +47,7 @@ export default function CompleteSection({
           </p>
         </div>
         <Button
-          className="rounded-full! py-3! px-16! mt-11"
+          className="p4 rounded-full! py-3! px-16! mt-11"
           onClick={handleNext}
         >
           <span className="h3">

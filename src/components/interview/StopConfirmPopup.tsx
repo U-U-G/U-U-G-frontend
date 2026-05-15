@@ -17,10 +17,10 @@ export default function StopConfirmPopup({
           <p className="p4">현재 세션은 저장되지 않습니다.</p>
         </div>
         <div className="flex gap-6 w-full">
-          <Button variant="outlined" onClick={onContinue} className="flex-1 h3">
+          <Button variant="outlined" onClick={onContinue} className="p4 flex-1 h3">
             계속하기
           </Button>
-          <Button variant="primary" onClick={onStop} className="flex-1 h3">
+          <Button variant="primary" onClick={onStop} className="p4 flex-1 h3">
             종료
           </Button>
         </div>

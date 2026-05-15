@@ -107,7 +107,7 @@ export default function ForgotPasswordPage() {
             type="submit"
             variant={isButtonDisabled ? 'secondary' : 'primary'}
             disabled={isButtonDisabled}
-            className="w-full"
+            className="p4 w-full"
           >
             {isCheckingEmail
               ? '확인 중...'
