@@ -7,10 +7,10 @@ import {
   getInterviewSchedule,
   getInterviewScheduleList,
 } from '@/apis/schedules'
-import InterviewPlanActionsMenuPortal, {
+import KebabMenuPortal, {
   computeMenuPosition,
-  type InterviewPlanMenuPosition,
-} from '@/components/home/interviewPlan/InterviewPlanActionsMenuPortal'
+  type KebabMenuPosition,
+} from '@/components/common/kebabMenu/KebabMenu'
 import InterviewPlanCurriculumColumn from '@/components/home/interviewPlan/InterviewPlanCurriculumColumn'
 import InterviewPlanScheduleColumn from '@/components/home/interviewPlan/InterviewPlanScheduleColumn'
 import InterviewScheduleRegisterPopup, {
@@ -24,8 +24,7 @@ export default function InterviewPlanSection() {
   const [isSchedulePopupOpen, setIsSchedulePopupOpen] = useState(false)
   const [schedulePopupMode, setSchedulePopupMode] =
     useState<InterviewSchedulePopupMode>('create')
-  const [actionsMenu, setActionsMenu] =
-    useState<InterviewPlanMenuPosition | null>(null)
+  const [actionsMenu, setActionsMenu] = useState<KebabMenuPosition | null>(null)
   const [editingScheduleUuid, setEditingScheduleUuid] = useState<string | null>(
     null,
   )
@@ -126,11 +125,19 @@ export default function InterviewPlanSection() {
         />
       </div>
 
-      <InterviewPlanActionsMenuPortal
+      <KebabMenuPortal
         menu={actionsMenu}
         onClose={closeActionsMenu}
-        onEdit={handleEdit}
-        onDelete={handleDelete}
+        items={[
+          {
+            label: '수정',
+            onClick: handleEdit,
+          },
+          {
+            label: '삭제',
+            onClick: handleDelete,
+          },
+        ]}
       />
 
       {isSchedulePopupOpen && (
