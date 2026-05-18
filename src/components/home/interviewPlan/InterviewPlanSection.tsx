@@ -1,16 +1,14 @@
 'use client'
 
-import { useCallback, useState, useRef, useEffect, useMemo } from 'react'
+import { useCallback, useState, useRef, useEffect } from 'react'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import {
   deleteInterviewSchedule,
   getInterviewSchedule,
   getInterviewScheduleList,
 } from '@/apis/schedules'
-import KebabMenu, {
-  computeMenuPosition,
-  type KebabMenuPosition,
-} from '@/components/common/kebabMenu/KebabMenu'
+import KebabMenu from '@/components/common/kebabMenu/KebabMenu'
+import { useKebabMenu } from '@/hooks/useKebabMenu'
 import InterviewPlanCurriculumColumn from '@/components/home/interviewPlan/InterviewPlanCurriculumColumn'
 import InterviewPlanScheduleColumn from '@/components/home/interviewPlan/InterviewPlanScheduleColumn'
 import InterviewScheduleRegisterPopup, {
@@ -24,12 +22,17 @@ export default function InterviewPlanSection() {
   const [isSchedulePopupOpen, setIsSchedulePopupOpen] = useState(false)
   const [schedulePopupMode, setSchedulePopupMode] =
     useState<InterviewSchedulePopupMode>('create')
-  const [actionsMenu, setActionsMenu] = useState<KebabMenuPosition | null>(null)
   const [editingScheduleUuid, setEditingScheduleUuid] = useState<string | null>(
     null,
   )
 
   const queryClient = useQueryClient()
+
+  const {
+    menu: actionsMenu,
+    toggleMenu: toggleActionsMenu,
+    closeMenu: closeActionsMenu,
+  } = useKebabMenu()
 
   const { data: selectedScheduleDetail, isLoading: isScheduleDetailLoading } =
     useQuery({
@@ -51,18 +54,9 @@ export default function InterviewPlanSection() {
       if (selectedScheduleUuid === deletedUuid) {
         setSelectedScheduleUuid(null)
       }
-      setActionsMenu(null)
+      closeActionsMenu()
     },
   })
-
-  const toggleActionsMenu = useCallback((key: string, el: HTMLElement) => {
-    setActionsMenu((prev) => {
-      if (prev?.key === key) return null
-      const row = el.closest('[data-interview-plan-row]')
-      if (!(row instanceof HTMLElement)) return null
-      return { key, ...computeMenuPosition(el, row) }
-    })
-  }, [])
 
   const handleEdit = useCallback((scheduleUuid: string) => {
     setEditingScheduleUuid(scheduleUuid)
@@ -77,27 +71,9 @@ export default function InterviewPlanSection() {
     [deleteInterviewScheduleMutation],
   )
 
-  const closeActionsMenu = useCallback(() => {
-    setActionsMenu(null)
-  }, [])
-
   const closeSchedulePopup = useCallback(() => {
     setIsSchedulePopupOpen(false)
   }, [])
-
-  const kebabMenuItems = useMemo(
-    () => [
-      {
-        label: '수정',
-        onClick: handleEdit,
-      },
-      {
-        label: '삭제',
-        onClick: handleDelete,
-      },
-    ],
-    [handleEdit, handleDelete],
-  )
 
   const hasAutoSelectedRef = useRef(false)
 
@@ -131,7 +107,10 @@ export default function InterviewPlanSection() {
       <KebabMenu
         menu={actionsMenu}
         onClose={closeActionsMenu}
-        items={kebabMenuItems}
+        items={[
+          { label: '수정', onClick: handleEdit },
+          { label: '삭제', onClick: handleDelete },
+        ]}
       />
 
       {isSchedulePopupOpen && (
