@@ -1,6 +1,5 @@
 'use client'
 
-import { IconPlus } from '@tabler/icons-react'
 import { useQuery } from '@tanstack/react-query'
 import { formatMonthDay, getDDay } from '@/utils/date'
 import { getInterviewScheduleList } from '@/apis/schedules'
@@ -10,21 +9,15 @@ import { EMPTY_INTERVIEW_PLAN_ROWS } from '@/constants/interviewPlanEmptyRows'
 type InterviewPlanScheduleColumnProps = {
   selectedScheduleUuid: string | null
   onToggleMenu: (key: string, el: HTMLElement) => void
-  onOpenAddSchedule: () => void
   onSelectSchedule: (scheduleUuid: string) => void
 }
 
 export default function InterviewPlanScheduleColumn({
   selectedScheduleUuid,
   onToggleMenu,
-  onOpenAddSchedule,
   onSelectSchedule,
 }: InterviewPlanScheduleColumnProps) {
-  const {
-    data: schedules,
-    isLoading,
-    error,
-  } = useQuery({
+  const { data: schedules, isLoading } = useQuery({
     queryKey: ['schedules'],
     queryFn: getInterviewScheduleList,
   })
@@ -36,14 +29,6 @@ export default function InterviewPlanScheduleColumn({
     <div className="flex-1 flex flex-col min-h-0">
       <div className="mb-4 flex items-center gap-2">
         <h3 className="p2 text-text-primary">면접 일정</h3>
-        <button
-          type="button"
-          className="text-primary"
-          aria-label="면접 일정 추가"
-          onClick={onOpenAddSchedule}
-        >
-          <IconPlus className="h-5 w-5" />
-        </button>
       </div>
 
       {isScheduleEmpty ? (
@@ -99,7 +84,7 @@ export default function InterviewPlanScheduleColumn({
                 </span>
 
                 <InterviewPlanDotsTrigger
-                  menuKey={`${schedule.scheduleUuid}`}
+                  menuKey={schedule.scheduleUuid}
                   onToggleMenu={onToggleMenu}
                 />
               </div>

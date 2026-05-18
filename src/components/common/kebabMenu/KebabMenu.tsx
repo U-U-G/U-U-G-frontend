@@ -32,7 +32,7 @@ export function computeMenuPosition(buttonEl: HTMLElement, rowEl: HTMLElement) {
   }
 }
 
-export default function KebabMenuPortal({
+export default function KebabMenu({
   menu,
   onClose,
   items,

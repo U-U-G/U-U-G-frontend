@@ -1,13 +1,13 @@
 'use client'
 
-import { useCallback, useState, useRef, useEffect } from 'react'
+import { useCallback, useState, useRef, useEffect, useMemo } from 'react'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import {
   deleteInterviewSchedule,
   getInterviewSchedule,
   getInterviewScheduleList,
 } from '@/apis/schedules'
-import KebabMenuPortal, {
+import KebabMenu, {
   computeMenuPosition,
   type KebabMenuPosition,
 } from '@/components/common/kebabMenu/KebabMenu'
@@ -53,10 +53,6 @@ export default function InterviewPlanSection() {
       }
       setActionsMenu(null)
     },
-
-    onError: (error) => {
-      console.error('삭제 실패', error)
-    },
   })
 
   const toggleActionsMenu = useCallback((key: string, el: HTMLElement) => {
@@ -85,15 +81,23 @@ export default function InterviewPlanSection() {
     setActionsMenu(null)
   }, [])
 
-  const openCreateSchedulePopup = useCallback(() => {
-    setEditingScheduleUuid(null)
-    setSchedulePopupMode('create')
-    setIsSchedulePopupOpen(true)
-  }, [])
-
   const closeSchedulePopup = useCallback(() => {
     setIsSchedulePopupOpen(false)
   }, [])
+
+  const kebabMenuItems = useMemo(
+    () => [
+      {
+        label: '수정',
+        onClick: handleEdit,
+      },
+      {
+        label: '삭제',
+        onClick: handleDelete,
+      },
+    ],
+    [handleEdit, handleDelete],
+  )
 
   const hasAutoSelectedRef = useRef(false)
 
@@ -115,7 +119,6 @@ export default function InterviewPlanSection() {
         <InterviewPlanScheduleColumn
           selectedScheduleUuid={selectedScheduleUuid}
           onToggleMenu={toggleActionsMenu}
-          onOpenAddSchedule={openCreateSchedulePopup}
           onSelectSchedule={setSelectedScheduleUuid}
         />
         <InterviewPlanCurriculumColumn
@@ -125,19 +128,10 @@ export default function InterviewPlanSection() {
         />
       </div>
 
-      <KebabMenuPortal
+      <KebabMenu
         menu={actionsMenu}
         onClose={closeActionsMenu}
-        items={[
-          {
-            label: '수정',
-            onClick: handleEdit,
-          },
-          {
-            label: '삭제',
-            onClick: handleDelete,
-          },
-        ]}
+        items={kebabMenuItems}
       />
 
       {isSchedulePopupOpen && (
