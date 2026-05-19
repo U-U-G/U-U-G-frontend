@@ -54,7 +54,7 @@ body {
 @layer utilities {
   .h1 {
     font-size: 32px;
-    font-weight: 600;
+    font-weight: 700;
     line-height: 150%;
     letter-spacing: -0.03em;
   }
