@@ -3,6 +3,7 @@ import localFont from 'next/font/local'
 import Script from 'next/script'
 import './globals.css'
 import Providers from './providers'
+import MobileBlockScreen from '@/components/common/mobile/MobileBlockScreen'
 
 const pretendard = localFont({
   src: '../fonts/PretendardVariable.woff2',
@@ -27,6 +28,7 @@ export default function RootLayout({
   return (
     <html lang="ko" className={`${pretendard.variable} h-full antialiased`}>
       <body className="min-h-full flex flex-col">
+        <MobileBlockScreen />
         <Providers>{children}</Providers>
         <Script
           src={`https://www.googletagmanager.com/gtag/js?id=${process.env.NEXT_PUBLIC_GA_ID}`}
