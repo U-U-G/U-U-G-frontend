@@ -58,6 +58,8 @@ export function useJobPostingAnalysisFlow() {
     },
   })
 
+  const { mutate: createSession } = createSessionMutation
+
   const applyJobPostingDetail = useCallback(
     (detail: JobPostingDetail) => {
       if (detail.status === 'DONE') {
@@ -67,7 +69,7 @@ export function useJobPostingAnalysisFlow() {
           setCompanyName(name)
           setPosition(detail.position || '')
           setPopupState('sessionCreating')
-          createSessionMutation.mutate({
+          createSession({
             jobPostingUuid: detail.uuid,
             interviewDate: new Date().toISOString().split('T')[0],
             retry: false,
@@ -85,8 +87,7 @@ export function useJobPostingAnalysisFlow() {
         }
       }
     },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [createSessionMutation.mutate],
+    [createSession],
   )
 
   // Job posting SSE
