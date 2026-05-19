@@ -85,7 +85,7 @@ export default function CountdownSection({
           <span className="bg-primary text-white h4 px-4.25 py-0.75 rounded-full">
             질문 {questionNumber}
           </span>
-          <p className="h1">{question?.content ?? ''}</p>
+          <p className="h2">{question?.content ?? ''}</p>
         </div>
 
         <div className="relative w-50 h-50">
