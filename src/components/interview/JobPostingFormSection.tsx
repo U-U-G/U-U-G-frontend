@@ -74,7 +74,6 @@ export default function JobPostingFormSection() {
     handleClose,
     handleCompanyNameSubmit,
     handleStartInterview,
-    handleStartQuestionGeneration,
   } = useJobPostingAnalysisFlow()
 
   const { ref: popupRef } = useModal(popupState !== null)
@@ -148,15 +147,6 @@ export default function JobPostingFormSection() {
           popupRef={popupRef}
           onClose={handleClose}
           onSubmit={handleCompanyNameSubmit}
-        />
-      )}
-      {popupState === 'analysisComplete' && (
-        <CompletePopup
-          popupRef={popupRef}
-          title="채용 공고 분석이 완료되었어요!"
-          subtitle={`${companyName} 질문 생성을 시작해주세요.`}
-          actionLabel="시작하기"
-          onAction={handleStartQuestionGeneration}
         />
       )}
       {popupState === 'generating' && (
