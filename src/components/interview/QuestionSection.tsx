@@ -280,7 +280,7 @@ export default function QuestionSection({
           </div>
 
           {/* 질문 배지 + 텍스트 */}
-          <div className="flex items-center gap-4.5 shrink-0">
+          <div className="flex items-start gap-4.5 shrink-0 mt-2">
             <span className="shrink-0 bg-secondary text-primary h4 px-4.25 py-0.75 border rounded-full">
               질문 {questionNumber}
             </span>

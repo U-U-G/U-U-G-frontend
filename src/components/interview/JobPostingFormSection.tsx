@@ -74,7 +74,6 @@ export default function JobPostingFormSection() {
     handleClose,
     handleCompanyNameSubmit,
     handleStartInterview,
-    handleStartQuestionGeneration,
   } = useJobPostingAnalysisFlow()
 
   const { ref: popupRef } = useModal(popupState !== null)
@@ -90,7 +89,7 @@ export default function JobPostingFormSection() {
       <div className="flex-1 min-h-0 flex flex-col items-center justify-center w-full min-w-200 bg-secondary rounded-2xl border border-primary">
         <div className="flex flex-col gap-8.5 w-115">
           <div className="flex flex-col gap-5">
-            <label className="p3 h-10">
+            <label className="p3">
               <span className="text-primary">채용 공고 링크</span>를
               입력해주세요
             </label>
@@ -148,15 +147,6 @@ export default function JobPostingFormSection() {
           popupRef={popupRef}
           onClose={handleClose}
           onSubmit={handleCompanyNameSubmit}
-        />
-      )}
-      {popupState === 'analysisComplete' && (
-        <CompletePopup
-          popupRef={popupRef}
-          title="채용 공고 분석이 완료되었어요!"
-          subtitle={`${companyName} 질문 생성을 시작해주세요.`}
-          actionLabel="시작하기"
-          onAction={handleStartQuestionGeneration}
         />
       )}
       {popupState === 'generating' && (

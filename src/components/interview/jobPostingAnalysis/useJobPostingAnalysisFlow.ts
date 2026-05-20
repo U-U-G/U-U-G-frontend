@@ -22,7 +22,6 @@ export type JobPostingAnalysisPopupState =
   | 'companyName'
   | 'generating'
   | 'questionFailed'
-  | 'analysisComplete'
   | 'generateQuestionComplete'
   | 'sessionCreating'
   | 'sessionFailed'
@@ -39,30 +38,57 @@ export function useJobPostingAnalysisFlow() {
   const [sessionUuid, setSessionUuid] = useState<string | null>(null)
   const generatingTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
-  const applyJobPostingDetail = useCallback((detail: JobPostingDetail) => {
-    if (detail.status === 'DONE') {
-      setIsPolling(false)
-      const name = detail.companyName || ''
-      if (name) {
-        setCompanyName(name)
-        setPosition(detail.position || '')
-        generatingTimerRef.current = setTimeout(
-          () => setPopupState('analysisComplete'),
-          GENERATING_DELAY_MS,
+  const createSessionMutation = useMutation({
+    mutationFn: createInterviewSession,
+    onSuccess: (data) => {
+      if (companyName || position) {
+        sessionStorage.setItem(
+          `interview-meta-${data.uuid}`,
+          JSON.stringify({ companyName, position }),
         )
-      } else {
-        setPopupState('companyName')
       }
-    } else if (detail.status === 'FAILED') {
-      setIsPolling(false)
-      const reason = (detail.failureReason ?? '').toLowerCase()
-      if (reason.includes('question')) {
-        setPopupState('questionFailed')
-      } else {
-        setPopupState('analysisFailed')
+      if (data.questions && data.questions.length > 0) {
+        router.push(`/interview/job-posting/${data.uuid}/countdown?q=1`)
+        return
       }
-    }
-  }, [])
+      setSessionUuid(data.uuid)
+    },
+    onError: () => {
+      setPopupState('sessionFailed')
+    },
+  })
+
+  const { mutate: createSession } = createSessionMutation
+
+  const applyJobPostingDetail = useCallback(
+    (detail: JobPostingDetail) => {
+      if (detail.status === 'DONE') {
+        setIsPolling(false)
+        const name = detail.companyName || ''
+        if (name) {
+          setCompanyName(name)
+          setPosition(detail.position || '')
+          setPopupState('sessionCreating')
+          createSession({
+            jobPostingUuid: detail.uuid,
+            interviewDate: new Date().toISOString().split('T')[0],
+            retry: false,
+          })
+        } else {
+          setPopupState('companyName')
+        }
+      } else if (detail.status === 'FAILED') {
+        setIsPolling(false)
+        const reason = (detail.failureReason ?? '').toLowerCase()
+        if (reason.includes('question')) {
+          setPopupState('questionFailed')
+        } else {
+          setPopupState('analysisFailed')
+        }
+      }
+    },
+    [createSession],
+  )
 
   // Job posting SSE
   useEffect(() => {
@@ -190,26 +216,6 @@ export function useJobPostingAnalysisFlow() {
       }),
   })
 
-  const createSessionMutation = useMutation({
-    mutationFn: createInterviewSession,
-    onSuccess: (data) => {
-      if (companyName || position) {
-        sessionStorage.setItem(
-          `interview-meta-${data.uuid}`,
-          JSON.stringify({ companyName, position }),
-        )
-      }
-      if (data.questions && data.questions.length > 0) {
-        router.push(`/interview/job-posting/${data.uuid}/countdown?q=1`)
-        return
-      }
-      setSessionUuid(data.uuid)
-    },
-    onError: () => {
-      setPopupState('sessionFailed')
-    },
-  })
-
   function handleClose() {
     setIsPolling(false)
     if (generatingTimerRef.current) clearTimeout(generatingTimerRef.current)
@@ -229,27 +235,18 @@ export function useJobPostingAnalysisFlow() {
       {
         onSuccess: () => {
           setCompanyName(trimmed)
-          setPopupState('generating')
-          generatingTimerRef.current = setTimeout(
-            () => setPopupState('analysisComplete'),
-            GENERATING_DELAY_MS,
-          )
+          setPopupState('sessionCreating')
+          createSessionMutation.mutate({
+            jobPostingUuid,
+            interviewDate: new Date().toISOString().split('T')[0],
+            retry: false,
+          })
         },
         onError: () => {
           setPopupState('analysisFailed')
         },
       },
     )
-  }
-
-  function handleStartQuestionGeneration() {
-    if (!jobPostingUuid) return
-    setPopupState('sessionCreating')
-    createSessionMutation.mutate({
-      jobPostingUuid,
-      interviewDate: new Date().toISOString().split('T')[0],
-      retry: false,
-    })
   }
 
   function handleStartInterview() {
@@ -266,6 +263,5 @@ export function useJobPostingAnalysisFlow() {
     handleClose,
     handleCompanyNameSubmit,
     handleStartInterview,
-    handleStartQuestionGeneration,
   }
 }
