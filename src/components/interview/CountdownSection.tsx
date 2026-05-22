@@ -81,6 +81,11 @@ export default function CountdownSection({
       <h1 className="h1 w-full">공고 맞춤 면접 연습</h1>
 
       <div className="flex flex-col items-center justify-center w-full min-w-200 bg-secondary rounded-2xl border border-primary flex-1 min-h-0 gap-6 px-12">
+        <p className="sr-only" aria-live="polite">
+          {question
+            ? `질문 ${questionNumber}: ${question.content}. 잠시 후 답변 화면으로 자동 이동합니다.`
+            : ''}
+        </p>
         <div className="flex flex-col items-center gap-4">
           <span className="bg-primary text-white h4 px-4.25 py-0.75 rounded-full">
             질문 {questionNumber}
@@ -89,7 +94,11 @@ export default function CountdownSection({
         </div>
 
         <div className="relative w-50 h-50">
-          <svg className="w-full h-full rotate-90" viewBox="0 0 120 120">
+          <svg
+            className="w-full h-full rotate-90"
+            viewBox="0 0 120 120"
+            aria-hidden="true"
+          >
             <circle
               cx="60"
               cy="60"
@@ -103,7 +112,12 @@ export default function CountdownSection({
               style={{ transition: 'stroke-dashoffset 1s linear' }}
             />
           </svg>
-          <span className="absolute inset-0 flex items-center justify-center text-[5rem] font-medium text-primary">
+          <span
+            className="absolute inset-0 flex items-center justify-center text-[5rem] font-medium text-primary"
+            aria-live="assertive"
+            aria-atomic="true"
+            aria-label={`${count}초 후 질문 시작`}
+          >
             {count}
           </span>
         </div>
