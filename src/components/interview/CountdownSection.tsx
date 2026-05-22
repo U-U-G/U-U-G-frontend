@@ -114,7 +114,7 @@ export default function CountdownSection({
           </svg>
           <span
             className="absolute inset-0 flex items-center justify-center text-[5rem] font-medium text-primary"
-            aria-live="assertive"
+            aria-live="polite"
             aria-atomic="true"
             aria-label={`${count}초 후 질문 시작`}
           >

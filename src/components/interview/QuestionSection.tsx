@@ -64,6 +64,7 @@ export default function QuestionSection({
   const [isPaused, setIsPaused] = useState(false)
   const [isStopPopupOpen, setIsStopPopupOpen] = useState(false)
   const wasPausedBeforePopupRef = useRef(false)
+  const [timerAnnouncement, setTimerAnnouncement] = useState('')
 
   const scriptRef = useRef<HTMLDivElement>(null)
 
@@ -85,6 +86,19 @@ export default function QuestionSection({
       scriptRef.current.scrollTop = scriptRef.current.scrollHeight
     }
   }, [transcript, interimTranscript])
+
+  useEffect(() => {
+    const totalSeconds = Math.floor(elapsedMs / 1000)
+    if (totalSeconds > 0 && totalSeconds % 30 === 0) {
+      const minutes = Math.floor(totalSeconds / 60)
+      const seconds = totalSeconds % 60
+      const text =
+        minutes > 0
+          ? `${minutes}분 ${seconds > 0 ? `${seconds}초` : ''}경과`
+          : `${seconds}초 경과`
+      setTimerAnnouncement(text)
+    }
+  }, [elapsedMs])
 
   const {
     volumeBars,
@@ -301,6 +315,9 @@ export default function QuestionSection({
               aria-hidden="true"
             >
               {formatTime(elapsedMs)}
+            </span>
+            <span className="sr-only" aria-live="polite" aria-atomic="true">
+              {timerAnnouncement}
             </span>
             <Button
               className="p4 w-44.75 rounded-full! py-3!"
