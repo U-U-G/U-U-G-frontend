@@ -71,6 +71,12 @@ export default function InterviewPlanSection() {
     [deleteInterviewScheduleMutation],
   )
 
+  const openCreateSchedulePopup = useCallback(() => {
+    setEditingScheduleUuid(null)
+    setSchedulePopupMode('create')
+    setIsSchedulePopupOpen(true)
+  }, [])
+
   const closeSchedulePopup = useCallback(() => {
     setIsSchedulePopupOpen(false)
   }, [])
@@ -95,6 +101,7 @@ export default function InterviewPlanSection() {
         <InterviewPlanScheduleColumn
           selectedScheduleUuid={selectedScheduleUuid}
           onToggleMenu={toggleActionsMenu}
+          onOpenAddSchedule={openCreateSchedulePopup}
           onSelectSchedule={setSelectedScheduleUuid}
         />
         <InterviewPlanCurriculumColumn
