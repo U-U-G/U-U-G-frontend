@@ -136,7 +136,11 @@ export default function InterviewScheduleRegisterPopup({
     handleDateInputChange(
       formatDateKo(parseKoreanDate(initialSchedule.interviewDate)),
     )
-  }, [isEditMode, initialSchedule, handleDateInputChange])
+  }, [
+    isEditMode,
+    initialSchedule?.companyName,
+    initialSchedule?.interviewDate,
+  ])
 
   useEffect(() => {
     if (!showCompanyListDropdown) return

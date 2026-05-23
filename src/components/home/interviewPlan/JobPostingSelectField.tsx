@@ -1,6 +1,6 @@
 'use client'
 
-import { IconChevronDown } from '@tabler/icons-react'
+import { IconChevronDown, IconChevronUp } from '@tabler/icons-react'
 import type { ScheduleJobPosting } from '@/apis/schedules/type'
 import InputBox from '@/components/common/input/InputBox'
 
@@ -63,6 +63,7 @@ export default function JobPostingSelectField({
               className="cursor-pointer rounded-none border-0 hover:border-0 focus:border-0"
               value={value}
               readOnly
+              onClick={onToggle}
               status="default"
               focusPrimary={false}
               placeholder="지원 회사와 직무를 선택해 주세요."
@@ -74,7 +75,11 @@ export default function JobPostingSelectField({
                   aria-label="회사 및 직무 선택"
                   aria-expanded={isOpen}
                 >
-                  <IconChevronDown size={24} aria-hidden />
+                  {isOpen ? (
+                    <IconChevronUp size={24} aria-hidden />
+                  ) : (
+                    <IconChevronDown size={24} aria-hidden />
+                  )}
                 </button>
               }
             />

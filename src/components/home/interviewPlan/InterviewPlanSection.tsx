@@ -125,11 +125,10 @@ export default function InterviewPlanSection() {
           mode={schedulePopupMode}
           scheduleUuid={editingScheduleUuid ?? undefined}
           initialSchedule={
-            schedulePopupMode === 'edit' && selectedScheduleDetail
-              ? {
-                  companyName: selectedScheduleDetail.companyName,
-                  interviewDate: selectedScheduleDetail.interviewDate,
-                }
+            schedulePopupMode === 'edit'
+              ? schedules?.find(
+                  (s) => s.scheduleUuid === editingScheduleUuid,
+                )
               : undefined
           }
           onClose={closeSchedulePopup}
