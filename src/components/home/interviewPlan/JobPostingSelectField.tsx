@@ -20,7 +20,7 @@ type JobPostingLabelSource = {
   position?: string
 }
 
-function formatJobPostingLabel({
+export function formatJobPostingLabel({
   companyName,
   position,
 }: JobPostingLabelSource) {

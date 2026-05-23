@@ -12,7 +12,9 @@ import type { ScheduleJobPosting } from '@/apis/schedules/type'
 import { getHttpStatus } from '@/apis/common/httpError'
 
 import FormPopupLayout from '@/components/common/popup/FormPopupLayout'
-import JobPostingSelectField from '@/components/home/interviewPlan/JobPostingSelectField'
+import JobPostingSelectField, {
+  formatJobPostingLabel,
+} from '@/components/home/interviewPlan/JobPostingSelectField'
 import InterviewDateField from '@/components/home/interviewPlan/InterviewDateField'
 
 import { useDatePicker } from '@/hooks/useDatePicker'
@@ -20,18 +22,6 @@ import { useModal } from '@/hooks/useModal'
 import { formatFullDate, formatDateKo, parseKoreanDate } from '@/utils/date'
 
 export type InterviewSchedulePopupMode = 'create' | 'edit'
-
-type JobPostingLabelSource = {
-  companyName?: string
-  position?: string
-}
-
-function formatJobPostingLabel({
-  companyName,
-  position,
-}: JobPostingLabelSource) {
-  return [companyName, position].filter(Boolean).join(' / ')
-}
 
 interface InterviewScheduleRegisterPopupProps {
   onClose: () => void
