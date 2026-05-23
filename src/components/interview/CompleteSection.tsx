@@ -41,7 +41,7 @@ export default function CompleteSection({
           className="object-contain"
         />
         <div className="flex flex-col items-center gap-3.25">
-          <p className="h1">수고하셨습니다</p>
+          <h2 className="h1">수고하셨습니다</h2>
           <p className="p3 text-gray-2">
             {isLast ? '면접이 모두 끝났습니다.' : '다음 질문으로 넘어가주세요.'}
           </p>

@@ -64,6 +64,7 @@ export default function QuestionSection({
   const [isPaused, setIsPaused] = useState(false)
   const [isStopPopupOpen, setIsStopPopupOpen] = useState(false)
   const wasPausedBeforePopupRef = useRef(false)
+  const [timerAnnouncement, setTimerAnnouncement] = useState('')
 
   const scriptRef = useRef<HTMLDivElement>(null)
 
@@ -85,6 +86,19 @@ export default function QuestionSection({
       scriptRef.current.scrollTop = scriptRef.current.scrollHeight
     }
   }, [transcript, interimTranscript])
+
+  useEffect(() => {
+    const totalSeconds = Math.floor(elapsedMs / 1000)
+    if (totalSeconds > 0 && totalSeconds % 30 === 0) {
+      const minutes = Math.floor(totalSeconds / 60)
+      const seconds = totalSeconds % 60
+      const text =
+        minutes > 0
+          ? `${minutes}분 ${seconds > 0 ? `${seconds}초` : ''}경과`
+          : `${seconds}초 경과`
+      setTimerAnnouncement(text)
+    }
+  }, [elapsedMs])
 
   const {
     volumeBars,
@@ -221,7 +235,14 @@ export default function QuestionSection({
         <div className="flex flex-col w-full min-w-200 bg-white rounded-2xl border border-primary px-9.5 pt-6 pb-10 flex-1 min-h-0 gap-4">
           {/* 상단 진행 바 + 아이콘 */}
           <div className="flex items-center gap-1 shrink-0">
-            <div className="flex items-center flex-1">
+            <div
+              className="flex items-center flex-1"
+              role="progressbar"
+              aria-valuenow={questionNumber}
+              aria-valuemin={1}
+              aria-valuemax={TOTAL_QUESTIONS}
+              aria-label={`질문 ${questionNumber} / ${TOTAL_QUESTIONS}`}
+            >
               {Array.from({ length: TOTAL_QUESTIONS + 1 }, (_, i) => (
                 <Fragment key={i}>
                   <div
@@ -260,18 +281,18 @@ export default function QuestionSection({
               type="button"
               onClick={handleOpenStopPopup}
               className="relative group cursor-pointer w-6 h-6 shrink-0"
-              aria-label="닫기"
+              aria-label="면접 중단"
             >
               <Image
                 src={quitIcon}
-                alt="닫기"
+                alt="면접 중단"
                 width={24}
                 height={24}
                 className="group-hover:opacity-0 transition-opacity"
               />
               <Image
                 src={quitColorIcon}
-                alt="닫기"
+                alt="면접 중단"
                 width={24}
                 height={24}
                 className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity"
@@ -291,8 +312,12 @@ export default function QuestionSection({
           <div className="flex-1 flex flex-col items-center justify-center gap-4">
             <span
               className={`text-[5rem] font-semibold tabular-nums tracking-tight ${isOverTime ? 'text-text-point-red' : 'text-primary'}`}
+              aria-hidden="true"
             >
               {formatTime(elapsedMs)}
+            </span>
+            <span className="sr-only" aria-live="polite" aria-atomic="true">
+              {timerAnnouncement}
             </span>
             <Button
               className="p4 w-44.75 rounded-full! py-3!"
