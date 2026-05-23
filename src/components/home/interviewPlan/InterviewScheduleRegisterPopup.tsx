@@ -50,6 +50,7 @@ export default function InterviewScheduleRegisterPopup({
   initialSchedule,
 }: InterviewScheduleRegisterPopupProps) {
   const isEditMode = mode === 'edit'
+
   const { ref: popupRef } = useModal(true)
   const companyDropdownRef = useRef<HTMLDivElement>(null)
   const [selectedJobPostingLabel, setSelectedJobPostingLabel] = useState('')
@@ -135,7 +136,7 @@ export default function InterviewScheduleRegisterPopup({
     handleDateInputChange(
       formatDateKo(parseKoreanDate(initialSchedule.interviewDate)),
     )
-  }, [isEditMode, initialSchedule])
+  }, [isEditMode, initialSchedule, handleDateInputChange])
 
   useEffect(() => {
     if (!showCompanyListDropdown) return
@@ -155,6 +156,10 @@ export default function InterviewScheduleRegisterPopup({
     setShowCompanyListDropdown(false)
   }
 
+  const handleToggleCompanyDropdown = () => {
+    setShowCompanyListDropdown((prev) => !prev)
+  }
+
   return (
     <FormPopupLayout
       title={title}
@@ -171,7 +176,7 @@ export default function InterviewScheduleRegisterPopup({
         jobPostings={jobPostings}
         isLoading={isJobPostingsLoading}
         dropdownRef={companyDropdownRef}
-        onToggle={() => setShowCompanyListDropdown((prev) => !prev)}
+        onToggle={handleToggleCompanyDropdown}
         onSelect={handleSelectJobPosting}
       />
 
