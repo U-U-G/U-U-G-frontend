@@ -5,6 +5,7 @@ import type {
   CreateScheduleRequest,
   UpdateScheduleRequest,
   GetScheduleListResponse,
+  GetScheduleJobPostingsResponse,
 } from '@/apis/schedules/type'
 
 export const createInterviewSchedule = async (body: CreateScheduleRequest) => {
@@ -48,3 +49,12 @@ export const deleteInterviewSchedule = async (scheduleUuid: string) => {
   )
   return data.data
 }
+
+export const getScheduleJobPostings =
+  async (): Promise<GetScheduleJobPostingsResponse> => {
+    const { data } =
+      await privateClient.get<ApiResponse<GetScheduleJobPostingsResponse>>(
+        '/schedules/job-postings',
+      )
+    return data.data
+  }

@@ -24,3 +24,12 @@ export interface CreateScheduleRequest {
 export type UpdateScheduleRequest = CreateScheduleRequest
 
 export type GetScheduleListResponse = Schedule[]
+
+export interface ScheduleJobPosting {
+  jobPostingUuid: string
+  companyName: string
+  position: string
+  site: string
+}
+
+export type GetScheduleJobPostingsResponse = ScheduleJobPosting[]
