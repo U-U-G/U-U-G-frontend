@@ -1,16 +1,18 @@
 'use client'
 
-import { useState } from 'react'
-import { IconCalendar } from '@tabler/icons-react'
+import { useState, useEffect, useRef } from 'react'
+import { IconCalendar, IconChevronDown } from '@tabler/icons-react'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 
 import {
   createInterviewSchedule,
   getInterviewSchedule,
+  getScheduleJobPostings,
   updateInterviewSchedule,
 } from '@/apis/schedules'
 import type {
   CreateScheduleRequest,
+  ScheduleJobPosting,
   UpdateScheduleRequest,
 } from '@/apis/schedules/type'
 import { getHttpStatus } from '@/apis/common/httpError'
@@ -22,9 +24,16 @@ import FormPopupLayout from '@/components/common/popup/FormPopupLayout'
 
 import { useDatePicker } from '@/hooks/useDatePicker'
 import { useModal } from '@/hooks/useModal'
-import { formatFullDate } from '@/utils/date'
+import { formatFullDate, formatDateKo, parseKoreanDate } from '@/utils/date'
 
 export type InterviewSchedulePopupMode = 'create' | 'edit'
+
+function formatJobPostingLabel({ companyName, position }: ScheduleJobPosting) {
+  if (companyName && position) {
+    return `${companyName} / ${position}`
+  }
+  return companyName || position || ''
+}
 
 interface InterviewScheduleRegisterPopupProps {
   onClose: () => void
@@ -37,8 +46,11 @@ export default function InterviewScheduleRegisterPopup({
   mode = 'create',
   scheduleUuid,
 }: InterviewScheduleRegisterPopupProps) {
+  const isEditMode = mode === 'edit'
   const { ref: popupRef } = useModal(true)
+  const companyDropdownRef = useRef<HTMLDivElement>(null)
   const [companyName, setCompanyName] = useState('')
+  const [showCompanyListDropdown, setShowCompanyListDropdown] = useState(false)
   const [hasInterviewDateError, setHasInterviewDateError] = useState(false)
   const {
     calendarRef,
@@ -67,9 +79,15 @@ export default function InterviewScheduleRegisterPopup({
     enabled: mode === 'edit' && !!scheduleUuid,
   })
 
+  const { data: jobPostings = [], isLoading: isJobPostingsLoading } = useQuery({
+    queryKey: ['schedules', 'job-postings'],
+    queryFn: getScheduleJobPostings,
+    enabled: !isEditMode && showCompanyListDropdown,
+  })
+
   const createInterviewCurriculumsMutation = useMutation({
     mutationFn: createInterviewSchedule,
-    onSuccess: (curriculum) => {
+    onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['schedules'] })
       onClose()
     },
@@ -124,6 +142,33 @@ export default function InterviewScheduleRegisterPopup({
   const title = mode === 'edit' ? '면접 일정 수정' : '새로운 면접 일정 등록'
   const submitLabel = mode === 'edit' ? '수정하기' : '일정등록'
 
+  useEffect(() => {
+    if (!isEditMode || !scheduleDetail) return
+
+    setCompanyName(scheduleDetail.companyName)
+
+    handleDateInputChange(
+      formatDateKo(parseKoreanDate(scheduleDetail.interviewDate)),
+    )
+  }, [isEditMode, scheduleDetail])
+
+  useEffect(() => {
+    if (!showCompanyListDropdown) return
+
+    function handleClickOutside(e: MouseEvent) {
+      if (companyDropdownRef.current?.contains(e.target as Node)) return
+      setShowCompanyListDropdown(false)
+    }
+
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => document.removeEventListener('mousedown', handleClickOutside)
+  }, [showCompanyListDropdown])
+
+  const handleSelectJobPosting = (item: ScheduleJobPosting) => {
+    setCompanyName(formatJobPostingLabel(item))
+    setShowCompanyListDropdown(false)
+  }
+
   return (
     <FormPopupLayout
       title={title}
@@ -137,17 +182,71 @@ export default function InterviewScheduleRegisterPopup({
         <label htmlFor="interview-company-role" className="p4 text-gray-2">
           회사 및 직무
         </label>
-        <InputBox
-          id="interview-company-role"
-          className="border-gray-5"
-          value={companyName}
-          onChange={(e) => setCompanyName(e.target.value)}
-          status="default"
-          focusPrimary
-          placeholder={
-            scheduleDetail?.companyName ?? '지원 회사명과 직무를 입력해주세요'
-          }
-        />
+        {isEditMode ? (
+          <InputBox
+            id="interview-company-role"
+            className="border-gray-5 text-gray-4"
+            value={companyName}
+            disabled
+            status="default"
+          />
+        ) : (
+          <div className="relative" ref={companyDropdownRef}>
+            <div
+              className={`rounded-lg border border-gray-4 bg-white ${
+                showCompanyListDropdown ? 'rounded-b-none border-b-0' : ''
+              }`}
+            >
+              <InputBox
+                id="interview-company-role"
+                className="cursor-pointer rounded-none border-0 hover:border-0 focus:border-0"
+                value={companyName}
+                readOnly
+                status="default"
+                focusPrimary={false}
+                placeholder="지원 회사와 직무를 선택해 주세요."
+                rightElement={
+                  <button
+                    type="button"
+                    onClick={() => setShowCompanyListDropdown((prev) => !prev)}
+                    className="cursor-pointer text-gray-4 hover:text-text-primary"
+                    aria-label="회사 및 직무 선택"
+                    aria-expanded={showCompanyListDropdown}
+                  >
+                    <IconChevronDown size={24} aria-hidden />
+                  </button>
+                }
+              />
+            </div>
+            {showCompanyListDropdown && (
+              <div className="absolute z-[60] w-full overflow-hidden rounded-b-lg border border-t-0 border-gray-4 bg-white ">
+                <div className="mx-4 border-t border-gray-5" />
+                <div className="max-h-48 overflow-y-auto">
+                  {isJobPostingsLoading ? (
+                    <p className="p4 px-4 py-3 text-gray-3">
+                      목록을 불러오는 중입니다. 잠시만 기다려주세요.
+                    </p>
+                  ) : jobPostings.length === 0 ? (
+                    <p className="p4 px-4 py-3 text-gray-3">
+                      등록된 채용공고가 없어요.
+                    </p>
+                  ) : (
+                    jobPostings.map((item) => (
+                      <button
+                        key={item.jobPostingUuid}
+                        type="button"
+                        onClick={() => handleSelectJobPosting(item)}
+                        className="p4 w-full cursor-pointer px-4 py-3 text-left text-text-primary hover:bg-secondary"
+                      >
+                        {formatJobPostingLabel(item)}
+                      </button>
+                    ))
+                  )}
+                </div>
+              </div>
+            )}
+          </div>
+        )}
       </div>
 
       <div className="flex flex-col gap-4">
@@ -162,12 +261,12 @@ export default function InterviewScheduleRegisterPopup({
             onChange={(e) => handleDateInputChange(e.target.value)}
             status="default"
             focusPrimary
-            placeholder={scheduleDetail?.interviewDate ?? '0000년 00월 00일'}
+            placeholder="0000년 00월 00일"
             rightElement={
               <button
                 type="button"
                 onClick={openCalendar}
-                className="cursor-pointer text-gray-4 hover:text-text-primary"
+                className="cursor-pointer text-gray-4 hover:text-primary"
                 aria-label="달력 열기"
               >
                 <IconCalendar size={24} />

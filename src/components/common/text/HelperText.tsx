@@ -50,7 +50,10 @@ export default function HelperText({
   }[status]
 
   return (
-    <span id={id} className={`flex items-center gap-1 caption ${colorClass}`}>
+    <span
+      id={id}
+      className={`flex items-center gap-1 mt-1 caption ${colorClass}`}
+    >
       {icon}
       {showDash && status === 'default' && <span>-</span>}
       {children}
