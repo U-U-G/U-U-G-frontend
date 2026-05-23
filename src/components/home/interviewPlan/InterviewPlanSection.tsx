@@ -124,6 +124,14 @@ export default function InterviewPlanSection() {
         <InterviewScheduleRegisterPopup
           mode={schedulePopupMode}
           scheduleUuid={editingScheduleUuid ?? undefined}
+          initialSchedule={
+            schedulePopupMode === 'edit' && selectedScheduleDetail
+              ? {
+                  companyName: selectedScheduleDetail.companyName,
+                  interviewDate: selectedScheduleDetail.interviewDate,
+                }
+              : undefined
+          }
           onClose={closeSchedulePopup}
         />
       )}

@@ -17,11 +17,13 @@ export interface ScheduleDetail extends Schedule {
 }
 
 export interface CreateScheduleRequest {
-  companyName: string
+  jobPostingUuid: string
   interviewDate: string
 }
 
-export type UpdateScheduleRequest = CreateScheduleRequest
+export interface UpdateScheduleRequest {
+  interviewDate: string
+}
 
 export type GetScheduleListResponse = Schedule[]
 

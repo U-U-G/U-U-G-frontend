@@ -6,12 +6,10 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 
 import {
   createInterviewSchedule,
-  getInterviewSchedule,
   getScheduleJobPostings,
   updateInterviewSchedule,
 } from '@/apis/schedules'
 import type {
-  CreateScheduleRequest,
   ScheduleJobPosting,
   UpdateScheduleRequest,
 } from '@/apis/schedules/type'
@@ -28,30 +26,43 @@ import { formatFullDate, formatDateKo, parseKoreanDate } from '@/utils/date'
 
 export type InterviewSchedulePopupMode = 'create' | 'edit'
 
-function formatJobPostingLabel({ companyName, position }: ScheduleJobPosting) {
-  if (companyName && position) {
-    return `${companyName} / ${position}`
-  }
-  return companyName || position || ''
+type JobPostingLabelSource = {
+  companyName?: string
+  position?: string
+}
+
+function formatJobPostingLabel({
+  companyName,
+  position,
+}: JobPostingLabelSource) {
+  return [companyName, position].filter(Boolean).join(' / ')
 }
 
 interface InterviewScheduleRegisterPopupProps {
   onClose: () => void
   mode?: InterviewSchedulePopupMode
   scheduleUuid?: string
+  initialSchedule?: {
+    companyName: string
+    interviewDate: string
+  }
 }
 
 export default function InterviewScheduleRegisterPopup({
   onClose,
   mode = 'create',
   scheduleUuid,
+  initialSchedule,
 }: InterviewScheduleRegisterPopupProps) {
   const isEditMode = mode === 'edit'
   const { ref: popupRef } = useModal(true)
   const companyDropdownRef = useRef<HTMLDivElement>(null)
-  const [companyName, setCompanyName] = useState('')
+  const [selectedJobPostingLabel, setSelectedJobPostingLabel] = useState('')
+  const [selectedJobPostingUuid, setSelectedJobPostingUuid] = useState<
+    string | null
+  >(null)
   const [showCompanyListDropdown, setShowCompanyListDropdown] = useState(false)
-  const [hasInterviewDateError, setHasInterviewDateError] = useState(false)
+  const [helperTextMessage, setHelperTextMessage] = useState('')
   const {
     calendarRef,
     selectedDate,
@@ -69,15 +80,10 @@ export default function InterviewScheduleRegisterPopup({
     handleCancel,
   } = useDatePicker()
 
-  const canSubmit = companyName.trim().length > 0 && selectedDate !== null
+  const canSubmit =
+    (isEditMode ? true : !!selectedJobPostingUuid) && selectedDate !== null
 
   const queryClient = useQueryClient()
-
-  const { data: scheduleDetail } = useQuery({
-    queryKey: ['schedule', scheduleUuid],
-    queryFn: () => getInterviewSchedule(scheduleUuid!),
-    enabled: mode === 'edit' && !!scheduleUuid,
-  })
 
   const { data: jobPostings = [], isLoading: isJobPostingsLoading } = useQuery({
     queryKey: ['schedules', 'job-postings'],
@@ -85,20 +91,16 @@ export default function InterviewScheduleRegisterPopup({
     enabled: !isEditMode && showCompanyListDropdown,
   })
 
-  const createInterviewCurriculumsMutation = useMutation({
+  const createScheduleMutation = useMutation({
     mutationFn: createInterviewSchedule,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['schedules'] })
       onClose()
     },
-    onError: (e) => {
-      if (getHttpStatus(e) === 400) {
-        setHasInterviewDateError(true)
-      }
-    },
+    onError: handleScheduleError,
   })
 
-  const updateInterviewCurriculumsMutation = useMutation({
+  const updateScheduleMutation = useMutation({
     mutationFn: ({
       uuid,
       body,
@@ -106,51 +108,65 @@ export default function InterviewScheduleRegisterPopup({
       uuid: string
       body: UpdateScheduleRequest
     }) => updateInterviewSchedule(uuid, body),
-    onSuccess: (_, variables) => {
+    onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['schedules'] })
-      queryClient.invalidateQueries({ queryKey: ['schedule', variables.uuid] })
       onClose()
     },
-    onError: (e) => {
-      if (getHttpStatus(e) === 400) {
-        setHasInterviewDateError(true)
-      }
-    },
+    onError: handleScheduleError,
   })
+
+  function handleScheduleError(error: unknown) {
+    const status = getHttpStatus(error)
+
+    if (status === 400) {
+      setHelperTextMessage(
+        '면접 일정은 면접일 하루 전 날짜까지만 등록할 수 있어요.',
+      )
+      return
+    }
+
+    if (status === 409) {
+      setHelperTextMessage(
+        '해당 채용 공고에 대한 면접 일정이 이미 등록되어 있습니다.',
+      )
+    }
+  }
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
 
     if (!selectedDate) return
 
-    const request: CreateScheduleRequest = {
-      companyName: companyName,
-      interviewDate: formatFullDate(selectedDate),
-    }
+    const interviewDate = formatFullDate(selectedDate)
 
-    if (mode === 'edit' && scheduleUuid) {
-      updateInterviewCurriculumsMutation.mutate({
+    if (isEditMode && scheduleUuid) {
+      updateScheduleMutation.mutate({
         uuid: scheduleUuid,
-        body: request,
+        body: { interviewDate },
       })
       return
     }
 
-    createInterviewCurriculumsMutation.mutate(request)
+    if (!selectedJobPostingUuid) return
+
+    createScheduleMutation.mutate({
+      jobPostingUuid: selectedJobPostingUuid,
+      interviewDate,
+    })
   }
 
-  const title = mode === 'edit' ? '면접 일정 수정' : '새로운 면접 일정 등록'
-  const submitLabel = mode === 'edit' ? '수정하기' : '일정등록'
+  const title = isEditMode ? '면접 일정 수정' : '새로운 면접 일정 등록'
+  const submitLabel = isEditMode ? '수정하기' : '일정등록'
 
   useEffect(() => {
-    if (!isEditMode || !scheduleDetail) return
+    if (!isEditMode || !initialSchedule) return
 
-    setCompanyName(scheduleDetail.companyName)
+    setSelectedJobPostingLabel(formatJobPostingLabel(initialSchedule))
 
     handleDateInputChange(
-      formatDateKo(parseKoreanDate(scheduleDetail.interviewDate)),
+      formatDateKo(parseKoreanDate(initialSchedule.interviewDate)),
     )
-  }, [isEditMode, scheduleDetail])
+  }, [isEditMode, initialSchedule])
 
   useEffect(() => {
     if (!showCompanyListDropdown) return
@@ -165,7 +181,8 @@ export default function InterviewScheduleRegisterPopup({
   }, [showCompanyListDropdown])
 
   const handleSelectJobPosting = (item: ScheduleJobPosting) => {
-    setCompanyName(formatJobPostingLabel(item))
+    setSelectedJobPostingLabel(formatJobPostingLabel(item))
+    setSelectedJobPostingUuid(item.jobPostingUuid)
     setShowCompanyListDropdown(false)
   }
 
@@ -186,7 +203,7 @@ export default function InterviewScheduleRegisterPopup({
           <InputBox
             id="interview-company-role"
             className="border-gray-5 text-gray-4"
-            value={companyName}
+            value={selectedJobPostingLabel}
             disabled
             status="default"
           />
@@ -200,7 +217,7 @@ export default function InterviewScheduleRegisterPopup({
               <InputBox
                 id="interview-company-role"
                 className="cursor-pointer rounded-none border-0 hover:border-0 focus:border-0"
-                value={companyName}
+                value={selectedJobPostingLabel}
                 readOnly
                 status="default"
                 focusPrimary={false}
@@ -273,10 +290,8 @@ export default function InterviewScheduleRegisterPopup({
               </button>
             }
           />
-          {hasInterviewDateError ? (
-            <HelperText status="error">
-              면접 일정은 면접일 하루 전까지만 등록할 수 있어요.
-            </HelperText>
+          {helperTextMessage ? (
+            <HelperText status="error">{helperTextMessage}</HelperText>
           ) : (
             '\u00A0'
           )}
