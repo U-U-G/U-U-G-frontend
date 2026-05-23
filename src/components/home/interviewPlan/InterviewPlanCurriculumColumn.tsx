@@ -12,7 +12,6 @@ type InterviewPlanCurriculumColumnProps = {
 export default function InterviewPlanCurriculumColumn({
   selectedScheduleDetail,
   isLoading,
-  hasSelectedSchedule,
 }: InterviewPlanCurriculumColumnProps) {
   const curriculums = selectedScheduleDetail?.curriculums ?? []
   const isEmpty = !isLoading && curriculums.length === 0

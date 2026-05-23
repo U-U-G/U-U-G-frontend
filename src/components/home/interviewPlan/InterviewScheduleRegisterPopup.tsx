@@ -1,7 +1,6 @@
 'use client'
 
 import { useState, useEffect, useRef } from 'react'
-import { IconCalendar, IconChevronDown } from '@tabler/icons-react'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 
 import {
@@ -9,16 +8,12 @@ import {
   getScheduleJobPostings,
   updateInterviewSchedule,
 } from '@/apis/schedules'
-import type {
-  ScheduleJobPosting,
-  UpdateScheduleRequest,
-} from '@/apis/schedules/type'
+import type { ScheduleJobPosting } from '@/apis/schedules/type'
 import { getHttpStatus } from '@/apis/common/httpError'
 
-import CalendarDropdown from '@/components/common/date/CalendarDropdown'
-import InputBox from '@/components/common/input/InputBox'
-import HelperText from '@/components/common/text/HelperText'
 import FormPopupLayout from '@/components/common/popup/FormPopupLayout'
+import JobPostingSelectField from '@/components/home/interviewPlan/JobPostingSelectField'
+import InterviewDateField from '@/components/home/interviewPlan/InterviewDateField'
 
 import { useDatePicker } from '@/hooks/useDatePicker'
 import { useModal } from '@/hooks/useModal'
@@ -62,23 +57,11 @@ export default function InterviewScheduleRegisterPopup({
     string | null
   >(null)
   const [showCompanyListDropdown, setShowCompanyListDropdown] = useState(false)
+
   const [helperTextMessage, setHelperTextMessage] = useState('')
-  const {
-    calendarRef,
-    selectedDate,
-    dateInput,
-    showCalendar,
-    calendarYear,
-    calendarMonth,
-    tempDate,
-    setTempDate,
-    openCalendar,
-    handleDateInputChange,
-    handlePrevMonth,
-    handleNextMonth,
-    handleConfirm,
-    handleCancel,
-  } = useDatePicker()
+
+  const datePicker = useDatePicker()
+  const { selectedDate, handleDateInputChange } = datePicker
 
   const canSubmit =
     (isEditMode ? true : !!selectedJobPostingUuid) && selectedDate !== null
@@ -91,45 +74,45 @@ export default function InterviewScheduleRegisterPopup({
     enabled: !isEditMode && showCompanyListDropdown,
   })
 
-  const createScheduleMutation = useMutation({
-    mutationFn: createInterviewSchedule,
+  const scheduleMutation = useMutation({
+    mutationFn: async () => {
+      const interviewDate = formatFullDate(selectedDate!)
+
+      if (isEditMode && scheduleUuid) {
+        return updateInterviewSchedule(scheduleUuid, {
+          interviewDate,
+        })
+      }
+
+      if (!selectedJobPostingUuid) return
+
+      return createInterviewSchedule({
+        jobPostingUuid: selectedJobPostingUuid,
+        interviewDate,
+      })
+    },
+
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['schedules'] })
       onClose()
     },
+
     onError: handleScheduleError,
   })
 
-  const updateScheduleMutation = useMutation({
-    mutationFn: ({
-      uuid,
-      body,
-    }: {
-      uuid: string
-      body: UpdateScheduleRequest
-    }) => updateInterviewSchedule(uuid, body),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['schedules'] })
-      onClose()
-    },
-    onError: handleScheduleError,
-  })
+  function getScheduleErrorMessage(status?: number) {
+    switch (status) {
+      case 400:
+        return '면접 일정은 면접일 하루 전 날짜까지만 등록할 수 있어요.'
+      case 409:
+        return '해당 채용 공고에 대한 면접 일정이 이미 등록되어 있습니다.'
+      default:
+        return '면접 일정을 저장하지 못했어요.'
+    }
+  }
 
   function handleScheduleError(error: unknown) {
-    const status = getHttpStatus(error)
-
-    if (status === 400) {
-      setHelperTextMessage(
-        '면접 일정은 면접일 하루 전 날짜까지만 등록할 수 있어요.',
-      )
-      return
-    }
-
-    if (status === 409) {
-      setHelperTextMessage(
-        '해당 채용 공고에 대한 면접 일정이 이미 등록되어 있습니다.',
-      )
-    }
+    setHelperTextMessage(getScheduleErrorMessage(getHttpStatus(error)))
   }
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -137,22 +120,8 @@ export default function InterviewScheduleRegisterPopup({
 
     if (!selectedDate) return
 
-    const interviewDate = formatFullDate(selectedDate)
-
-    if (isEditMode && scheduleUuid) {
-      updateScheduleMutation.mutate({
-        uuid: scheduleUuid,
-        body: { interviewDate },
-      })
-      return
-    }
-
-    if (!selectedJobPostingUuid) return
-
-    createScheduleMutation.mutate({
-      jobPostingUuid: selectedJobPostingUuid,
-      interviewDate,
-    })
+    setHelperTextMessage('')
+    scheduleMutation.mutate()
   }
 
   const title = isEditMode ? '면접 일정 수정' : '새로운 면접 일정 등록'
@@ -195,122 +164,21 @@ export default function InterviewScheduleRegisterPopup({
       submitLabel={submitLabel}
       canSubmit={canSubmit}
     >
-      <div className="flex flex-col gap-4">
-        <label htmlFor="interview-company-role" className="p4 text-gray-2">
-          회사 및 직무
-        </label>
-        {isEditMode ? (
-          <InputBox
-            id="interview-company-role"
-            className="border-gray-5 text-gray-4"
-            value={selectedJobPostingLabel}
-            disabled
-            status="default"
-          />
-        ) : (
-          <div className="relative" ref={companyDropdownRef}>
-            <div
-              className={`rounded-lg border border-gray-4 bg-white ${
-                showCompanyListDropdown ? 'rounded-b-none border-b-0' : ''
-              }`}
-            >
-              <InputBox
-                id="interview-company-role"
-                className="cursor-pointer rounded-none border-0 hover:border-0 focus:border-0"
-                value={selectedJobPostingLabel}
-                readOnly
-                status="default"
-                focusPrimary={false}
-                placeholder="지원 회사와 직무를 선택해 주세요."
-                rightElement={
-                  <button
-                    type="button"
-                    onClick={() => setShowCompanyListDropdown((prev) => !prev)}
-                    className="cursor-pointer text-gray-4 hover:text-text-primary"
-                    aria-label="회사 및 직무 선택"
-                    aria-expanded={showCompanyListDropdown}
-                  >
-                    <IconChevronDown size={24} aria-hidden />
-                  </button>
-                }
-              />
-            </div>
-            {showCompanyListDropdown && (
-              <div className="absolute z-[60] w-full overflow-hidden rounded-b-lg border border-t-0 border-gray-4 bg-white ">
-                <div className="mx-4 border-t border-gray-5" />
-                <div className="max-h-48 overflow-y-auto">
-                  {isJobPostingsLoading ? (
-                    <p className="p4 px-4 py-3 text-gray-3">
-                      목록을 불러오는 중입니다. 잠시만 기다려주세요.
-                    </p>
-                  ) : jobPostings.length === 0 ? (
-                    <p className="p4 px-4 py-3 text-gray-3">
-                      등록된 채용공고가 없어요.
-                    </p>
-                  ) : (
-                    jobPostings.map((item) => (
-                      <button
-                        key={item.jobPostingUuid}
-                        type="button"
-                        onClick={() => handleSelectJobPosting(item)}
-                        className="p4 w-full cursor-pointer px-4 py-3 text-left text-text-primary hover:bg-secondary"
-                      >
-                        {formatJobPostingLabel(item)}
-                      </button>
-                    ))
-                  )}
-                </div>
-              </div>
-            )}
-          </div>
-        )}
-      </div>
+      <JobPostingSelectField
+        isEditMode={isEditMode}
+        value={selectedJobPostingLabel}
+        isOpen={showCompanyListDropdown}
+        jobPostings={jobPostings}
+        isLoading={isJobPostingsLoading}
+        dropdownRef={companyDropdownRef}
+        onToggle={() => setShowCompanyListDropdown((prev) => !prev)}
+        onSelect={handleSelectJobPosting}
+      />
 
-      <div className="flex flex-col gap-4">
-        <label htmlFor="interview-date" className="p4 text-gray-2">
-          면접 날짜
-        </label>
-        <div className="relative">
-          <InputBox
-            id="interview-date"
-            className="border-gray-5"
-            value={dateInput}
-            onChange={(e) => handleDateInputChange(e.target.value)}
-            status="default"
-            focusPrimary
-            placeholder="0000년 00월 00일"
-            rightElement={
-              <button
-                type="button"
-                onClick={openCalendar}
-                className="cursor-pointer text-gray-4 hover:text-primary"
-                aria-label="달력 열기"
-              >
-                <IconCalendar size={24} />
-              </button>
-            }
-          />
-          {helperTextMessage ? (
-            <HelperText status="error">{helperTextMessage}</HelperText>
-          ) : (
-            '\u00A0'
-          )}
-          {showCalendar && (
-            <CalendarDropdown
-              calendarRef={calendarRef}
-              year={calendarYear}
-              month={calendarMonth}
-              tempDate={tempDate}
-              onPrevMonth={handlePrevMonth}
-              onNextMonth={handleNextMonth}
-              onSelectDate={setTempDate}
-              onConfirm={handleConfirm}
-              onCancel={handleCancel}
-              className="absolute right-0 bottom-full mb-2 z-[60] bg-white rounded-xl shadow-[0_0_16px_0_rgba(99,99,99,0.16)] p-4 w-82"
-            />
-          )}
-        </div>
-      </div>
+      <InterviewDateField
+        datePicker={datePicker}
+        helperTextMessage={helperTextMessage}
+      />
     </FormPopupLayout>
   )
 }
