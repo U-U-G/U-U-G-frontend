@@ -2,16 +2,17 @@
 
 import { useState, useEffect, useRef } from 'react'
 import { IconPencilFilled } from '@tabler/icons-react'
-import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import InputBox from '@/components/common/input/InputBox'
 import HelperText from '@/components/common/text/HelperText'
+import ProfileImage from '@/components/common/ProfileImage'
 import ChangePasswordPopup from '@/components/setting/ChangePasswordPopup'
 import SignoutConfirmPopup from '@/components/setting/SignoutConfirmPopup'
-import defaultProfileIcon from '@/assets/icon/default-profile-icon.svg'
 import { useNicknameEdit } from '@/hooks/useNicknameEdit'
-import { getProfile, signout, updateProfile, uploadProfileImage } from '@/apis/user'
+import { deleteProfileImage, uploadProfileImage } from '@/apis/profile-image'
+import { getProfile, signout, updateProfile } from '@/apis/user'
+import type { UserProfile } from '@/apis/user/type'
 import { logout } from '@/apis/auth'
 import { getHttpStatus } from '@/apis/common/httpError'
 import { formatDateToLocale } from '@/utils/date'
@@ -65,16 +66,46 @@ export default function UserInfoSection() {
     setIsDuplicate: setNicknameDuplicate,
   } = useNicknameEdit(profile?.nickname ?? '')
 
-  const { mutate: handleUploadProfileImage, isPending: isUploadingProfileImage } =
-    useMutation({
-      mutationFn: uploadProfileImage,
-      onSuccess: async () => {
-        await queryClient.invalidateQueries({ queryKey: ['user', 'profile'] })
-      },
-      onError: (e) => {
-        console.log('프로필 이미지 업로드에 실패하였습니다', e) //TODO: 토스트로 변경
-      },
-    })
+  const {
+    mutate: handleUploadProfileImage,
+    isPending: isUploadingProfileImage,
+  } = useMutation({
+    mutationFn: uploadProfileImage,
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ['user', 'profile'] })
+    },
+    onError: (e) => {
+      console.log('프로필 이미지 업로드에 실패하였습니다', e) //TODO: 토스트로 변경
+    },
+  })
+
+  const {
+    mutate: handleDeleteProfileImage,
+    isPending: isDeletingProfileImage,
+  } = useMutation({
+    mutationFn: deleteProfileImage,
+    onMutate: async () => {
+      await queryClient.cancelQueries({ queryKey: ['user', 'profile'] })
+      const previous = queryClient.getQueryData<UserProfile>(['user', 'profile'])
+      queryClient.setQueryData<UserProfile>(['user', 'profile'], (prev) =>
+        prev ? { ...prev, profileImageUrl: '' } : prev,
+      )
+      return { previous }
+    },
+    onSuccess: async () => {
+      setIsProfileImageMenuOpen(false)
+      await queryClient.invalidateQueries({ queryKey: ['user', 'profile'] })
+    },
+    onError: (e, _variables, context) => {
+      if (context?.previous) {
+        queryClient.setQueryData(['user', 'profile'], context.previous)
+      }
+      console.log('프로필 이미지 삭제에 실패하였습니다', e) //TODO: 토스트로 변경
+    },
+  })
+
+  const isProfileImagePending =
+    isUploadingProfileImage || isDeletingProfileImage
 
   const { mutate: handleUpdateNickname } = useMutation({
     mutationFn: (nickname: string) =>
@@ -139,14 +170,12 @@ export default function UserInfoSection() {
             type="file"
             accept="image/*"
             className="hidden"
-            disabled={isUploadingProfileImage}
+            disabled={isProfileImagePending}
             onChange={handleProfileImageChange}
           />
-          <Image
-            src={
-              profile.profileImageUrl?.startsWith('http')
-                ? profile.profileImageUrl
-                : defaultProfileIcon
+          <ProfileImage
+            profileImageUrl={
+              isDeletingProfileImage ? null : profile.profileImageUrl
             }
             alt="프로필 사진"
             width={64}
@@ -172,7 +201,7 @@ export default function UserInfoSection() {
               <button
                 type="button"
                 role="menuitem"
-                disabled={isUploadingProfileImage}
+                disabled={isProfileImagePending}
                 className="p4 w-full cursor-pointer py-3 px-6 text-text-primary hover:text-primary disabled:cursor-not-allowed disabled:opacity-50"
                 onClick={handleUploadFromDevice}
               >
@@ -182,8 +211,9 @@ export default function UserInfoSection() {
               <button
                 type="button"
                 role="menuitem"
-                className="p4 w-full cursor-pointer py-3 px-6 text-text-primary hover:text-primary"
-                onClick={() => setIsProfileImageMenuOpen(false)}
+                disabled={isProfileImagePending}
+                className="p4 w-full cursor-pointer py-3 px-6 text-text-primary hover:text-primary disabled:cursor-not-allowed disabled:opacity-50"
+                onClick={() => handleDeleteProfileImage()}
               >
                 기본 프로필
               </button>
