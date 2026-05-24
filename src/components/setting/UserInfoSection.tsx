@@ -11,7 +11,7 @@ import ChangePasswordPopup from '@/components/setting/ChangePasswordPopup'
 import SignoutConfirmPopup from '@/components/setting/SignoutConfirmPopup'
 import defaultProfileIcon from '@/assets/icon/default-profile-icon.svg'
 import { useNicknameEdit } from '@/hooks/useNicknameEdit'
-import { getProfile, signout, updateProfile } from '@/apis/user'
+import { getProfile, signout, updateProfile, uploadProfileImage } from '@/apis/user'
 import { logout } from '@/apis/auth'
 import { getHttpStatus } from '@/apis/common/httpError'
 import { formatDateToLocale } from '@/utils/date'
@@ -23,6 +23,7 @@ export default function UserInfoSection() {
   const [isSignoutPopupOpen, setIsSignoutPopupOpen] = useState(false)
   const [isProfileImageMenuOpen, setIsProfileImageMenuOpen] = useState(false)
   const profileImageMenuRef = useRef<HTMLDivElement>(null)
+  const profileImageInputRef = useRef<HTMLInputElement>(null)
 
   const { data: profile, isLoading } = useQuery({
     queryKey: ['user', 'profile'],
@@ -64,6 +65,17 @@ export default function UserInfoSection() {
     setIsDuplicate: setNicknameDuplicate,
   } = useNicknameEdit(profile?.nickname ?? '')
 
+  const { mutate: handleUploadProfileImage, isPending: isUploadingProfileImage } =
+    useMutation({
+      mutationFn: uploadProfileImage,
+      onSuccess: async () => {
+        await queryClient.invalidateQueries({ queryKey: ['user', 'profile'] })
+      },
+      onError: (e) => {
+        console.log('프로필 이미지 업로드에 실패하였습니다', e) //TODO: 토스트로 변경
+      },
+    })
+
   const { mutate: handleUpdateNickname } = useMutation({
     mutationFn: (nickname: string) =>
       updateProfile({
@@ -94,6 +106,26 @@ export default function UserInfoSection() {
     return () => document.removeEventListener('mousedown', handleClickOutside)
   }, [isProfileImageMenuOpen])
 
+  const handleUploadFromDevice = () => {
+    setIsProfileImageMenuOpen(false)
+    profileImageInputRef.current?.click()
+  }
+
+  const handleProfileImageChange = (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    const file = event.target.files?.[0]
+    if (!file) return
+
+    handleUploadProfileImage(file, {
+      onSettled: () => {
+        if (profileImageInputRef.current) {
+          profileImageInputRef.current.value = ''
+        }
+      },
+    })
+  }
+
   if (isLoading || !profile) {
     return <div className="flex-1" />
   }
@@ -102,6 +134,14 @@ export default function UserInfoSection() {
     <div className="flex-1">
       <div className="flex items-center gap-4 mb-6">
         <div className="relative h-16 w-16 shrink-0" ref={profileImageMenuRef}>
+          <input
+            ref={profileImageInputRef}
+            type="file"
+            accept="image/*"
+            className="hidden"
+            disabled={isUploadingProfileImage}
+            onChange={handleProfileImageChange}
+          />
           <Image
             src={
               profile.profileImageUrl?.startsWith('http')
@@ -132,8 +172,9 @@ export default function UserInfoSection() {
               <button
                 type="button"
                 role="menuitem"
-                className="p4 w-full cursor-pointer py-3 px-6 text-text-primary hover:text-primary"
-                onClick={() => setIsProfileImageMenuOpen(false)}
+                disabled={isUploadingProfileImage}
+                className="p4 w-full cursor-pointer py-3 px-6 text-text-primary hover:text-primary disabled:cursor-not-allowed disabled:opacity-50"
+                onClick={handleUploadFromDevice}
               >
                 기기에서 업로드
               </button>
