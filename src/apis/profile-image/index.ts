@@ -56,8 +56,10 @@ const MIME_TO_EXTENSION: Record<string, string> = {
 }
 
 const getFileExtension = (file: File) => {
-  const fromName = file.name.split('.').pop()?.toLowerCase()
-  if (fromName) return fromName
+  const parts = file.name.split('.')
+  if (parts.length > 1) {
+    return parts.pop()?.toLowerCase() ?? 'jpg'
+  }
 
   return MIME_TO_EXTENSION[file.type] ?? 'jpg'
 }
