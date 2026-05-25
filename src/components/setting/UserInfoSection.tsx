@@ -1,16 +1,18 @@
 'use client'
 
-import { useState } from 'react'
-import Image from 'next/image'
+import { useState, useEffect, useRef } from 'react'
+import { IconPencilFilled } from '@tabler/icons-react'
 import { useRouter } from 'next/navigation'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import InputBox from '@/components/common/input/InputBox'
 import HelperText from '@/components/common/text/HelperText'
+import ProfileImage from '@/components/common/ProfileImage'
 import ChangePasswordPopup from '@/components/setting/ChangePasswordPopup'
 import SignoutConfirmPopup from '@/components/setting/SignoutConfirmPopup'
-import defaultProfileIcon from '@/assets/icon/default-profile-icon.svg'
 import { useNicknameEdit } from '@/hooks/useNicknameEdit'
+import { deleteProfileImage, uploadProfileImage } from '@/apis/profile-image'
 import { getProfile, signout, updateProfile } from '@/apis/user'
+import type { UserProfile } from '@/apis/user/type'
 import { logout } from '@/apis/auth'
 import { getHttpStatus } from '@/apis/common/httpError'
 import { formatDateToLocale } from '@/utils/date'
@@ -20,6 +22,9 @@ export default function UserInfoSection() {
   const queryClient = useQueryClient()
   const [isPasswordPopupOpen, setIsPasswordPopupOpen] = useState(false)
   const [isSignoutPopupOpen, setIsSignoutPopupOpen] = useState(false)
+  const [isProfileImageMenuOpen, setIsProfileImageMenuOpen] = useState(false)
+  const profileImageMenuRef = useRef<HTMLDivElement>(null)
+  const profileImageInputRef = useRef<HTMLInputElement>(null)
 
   const { data: profile, isLoading } = useQuery({
     queryKey: ['user', 'profile'],
@@ -61,6 +66,47 @@ export default function UserInfoSection() {
     setIsDuplicate: setNicknameDuplicate,
   } = useNicknameEdit(profile?.nickname ?? '')
 
+  const {
+    mutate: handleUploadProfileImage,
+    isPending: isUploadingProfileImage,
+  } = useMutation({
+    mutationFn: uploadProfileImage,
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ['user', 'profile'] })
+    },
+    onError: (e) => {
+      console.log('프로필 이미지 업로드에 실패하였습니다', e) //TODO: 토스트로 변경
+    },
+  })
+
+  const {
+    mutate: handleDeleteProfileImage,
+    isPending: isDeletingProfileImage,
+  } = useMutation({
+    mutationFn: deleteProfileImage,
+    onMutate: async () => {
+      await queryClient.cancelQueries({ queryKey: ['user', 'profile'] })
+      const previous = queryClient.getQueryData<UserProfile>(['user', 'profile'])
+      queryClient.setQueryData<UserProfile>(['user', 'profile'], (prev) =>
+        prev ? { ...prev, profileImageUrl: '' } : prev,
+      )
+      return { previous }
+    },
+    onSuccess: async () => {
+      setIsProfileImageMenuOpen(false)
+      await queryClient.invalidateQueries({ queryKey: ['user', 'profile'] })
+    },
+    onError: (e, _variables, context) => {
+      if (context?.previous) {
+        queryClient.setQueryData(['user', 'profile'], context.previous)
+      }
+      console.log('프로필 이미지 삭제에 실패하였습니다', e) //TODO: 토스트로 변경
+    },
+  })
+
+  const isProfileImagePending =
+    isUploadingProfileImage || isDeletingProfileImage
+
   const { mutate: handleUpdateNickname } = useMutation({
     mutationFn: (nickname: string) =>
       updateProfile({
@@ -79,6 +125,38 @@ export default function UserInfoSection() {
     },
   })
 
+  useEffect(() => {
+    if (!isProfileImageMenuOpen) return
+
+    function handleClickOutside(e: MouseEvent) {
+      if (profileImageMenuRef.current?.contains(e.target as Node)) return
+      setIsProfileImageMenuOpen(false)
+    }
+
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => document.removeEventListener('mousedown', handleClickOutside)
+  }, [isProfileImageMenuOpen])
+
+  const handleUploadFromDevice = () => {
+    setIsProfileImageMenuOpen(false)
+    profileImageInputRef.current?.click()
+  }
+
+  const handleProfileImageChange = (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    const file = event.target.files?.[0]
+    if (!file) return
+
+    handleUploadProfileImage(file, {
+      onSettled: () => {
+        if (profileImageInputRef.current) {
+          profileImageInputRef.current.value = ''
+        }
+      },
+    })
+  }
+
   if (isLoading || !profile) {
     return <div className="flex-1" />
   }
@@ -86,17 +164,62 @@ export default function UserInfoSection() {
   return (
     <div className="flex-1">
       <div className="flex items-center gap-4 mb-6">
-        <Image
-          src={
-            profile.profileImageUrl?.startsWith('http')
-              ? profile.profileImageUrl
-              : defaultProfileIcon
-          }
-          alt="프로필 사진"
-          width={64}
-          height={64}
-          className="h-16 w-16 rounded-full object-cover shrink-0"
-        />
+        <div className="relative h-16 w-16 shrink-0" ref={profileImageMenuRef}>
+          <input
+            ref={profileImageInputRef}
+            type="file"
+            accept="image/*"
+            className="hidden"
+            disabled={isProfileImagePending}
+            onChange={handleProfileImageChange}
+          />
+          <ProfileImage
+            profileImageUrl={
+              isDeletingProfileImage ? null : profile.profileImageUrl
+            }
+            alt="프로필 사진"
+            width={64}
+            height={64}
+            className="h-16 w-16 rounded-full object-cover"
+          />
+          <button
+            type="button"
+            className="absolute -right-0.5 -bottom-0.5 flex h-6 w-6 cursor-pointer items-center justify-center rounded-full bg-gray-4 text-white"
+            onClick={() => setIsProfileImageMenuOpen((prev) => !prev)}
+            aria-label="프로필 사진 변경"
+            aria-expanded={isProfileImageMenuOpen}
+            aria-haspopup="menu"
+          >
+            <IconPencilFilled size={15} aria-hidden />
+          </button>
+
+          {isProfileImageMenuOpen && (
+            <div
+              role="menu"
+              className="absolute left-20 bottom-0 z-50 min-w-max rounded-lg bg-white shadow-[0_0_16px_0_rgba(99,99,99,0.16)]"
+            >
+              <button
+                type="button"
+                role="menuitem"
+                disabled={isProfileImagePending}
+                className="p4 w-full cursor-pointer py-3 px-6 text-text-primary hover:text-primary disabled:cursor-not-allowed disabled:opacity-50"
+                onClick={handleUploadFromDevice}
+              >
+                기기에서 업로드
+              </button>
+              <div className="mx-3 h-px bg-gray-5" aria-hidden />
+              <button
+                type="button"
+                role="menuitem"
+                disabled={isProfileImagePending}
+                className="p4 w-full cursor-pointer py-3 px-6 text-text-primary hover:text-primary disabled:cursor-not-allowed disabled:opacity-50"
+                onClick={() => handleDeleteProfileImage()}
+              >
+                기본 프로필
+              </button>
+            </div>
+          )}
+        </div>
         <div className="flex flex-col justify-center gap-1">
           <span className="h3 text-text-primary">{profile.nickname}</span>
           <span className="p4 text-gray-4">

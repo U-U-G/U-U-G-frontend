@@ -10,7 +10,7 @@ import {
   IconSettingsFilled,
   IconUserFilled,
 } from '@tabler/icons-react'
-import defaultProfileIcon from '@/assets/icon/default-profile-icon.svg'
+import ProfileImage from '@/components/common/ProfileImage'
 import {
   getAccessToken,
   hasSessionMarker,
@@ -113,8 +113,8 @@ export default function Header({ className = '' }: HeaderProps) {
               <div className="w-30 h-7.5 rounded-lg bg-gray-100 animate-pulse mr-3.25" />
             ) : (
               <>
-                <Image
-                  src={profile?.profileImageUrl || defaultProfileIcon}
+                <ProfileImage
+                  profileImageUrl={profile?.profileImageUrl}
                   alt="프로필 이미지"
                   width={30}
                   height={30}
