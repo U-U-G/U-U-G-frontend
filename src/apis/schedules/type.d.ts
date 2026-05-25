@@ -25,6 +25,10 @@ export interface UpdateScheduleRequest {
   interviewDate: string
 }
 
+export type GetScheduleListParams = {
+  from?: string
+}
+
 export type GetScheduleListResponse = Schedule[]
 
 export interface ScheduleJobPosting {

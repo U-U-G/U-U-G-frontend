@@ -81,7 +81,7 @@ export default function ForgotPasswordPage() {
         </div>
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-45">
-          <div className="flex flex-col gap-2">
+          <div className="flex flex-col">
             <InputBox
               type="email"
               value={email}

@@ -2,10 +2,12 @@
 
 import { IconPlus } from '@tabler/icons-react'
 import { useQuery } from '@tanstack/react-query'
-import { formatMonthDay, getDDay } from '@/utils/date'
+import { formatFullDate, formatMonthDay, getDDay } from '@/utils/date'
 import { getInterviewScheduleList } from '@/apis/schedules'
 import InterviewPlanDotsTrigger from '@/components/home/interviewPlan/InterviewPlanDotsTrigger'
 import { EMPTY_INTERVIEW_PLAN_ROWS } from '@/constants/interviewPlanEmptyRows'
+
+const scheduleListFrom = formatFullDate(new Date())
 
 type InterviewPlanScheduleColumnProps = {
   selectedScheduleUuid: string | null
@@ -21,8 +23,8 @@ export default function InterviewPlanScheduleColumn({
   onSelectSchedule,
 }: InterviewPlanScheduleColumnProps) {
   const { data: schedules, isLoading } = useQuery({
-    queryKey: ['schedules'],
-    queryFn: getInterviewScheduleList,
+    queryKey: ['schedules', scheduleListFrom],
+    queryFn: () => getInterviewScheduleList({ from: scheduleListFrom }),
   })
 
   const scheduleList = schedules ?? []

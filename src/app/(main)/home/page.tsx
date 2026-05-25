@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import HomeGreetingClient from '@/components/home/hero/HomeGreetingClient'
-import HeroGoalSection from '@/components/home/hero/HeroGoalSection'
+import HeroGoalClient from '@/components/home/hero/HeroGoalClient'
 import InterviewPlanSection from '@/components/home/interviewPlan/InterviewPlanSection'
 import TodayScheduleSection from '@/components/home/todaySchedule/TodayScheduleSection'
 import { homeMockData } from '@/mocks/homeMockData'
@@ -19,7 +19,7 @@ export default function Home() {
 
       <section className="flex flex-1 gap-[clamp(10px,14px,18px)] min-h-0">
         <div className="flex-2 min-h-0 flex">
-          <HeroGoalSection data={data.heroGoal} />
+          <HeroGoalClient />
         </div>
         <div className="flex-1 min-h-0 flex">
           <TodayScheduleSection />

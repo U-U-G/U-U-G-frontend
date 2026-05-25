@@ -159,7 +159,7 @@ export default function EmailSection({ onEmailVerified }: EmailSectionProps) {
       <label className="p4 mb-1.75" htmlFor="email">
         이메일
       </label>
-      <div className="flex flex-col gap-2">
+      <div className="flex flex-col">
         <div className="flex gap-2.75">
           <InputBox
             id="email"
@@ -190,7 +190,7 @@ export default function EmailSection({ onEmailVerified }: EmailSectionProps) {
             : emailHelper.text}
         </HelperText>
       </div>
-      <div className="flex flex-col gap-2">
+      <div className="flex flex-col">
         <div className="flex gap-2.75">
           <InputBox
             type="text"

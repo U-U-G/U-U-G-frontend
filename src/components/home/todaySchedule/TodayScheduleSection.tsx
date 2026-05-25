@@ -4,6 +4,7 @@ import { IconChevronRight, IconChevronLeft } from '@tabler/icons-react'
 import { useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { getCurriculumsByDate } from '@/apis/curriculum'
+import { getInterviewScheduleList } from '@/apis/schedules'
 import { formatFullDate } from '@/utils/date'
 import { getWeekDates } from '@/utils/getWeekDates'
 import { ellipsizeText } from '@/utils/ellipsizeText'
@@ -38,14 +39,25 @@ export default function TodayScheduleSection() {
     setSelectedDate(hasToday ? today : nextWeekDates[0].fullDate)
   }
 
-  const { data: curriculumData, isLoading } = useQuery({
+  const { data: curriculumData, isLoading: isCurriculumLoading } = useQuery({
     queryKey: ['curriculumsByDate', selectedDate],
     queryFn: () => getCurriculumsByDate(selectedDate),
     enabled: Boolean(selectedDate),
   })
 
+  const { data: schedules = [], isLoading: isSchedulesLoading } = useQuery({
+    queryKey: ['schedules'],
+    queryFn: () => getInterviewScheduleList(),
+    retry: false,
+  })
+
   const curriculumList = curriculumData ?? []
-  const isEmpty = !isLoading && curriculumList.length === 0
+  const isEmpty = !isCurriculumLoading && curriculumList.length === 0
+
+  const hasRegisteredSchedules = !isSchedulesLoading && schedules.length > 0
+  const emptyMessage = hasRegisteredSchedules
+    ? '등록된 면접 일정이 없습니다'
+    : '일정에 맞게 오늘의 스케줄을 생성해요'
 
   return (
     <div className="h-full w-full min-h-0 overflow-hidden rounded-2xl bg-secondary">
@@ -89,7 +101,7 @@ export default function TodayScheduleSection() {
           {isEmpty ? (
             <div className="space-y-3 overflow-hidden">
               <div className="p3 w-full rounded-lg border border-primary bg-white px-5 py-4 text-left text-gray-3 ">
-                일정에 맞게 오늘의 스케줄을 생성해요
+                {emptyMessage}
               </div>
               <div className="h-14 rounded-lg bg-white" />
               <div className="h-14 rounded-lg bg-white" />

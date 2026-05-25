@@ -238,8 +238,8 @@ export default function UserInfoSection() {
           />
         </div>
         <div />
-        <div className="flex flex-col gap-2">
-          <label className="p4 text-gray-2">닉네임</label>
+        <div className="flex flex-col">
+          <label className="p4 mb-2 text-gray-2">닉네임</label>
           <div className="flex flex-row gap-3">
             <InputBox
               className={`border-gray-5 ${isEditingNickname ? 'text-text-primary' : 'text-gray-4'}`}

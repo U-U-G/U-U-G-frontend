@@ -61,7 +61,7 @@ export default function NicknameSection({
   }
 
   return (
-    <div className="flex flex-col gap-2">
+    <div className="flex flex-col">
       <label className="p4 mb-1.75" htmlFor="nickname">
         닉네임
       </label>

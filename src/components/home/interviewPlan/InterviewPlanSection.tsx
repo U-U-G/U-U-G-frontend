@@ -14,6 +14,9 @@ import InterviewPlanScheduleColumn from '@/components/home/interviewPlan/Intervi
 import InterviewScheduleRegisterPopup, {
   type InterviewSchedulePopupMode,
 } from '@/components/home/interviewPlan/InterviewScheduleRegisterPopup'
+import { formatFullDate } from '@/utils/date'
+
+const scheduleListFrom = formatFullDate(new Date())
 
 export default function InterviewPlanSection() {
   const [selectedScheduleUuid, setSelectedScheduleUuid] = useState<
@@ -42,8 +45,8 @@ export default function InterviewPlanSection() {
     })
 
   const { data: schedules, isSuccess: isSchedulesSuccess } = useQuery({
-    queryKey: ['schedules'],
-    queryFn: getInterviewScheduleList,
+    queryKey: ['schedules', scheduleListFrom],
+    queryFn: () => getInterviewScheduleList({ from: scheduleListFrom }),
   })
 
   const deleteInterviewScheduleMutation = useMutation({

@@ -4,6 +4,7 @@ import type {
   ScheduleDetail,
   CreateScheduleRequest,
   UpdateScheduleRequest,
+  GetScheduleListParams,
   GetScheduleListResponse,
   GetScheduleJobPostingsResponse,
 } from '@/apis/schedules/type'
@@ -16,14 +17,17 @@ export const createInterviewSchedule = async (body: CreateScheduleRequest) => {
   return data.data
 }
 
-export const getInterviewScheduleList =
-  async (): Promise<GetScheduleListResponse> => {
-    const { data } =
-      await privateClient.get<ApiResponse<GetScheduleListResponse>>(
-        '/schedules',
-      )
-    return data.data
-  }
+export const getInterviewScheduleList = async (
+  params?: GetScheduleListParams,
+): Promise<GetScheduleListResponse> => {
+  const { data } = await privateClient.get<ApiResponse<GetScheduleListResponse>>(
+    '/schedules',
+    {
+      params: params?.from ? { from: params.from } : undefined,
+    },
+  )
+  return data.data
+}
 
 export const getInterviewSchedule = async (scheduleUuid: string) => {
   const { data } = await privateClient.get<ApiResponse<ScheduleDetail>>(
