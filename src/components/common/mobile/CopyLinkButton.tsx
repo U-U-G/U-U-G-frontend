@@ -6,7 +6,7 @@ export default function CopyLinkButton() {
   return (
     <Button
       onClick={() => navigator.clipboard.writeText(window.location.href)}
-      className="rounded-xl mt-12.5 w-9/10 text-xl font-bold"
+      className="rounded-xl mt-12.5 w-86 text-xl font-bold"
     >
       링크 복사
     </Button>
