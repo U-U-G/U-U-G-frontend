@@ -5,24 +5,20 @@ import { useRouter } from 'next/navigation'
 import UUGCharacterImage from '@/assets/image/uug-character-img.png'
 import NoteImage from '@/assets/image/note-img.png'
 
-type HeroGoalData = {
-  title: string
-  description: string
-  dDayLabel?: string
-  ctaLabel: string
-} | null
+type HeroGoalSectionProps = {
+  isEmpty: boolean
+}
 
-export default function HeroGoalSection({ data }: { data: HeroGoalData }) {
+export default function HeroGoalSection({ isEmpty }: HeroGoalSectionProps) {
   const router = useRouter()
-  const isEmpty = !data
 
   return (
     <div className="relative h-full w-full overflow-hidden rounded-2xl bg-secondary p-6 min-h-0">
       <div>
         {isEmpty ? (
           <>
-            <h2 className="mb-3 h2 text-text-primary">
-              아직 목표 기업을 설정하지 않았어요. 첫 면접 준비를 시작해 볼까요?
+            <h2 className="mb-1 h2 text-text-primary">
+              첫 면접 준비를 시작해볼까요?
             </h2>
             <p className="p3 text-gray-3">
               목표하는 기업의 공고 링크를 준비해주세요
@@ -30,16 +26,12 @@ export default function HeroGoalSection({ data }: { data: HeroGoalData }) {
           </>
         ) : (
           <>
-            <div className="mb-3 flex items-center gap-3">
-              {data.dDayLabel && (
-                <span className="border border-primary p2 rounded-full px-3 bg-white text-primary">
-                  {data.dDayLabel}
-                </span>
-              )}
-              <h2 className="h2 text-text-primary">{data.title}</h2>
-            </div>
-
-            <p className="p3 text-gray-3">{data.description}</p>
+            <h2 className="mb-1 h2 text-text-primary">
+              꾸준한 모의면접으로 합격의 자신감을 채워보세요
+            </h2>
+            <p className="p3 text-gray-3">
+              핵심 직무질문 5개 포함 15분 실전 모의면접에 바로 도전하세요
+            </p>
           </>
         )}
       </div>
@@ -49,7 +41,7 @@ export default function HeroGoalSection({ data }: { data: HeroGoalData }) {
         onClick={() => router.push('/interview')}
         className="absolute left-10 bottom-6 z-10 h4 h-[clamp(40px,5.5vh,56px)] px-[clamp(20px,3vw,48px)] rounded-full bg-primary text-white whitespace-nowrap"
       >
-        {isEmpty ? '지금 시작하기' : data.ctaLabel}
+        지금 시작하기
       </button>
 
       <div className="absolute right-8 bottom-8 flex items-end pointer-events-none">
