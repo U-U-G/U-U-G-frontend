@@ -103,7 +103,7 @@ export default function JobPostingFormSection() {
                 placeholder="원티드, 잡코리아 사이트의 채용공고만 가능합니다."
                 focusPrimary
               />
-              <div className="absolute left-0 top-full pt-1">
+              <div className="absolute left-0 top-full">
                 <HelperText
                   status={urlError ? 'error' : urlValid ? 'success' : 'empty'}
                 >
