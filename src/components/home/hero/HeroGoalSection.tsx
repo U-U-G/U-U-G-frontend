@@ -44,13 +44,17 @@ export default function HeroGoalSection({ isEmpty }: HeroGoalSectionProps) {
         지금 시작하기
       </button>
 
-      <div className="absolute right-8 bottom-8 flex items-end pointer-events-none">
-        <Image src={NoteImage} alt="" className="w-[clamp(56px,8vw,120px)]" />
+      <div className="absolute right-10 bottom-12 flex items-end pointer-events-none">
+        <Image
+          src={NoteImage}
+          alt=""
+          className="translate-x-10 w-[clamp(56px,10vw,120px)]"
+        />
 
         <Image
           src={UUGCharacterImage}
           alt="면접 준비 캐릭터"
-          className="translate-y-8 translate-x-2 w-[clamp(240px,25vw,290px)]"
+          className="translate-y-12 w-[clamp(240px,25vw,310px)]"
           priority
         />
       </div>
