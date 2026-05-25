@@ -54,7 +54,7 @@ export default function HeroGoalSection({ isEmpty }: HeroGoalSectionProps) {
         <Image
           src={UUGCharacterImage}
           alt="면접 준비 캐릭터"
-          className="translate-y-12 w-[clamp(240px,25vw,310px)]"
+          className="translate-y-12 w-[clamp(240px,25vw,290px)]"
           priority
         />
       </div>
