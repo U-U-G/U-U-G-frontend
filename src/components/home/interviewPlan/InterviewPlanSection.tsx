@@ -7,10 +7,8 @@ import {
   getInterviewSchedule,
   getInterviewScheduleList,
 } from '@/apis/schedules'
-import InterviewPlanActionsMenuPortal, {
-  computeMenuPosition,
-  type InterviewPlanMenuPosition,
-} from '@/components/home/interviewPlan/InterviewPlanActionsMenuPortal'
+import KebabMenu from '@/components/common/kebabMenu/KebabMenu'
+import { useKebabMenu } from '@/hooks/useKebabMenu'
 import InterviewPlanCurriculumColumn from '@/components/home/interviewPlan/InterviewPlanCurriculumColumn'
 import InterviewPlanScheduleColumn from '@/components/home/interviewPlan/InterviewPlanScheduleColumn'
 import InterviewScheduleRegisterPopup, {
@@ -24,13 +22,17 @@ export default function InterviewPlanSection() {
   const [isSchedulePopupOpen, setIsSchedulePopupOpen] = useState(false)
   const [schedulePopupMode, setSchedulePopupMode] =
     useState<InterviewSchedulePopupMode>('create')
-  const [actionsMenu, setActionsMenu] =
-    useState<InterviewPlanMenuPosition | null>(null)
   const [editingScheduleUuid, setEditingScheduleUuid] = useState<string | null>(
     null,
   )
 
   const queryClient = useQueryClient()
+
+  const {
+    menu: actionsMenu,
+    toggleMenu: toggleActionsMenu,
+    closeMenu: closeActionsMenu,
+  } = useKebabMenu()
 
   const { data: selectedScheduleDetail, isLoading: isScheduleDetailLoading } =
     useQuery({
@@ -52,22 +54,9 @@ export default function InterviewPlanSection() {
       if (selectedScheduleUuid === deletedUuid) {
         setSelectedScheduleUuid(null)
       }
-      setActionsMenu(null)
-    },
-
-    onError: (error) => {
-      console.error('삭제 실패', error)
+      closeActionsMenu()
     },
   })
-
-  const toggleActionsMenu = useCallback((key: string, el: HTMLElement) => {
-    setActionsMenu((prev) => {
-      if (prev?.key === key) return null
-      const row = el.closest('[data-interview-plan-row]')
-      if (!(row instanceof HTMLElement)) return null
-      return { key, ...computeMenuPosition(el, row) }
-    })
-  }, [])
 
   const handleEdit = useCallback((scheduleUuid: string) => {
     setEditingScheduleUuid(scheduleUuid)
@@ -81,10 +70,6 @@ export default function InterviewPlanSection() {
     },
     [deleteInterviewScheduleMutation],
   )
-
-  const closeActionsMenu = useCallback(() => {
-    setActionsMenu(null)
-  }, [])
 
   const openCreateSchedulePopup = useCallback(() => {
     setEditingScheduleUuid(null)
@@ -126,17 +111,26 @@ export default function InterviewPlanSection() {
         />
       </div>
 
-      <InterviewPlanActionsMenuPortal
+      <KebabMenu
         menu={actionsMenu}
         onClose={closeActionsMenu}
-        onEdit={handleEdit}
-        onDelete={handleDelete}
+        items={[
+          { label: '수정', onClick: handleEdit },
+          { label: '삭제', onClick: handleDelete },
+        ]}
       />
 
       {isSchedulePopupOpen && (
         <InterviewScheduleRegisterPopup
           mode={schedulePopupMode}
           scheduleUuid={editingScheduleUuid ?? undefined}
+          initialSchedule={
+            schedulePopupMode === 'edit'
+              ? schedules?.find(
+                  (s) => s.scheduleUuid === editingScheduleUuid,
+                )
+              : undefined
+          }
           onClose={closeSchedulePopup}
         />
       )}

@@ -20,11 +20,7 @@ export default function InterviewPlanScheduleColumn({
   onOpenAddSchedule,
   onSelectSchedule,
 }: InterviewPlanScheduleColumnProps) {
-  const {
-    data: schedules,
-    isLoading,
-    error,
-  } = useQuery({
+  const { data: schedules, isLoading } = useQuery({
     queryKey: ['schedules'],
     queryFn: getInterviewScheduleList,
   })
@@ -38,7 +34,7 @@ export default function InterviewPlanScheduleColumn({
         <h3 className="p2 text-text-primary">면접 일정</h3>
         <button
           type="button"
-          className="text-primary"
+          className="cursor-pointer text-primary"
           aria-label="면접 일정 추가"
           onClick={onOpenAddSchedule}
         >
@@ -49,11 +45,7 @@ export default function InterviewPlanScheduleColumn({
       {isScheduleEmpty ? (
         <div className="space-y-3.5">
           {EMPTY_INTERVIEW_PLAN_ROWS.map((row) => (
-            <div
-              key={row.menuKey}
-              data-interview-plan-row
-              className={row.className}
-            >
+            <div key={row.menuKey} data-kebab-row className={row.className}>
               {row.leading === 'prompt' ? (
                 <div className="flex items-center gap-3 min-w-0">
                   <span className="h4 text-primary shrink-0">D-day</span>
@@ -74,7 +66,7 @@ export default function InterviewPlanScheduleColumn({
           {scheduleList.map((schedule) => (
             <div
               key={schedule.scheduleUuid}
-              data-interview-plan-row
+              data-kebab-row
               onClick={() => onSelectSchedule(schedule.scheduleUuid)}
               className={[
                 'flex h-14 items-center justify-between rounded-lg border bg-white px-5 py-3 gap-3 cursor-pointer',
@@ -99,7 +91,7 @@ export default function InterviewPlanScheduleColumn({
                 </span>
 
                 <InterviewPlanDotsTrigger
-                  menuKey={`${schedule.scheduleUuid}`}
+                  menuKey={schedule.scheduleUuid}
                   onToggleMenu={onToggleMenu}
                 />
               </div>
