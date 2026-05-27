@@ -3,6 +3,9 @@ import { useRef, useEffect } from 'react'
 export function useModal(isOpen: boolean, onClose?: () => void) {
   const ref = useRef<HTMLDivElement>(null)
 
+  const onCloseRef = useRef(onClose)
+  onCloseRef.current = onClose
+
   useEffect(() => {
     document.body.style.overflow = isOpen ? 'hidden' : ''
     return () => {
@@ -26,7 +29,7 @@ export function useModal(isOpen: boolean, onClose?: () => void) {
 
     function handleKeyDown(e: KeyboardEvent) {
       if (e.key === 'Escape') {
-        onClose?.()
+        onCloseRef.current?.()
         return
       }
       if (e.key !== 'Tab') return
@@ -45,7 +48,7 @@ export function useModal(isOpen: boolean, onClose?: () => void) {
 
     document.addEventListener('keydown', handleKeyDown)
     return () => document.removeEventListener('keydown', handleKeyDown)
-  }, [isOpen, onClose])
+  }, [isOpen])
 
   return { ref }
 }
