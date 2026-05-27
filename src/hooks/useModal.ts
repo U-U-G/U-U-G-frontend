@@ -1,6 +1,6 @@
 import { useRef, useEffect } from 'react'
 
-export function useModal(isOpen: boolean) {
+export function useModal(isOpen: boolean, onClose?: () => void) {
   const ref = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -24,7 +24,11 @@ export function useModal(isOpen: boolean) {
 
     first?.focus()
 
-    function handleTab(e: KeyboardEvent) {
+    function handleKeyDown(e: KeyboardEvent) {
+      if (e.key === 'Escape') {
+        onClose?.()
+        return
+      }
       if (e.key !== 'Tab') return
       if (e.shiftKey) {
         if (document.activeElement === first) {
@@ -39,9 +43,9 @@ export function useModal(isOpen: boolean) {
       }
     }
 
-    document.addEventListener('keydown', handleTab)
-    return () => document.removeEventListener('keydown', handleTab)
-  }, [isOpen])
+    document.addEventListener('keydown', handleKeyDown)
+    return () => document.removeEventListener('keydown', handleKeyDown)
+  }, [isOpen, onClose])
 
   return { ref }
 }

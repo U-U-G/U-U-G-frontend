@@ -41,7 +41,7 @@ export default function InterviewScheduleRegisterPopup({
 }: InterviewScheduleRegisterPopupProps) {
   const isEditMode = mode === 'edit'
 
-  const { ref: popupRef } = useModal(true)
+  const { ref: popupRef } = useModal(true, onClose)
   const companyDropdownRef = useRef<HTMLDivElement>(null)
   const [selectedJobPostingLabel, setSelectedJobPostingLabel] = useState('')
   const [selectedJobPostingUuid, setSelectedJobPostingUuid] = useState<
@@ -126,11 +126,7 @@ export default function InterviewScheduleRegisterPopup({
     handleDateInputChange(
       formatDateKo(parseKoreanDate(initialSchedule.interviewDate)),
     )
-  }, [
-    isEditMode,
-    initialSchedule?.companyName,
-    initialSchedule?.interviewDate,
-  ])
+  }, [isEditMode, initialSchedule?.companyName, initialSchedule?.interviewDate])
 
   useEffect(() => {
     if (!showCompanyListDropdown) return

@@ -76,7 +76,7 @@ export default function JobPostingFormSection() {
     handleStartInterview,
   } = useJobPostingAnalysisFlow()
 
-  const { ref: popupRef } = useModal(popupState !== null)
+  const { ref: popupRef } = useModal(popupState !== null, handleClose)
 
   const urlError = url.trim().length > 0 && !isValidUrl(url)
   const urlValid = url.trim().length > 0 && isValidUrl(url)

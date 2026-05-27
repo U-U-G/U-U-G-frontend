@@ -1,4 +1,7 @@
+'use client'
+
 import Button from '@/components/common/button/Button'
+import { useModal } from '@/hooks/useModal'
 
 interface SignoutConfirmPopupProps {
   onCancel: () => void
@@ -9,9 +12,14 @@ export default function SignoutConfirmPopup({
   onCancel,
   onConfirm,
 }: SignoutConfirmPopupProps) {
+  const { ref } = useModal(true, onCancel)
+
   return (
     <div className="fixed inset-0 bg-black/13 flex items-center justify-center z-50">
-      <div className="bg-white rounded-2xl shadow-[0_0_16px_0_rgba(99,99,99,0.16)] px-10 pt-10 pb-8 flex flex-col gap-8 min-w-100">
+      <div
+        ref={ref}
+        className="bg-white rounded-2xl shadow-[0_0_16px_0_rgba(99,99,99,0.16)] px-10 pt-10 pb-8 flex flex-col gap-8 min-w-100"
+      >
         <div className="flex flex-col items-center gap-4">
           <h2 className="h3">회원 탈퇴</h2>
           <p className="p4 text-center">

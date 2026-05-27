@@ -1,7 +1,7 @@
 'use client'
 
-import { useEffect } from 'react'
 import PopupShell from '@/components/common/popup/PopupShell'
+import { useModal } from '@/hooks/useModal'
 
 interface TermsViewModalProps {
   title: string
@@ -14,15 +14,11 @@ export default function TermsViewModal({
   content,
   onClose,
 }: TermsViewModalProps) {
-  useEffect(() => {
-    document.body.style.overflow = 'hidden'
-    return () => {
-      document.body.style.overflow = ''
-    }
-  }, [])
+  const { ref } = useModal(true, onClose)
 
   return (
     <PopupShell
+      popupRef={ref}
       onClose={onClose}
       className="w-150 max-h-[80vh] flex flex-col py-10 px-8"
     >
