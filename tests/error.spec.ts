@@ -1,13 +1,11 @@
 // tests/error.spec.ts
 
-import { test, expect } from '@playwright/test'
+import { test, expect, type Page } from '@playwright/test'
 
 const TRIGGER_URL = '/test-trigger-error'
 
-const getErrorAlert = (page: Parameters<typeof expect>[0]) =>
-  (page as import('@playwright/test').Page)
-    .getByRole('alert')
-    .filter({ hasText: '오류가 발생했습니다' })
+const getErrorAlert = (page: Page) =>
+  page.getByRole('alert').filter({ hasText: '오류가 발생했습니다' })
 
 test.describe('에러 페이지', () => {
   test('에러 발생 시 에러 페이지가 렌더링된다', async ({ page }) => {

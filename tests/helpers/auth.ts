@@ -12,9 +12,7 @@ export const MOCK_PROFILE = {
 }
 
 /**
- * 로그인 상태 세팅
- * - localStorage에 가짜 accessToken 주입
- * - private API 기본 모킹 (401 리다이렉트 방지)
+ * private API 기본 모킹 (401 리다이렉트 방지)
  *   · GET /users/me
  *   · GET /ranking
  *   · GET /job-postings
@@ -25,11 +23,7 @@ export const MOCK_PROFILE = {
  * 테스트별로 특정 엔드포인트를 덮어쓰려면 page.route()를 추가로 등록하세요.
  * Playwright는 나중에 등록된 route가 먼저 처리됩니다(LIFO).
  */
-export async function setupAuth(page: Page) {
-  await page.addInitScript(() => {
-    localStorage.setItem('uug:accessToken', 'fake-access-token')
-  })
-
+export async function mockPrivateApis(page: Page) {
   await page.route('**/api/users/me', (route) =>
     route.fulfill({
       status: 200,
@@ -80,4 +74,21 @@ export async function setupAuth(page: Page) {
       json: { success: true, data: [], message: 'OK' },
     }),
   )
+}
+
+/**
+ * 로그인 상태 세팅
+ * - localStorage에 가짜 accessToken 주입
+ * - private API 기본 모킹 (mockPrivateApis 호출)
+ */
+export async function setupAuth(page: Page) {
+  await page.addInitScript(() => {
+    try {
+      localStorage.setItem('uug:accessToken', 'fake-access-token')
+    } catch {
+      // about:blank 등 localStorage를 사용할 수 없는 컨텍스트에서의 SecurityError 무시
+    }
+  })
+
+  await mockPrivateApis(page)
 }

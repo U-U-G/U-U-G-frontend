@@ -53,13 +53,12 @@ test.describe('비밀번호 재설정 페이지 (/reset-password)', () => {
 
     await page.goto('/reset-password?token=valid-test-token')
 
-    // pressSequentially로 onChange 트리거 → newPasswordVerified=true 되어야 버튼 활성화
     await page
       .getByPlaceholder('새 비밀번호를 입력해주세요.')
-      .pressSequentially('NewPassword1!')
+      .fill('NewPassword1!')
     await page
       .getByPlaceholder('비밀번호를 입력해주세요.', { exact: true })
-      .pressSequentially('NewPassword1!')
+      .fill('NewPassword1!')
     await page.getByRole('button', { name: '변경 완료' }).click()
 
     await expect(page).toHaveURL('/login')

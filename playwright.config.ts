@@ -6,6 +6,9 @@ export default defineConfig({
     url: 'http://localhost:3000',
     timeout: 120 * 1000,
     reuseExistingServer: !process.env.CI,
+    env: {
+      NEXT_PUBLIC_ENABLE_E2E_TEST_ROUTES: 'true',
+    },
   },
   // 개발 서버(Next.js) 1대 기준: 워커 수를 제한해 병렬 부하로 인한 타임아웃 방지
   workers: 2,

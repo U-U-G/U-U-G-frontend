@@ -29,10 +29,11 @@ test.describe('공고 등록 페이지 (/interview/job-posting)', () => {
   test('유효하지 않은 URL 입력 시 에러 메시지가 표시된다', async ({ page }) => {
     await page.goto('/interview/job-posting')
 
-    // pressSequentially로 onChange 확실히 트리거
-    await page
-      .getByPlaceholder('원티드, 잡코리아 사이트의 채용공고만 가능합니다.')
-      .pressSequentially('https://invalid-site.com/job/1')
+    const input = page.getByPlaceholder(
+      '원티드, 잡코리아 사이트의 채용공고만 가능합니다.',
+    )
+    await input.fill('https://invalid-site.com/job/1')
+    await input.blur()
 
     await expect(
       page.getByText('올바른 URL이 아닙니다. 다시 입력해주세요.'),
@@ -42,10 +43,11 @@ test.describe('공고 등록 페이지 (/interview/job-posting)', () => {
   test('유효한 원티드 URL 입력 시 확인 메시지가 표시된다', async ({ page }) => {
     await page.goto('/interview/job-posting')
 
-    // pressSequentially로 onChange 확실히 트리거 (짧은 유효 URL 사용)
-    await page
-      .getByPlaceholder('원티드, 잡코리아 사이트의 채용공고만 가능합니다.')
-      .pressSequentially('https://wanted.co.kr/wd/1')
+    const input = page.getByPlaceholder(
+      '원티드, 잡코리아 사이트의 채용공고만 가능합니다.',
+    )
+    await input.fill('https://wanted.co.kr/wd/1')
+    await input.blur()
 
     await expect(page.getByText('링크가 확인되었습니다.')).toBeVisible()
     await expect(page.getByRole('button', { name: '완료' })).toBeEnabled()

@@ -19,13 +19,11 @@ test.describe('비밀번호 찾기 (/forgot-password)', () => {
   test('잘못된 이메일 형식 입력 시 프론트엔드 에러 메시지가 표시된다', async ({
     page,
   }) => {
-    test.slow() // pressSequentially 타이핑 중 병렬 실행 부하 대응
     await page.goto('/forgot-password')
 
-    // onChange에서 touched=true가 되어야 에러 표시 → pressSequentially로 타이핑
-    await page
-      .getByPlaceholder('이메일을 입력하세요')
-      .pressSequentially('invalid-email')
+    const input = page.getByPlaceholder('이메일을 입력하세요')
+    await input.fill('invalid-email')
+    await input.blur()
 
     await expect(
       page.getByText('올바른 이메일 주소를 입력해주세요.'),
@@ -44,10 +42,9 @@ test.describe('비밀번호 찾기 (/forgot-password)', () => {
     )
 
     await page.goto('/forgot-password')
-    // pressSequentially로 한 글자씩 타이핑해 React onChange를 확실히 호출
-    await page
-      .getByPlaceholder('이메일을 입력하세요')
-      .pressSequentially('notexist@example.com')
+    const input = page.getByPlaceholder('이메일을 입력하세요')
+    await input.fill('notexist@example.com')
+    await input.blur()
     await page.getByRole('button', { name: '메일 전송' }).click()
 
     await expect(page.getByText('가입되지 않은 이메일입니다.')).toBeVisible()
@@ -71,9 +68,9 @@ test.describe('비밀번호 찾기 (/forgot-password)', () => {
     )
 
     await page.goto('/forgot-password')
-    await page
-      .getByPlaceholder('이메일을 입력하세요')
-      .pressSequentially('exist@example.com')
+    const input = page.getByPlaceholder('이메일을 입력하세요')
+    await input.fill('exist@example.com')
+    await input.blur()
     await page.getByRole('button', { name: '메일 전송' }).click()
 
     await expect(page.getByRole('button', { name: '전송 완료' })).toBeVisible()

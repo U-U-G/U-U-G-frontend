@@ -1,6 +1,7 @@
 // tests/login.spec.ts
 
 import { test, expect } from '@playwright/test'
+import { mockPrivateApis } from './helpers/auth'
 
 test.describe('로그인 페이지 (/login)', () => {
   test('로그인 폼이 렌더링된다', async ({ page }) => {
@@ -70,40 +71,7 @@ test.describe('로그인 페이지 (/login)', () => {
     )
 
     // /home 로드 시 호출되는 private API 모킹 (미모킹 시 401 → /login 리다이렉트)
-    await page.route('**/api/users/me', (route) =>
-      route.fulfill({
-        status: 200,
-        json: {
-          success: true,
-          data: {
-            email: 'test@example.com',
-            nickname: '테스트유저',
-            provider: 'LOCAL',
-            profileImageUrl: '',
-            createdAt: '2024-01-01T00:00:00Z',
-          },
-          message: 'OK',
-        },
-      }),
-    )
-    await page.route('**/api/job-postings', (route) =>
-      route.fulfill({
-        status: 200,
-        json: { success: true, data: [], message: 'OK' },
-      }),
-    )
-    await page.route('**/api/schedules*', (route) =>
-      route.fulfill({
-        status: 200,
-        json: { success: true, data: [], message: 'OK' },
-      }),
-    )
-    await page.route('**/api/curriculum*', (route) =>
-      route.fulfill({
-        status: 200,
-        json: { success: true, data: [], message: 'OK' },
-      }),
-    )
+    await mockPrivateApis(page)
 
     await page.goto('/login')
     await page.getByPlaceholder('이메일').fill('test@example.com')
