@@ -7,6 +7,7 @@ import FormPopupLayout from '@/components/common/popup/FormPopupLayout'
 import { PASSWORD_REGEX } from '@/constants/regex'
 import { changePassword } from '@/apis/auth'
 import { getHttpStatus } from '@/apis/common/httpError'
+import { useModal } from '@/hooks/useModal'
 
 interface ChangePasswordPopupProps {
   onClose: () => void
@@ -15,6 +16,7 @@ interface ChangePasswordPopupProps {
 export default function ChangePasswordPopup({
   onClose,
 }: ChangePasswordPopupProps) {
+  const { ref: popupRef } = useModal(true, onClose)
   const [currentPassword, setCurrentPassword] = useState('')
   const [newPassword, setNewPassword] = useState('')
   const [confirm, setConfirm] = useState('')
@@ -65,6 +67,7 @@ export default function ChangePasswordPopup({
     <FormPopupLayout
       title="비밀번호 재설정"
       onClose={onClose}
+      popupRef={popupRef}
       onSubmit={handleSubmit}
       submitLabel="변경 완료"
       canSubmit={canSubmit}

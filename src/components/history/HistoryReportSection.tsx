@@ -35,7 +35,7 @@ export default function HistoryReportSection({
 }: HistoryReportSectionProps) {
   const router = useRouter()
   const [isGenerating, setIsGenerating] = useState(false)
-  const { ref: popupRef } = useModal(isGenerating)
+  const { ref: popupRef } = useModal(isGenerating, handleClose)
   const [sessionUuid, setSessionUuid] = useState<string | null>(null)
 
   useWaitForSessionQuestions({
