@@ -1,6 +1,5 @@
-import Image from 'next/image'
-import { /* IconSchoolFilled, */ IconFileTextFilled } from '@tabler/icons-react'
-import defaultProfileIcon from '@/assets/icon/default-profile-icon.svg'
+import { IconFileTextFilled } from '@tabler/icons-react'
+import ProfileImage from '@/components/common/ProfileImage'
 
 type RankingCardVariant = 'primary' | 'secondary'
 type RankingCardSize = 'md' | 'lg'
@@ -50,12 +49,11 @@ export default function RankingCard({
           #{rank}
         </span>
 
-        <Image
-          src={profileImageUrl || defaultProfileIcon}
+        <ProfileImage
+          profileImageUrl={profileImageUrl}
           alt={`${nickname} 프로필`}
           width={64}
           height={64}
-          className="rounded-full object-cover shrink-0"
         />
 
         <div>
