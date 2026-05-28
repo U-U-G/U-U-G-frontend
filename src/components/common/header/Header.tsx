@@ -118,7 +118,7 @@ export default function Header({ className = '' }: HeaderProps) {
                   alt="프로필 이미지"
                   width={30}
                   height={30}
-                  className="rounded-full mr-3.25"
+                  className="mr-3.25"
                 />
                 <span className="p1 mr-3.75">{profile?.nickname} 님</span>
               </>
