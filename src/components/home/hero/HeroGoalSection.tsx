@@ -2,7 +2,7 @@
 
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
-import UUGCharacterImage from '@/assets/image/uug-character-img.png'
+import UUGCharacterImage from '@/assets/image/uug-character-img.webp'
 import NoteImage from '@/assets/image/note-img.png'
 
 type HeroGoalSectionProps = {
@@ -54,6 +54,9 @@ export default function HeroGoalSection({ isEmpty }: HeroGoalSectionProps) {
         <Image
           src={UUGCharacterImage}
           alt="면접 준비 캐릭터"
+          width={290}
+          height={290}
+          sizes="(max-width: 1160px) 25vw, 290px"
           className="translate-y-12 w-[clamp(240px,25vw,290px)]"
           priority
         />
