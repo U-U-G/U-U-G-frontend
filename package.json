@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "bun --bun next dev --turbopack",
     "build": "bun --bun next build",
-    "start": "bun --bun next start -p 3001",
+    "start": "bun --bun next start -p 3000",
     "lint": "eslint . --fix --cache --cache-location ./node_modules/.cache/eslint/.eslintcache",
     "lint:check": "eslint . --cache --cache-location ./node_modules/.cache/eslint/.eslintcache",
     "type-check": "tsc --noEmit",

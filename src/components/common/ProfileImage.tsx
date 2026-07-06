@@ -26,9 +26,9 @@ export default function ProfileImage({
       alt={alt}
       width={width}
       height={height}
+      sizes={`${width}px`}
       style={{ width, height }}
       className={`shrink-0 rounded-full object-cover ${className ?? ''}`}
-      unoptimized={isRemoteImage}
     />
   )
 }
