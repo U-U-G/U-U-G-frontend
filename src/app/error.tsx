@@ -27,7 +27,7 @@ export default function Error({ error, unstable_retry }: Props) {
           />
         </div>
 
-        <div className="text-center mb-12 font-light">
+        <div className="text-center mb-12 font-medium">
           <p className="h1 text-primary mb-2">오류가 발생했습니다</p>
           <p className="h3 text-text-primary">잠시 후 다시 시도해주세요</p>
         </div>
