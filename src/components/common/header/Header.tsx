@@ -16,7 +16,7 @@ import {
   hasSessionMarker,
   clearAuthTokens,
 } from '@/utils/tokenStorage'
-import { getProfile } from '@/apis/user'
+import { PROFILE_QUERY_KEY, profileQueryOptions } from '@/apis/user/queries'
 import { logout } from '@/apis/auth'
 
 interface HeaderProps {
@@ -41,10 +41,8 @@ export default function Header({ className = '' }: HeaderProps) {
   }, [])
 
   const { data: profile, isLoading: isProfileLoading } = useQuery({
-    queryKey: ['user', 'profile'],
-    queryFn: getProfile,
+    ...profileQueryOptions,
     enabled: queryEnabled === true,
-    retry: false,
   })
 
   useEffect(() => {
@@ -64,7 +62,7 @@ export default function Header({ className = '' }: HeaderProps) {
     mutationFn: logout,
     onSettled: () => {
       clearAuthTokens()
-      queryClient.removeQueries({ queryKey: ['user', 'profile'] })
+      queryClient.removeQueries({ queryKey: PROFILE_QUERY_KEY })
       setQueryEnabled(false)
       setOpen(false)
       router.replace('/')
