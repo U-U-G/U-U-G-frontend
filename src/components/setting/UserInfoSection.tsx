@@ -29,6 +29,9 @@ export default function UserInfoSection() {
   const { data: profile, isLoading } = useQuery({
     queryKey: ['user', 'profile'],
     queryFn: getProfile,
+    placeholderData: () =>
+      queryClient.getQueryData<UserProfile>(['user', 'profile']),
+    retry: false,
   })
 
   const { mutate: handleLogout } = useMutation({
@@ -157,7 +160,11 @@ export default function UserInfoSection() {
     })
   }
 
-  if (isLoading || !profile) {
+  if (!profile && isLoading) {
+    return <div className="flex-1" />
+  }
+
+  if (!profile) {
     return <div className="flex-1" />
   }
 
