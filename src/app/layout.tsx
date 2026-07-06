@@ -6,7 +6,28 @@ import Providers from './providers'
 import MobileBlockScreen from '@/components/common/mobile/MobileBlockScreen'
 
 const pretendard = localFont({
-  src: '../fonts/PretendardVariable.woff2',
+  src: [
+    {
+      path: '../fonts/subset/Pretendard-Medium.subset.woff2',
+      weight: '500',
+      style: 'normal',
+    },
+    {
+      path: '../fonts/subset/Pretendard-SemiBold.subset.woff2',
+      weight: '600',
+      style: 'normal',
+    },
+    {
+      path: '../fonts/subset/Pretendard-Bold.subset.woff2',
+      weight: '700',
+      style: 'normal',
+    },
+    {
+      path: '../fonts/subset/Pretendard-ExtraBold.subset.woff2',
+      weight: '800',
+      style: 'normal',
+    },
+  ],
   display: 'swap',
   variable: '--font-pretendard',
 })

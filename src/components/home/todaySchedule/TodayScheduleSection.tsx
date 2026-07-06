@@ -90,7 +90,7 @@ export default function TodayScheduleSection() {
           <button
             type="button"
             onClick={handleWeekToggle}
-            className="text-3xl leading-none font-light text-primary transition cursor-pointer"
+            className="text-3xl leading-none font-medium text-primary transition cursor-pointer"
             aria-label={isNextWeek ? '이번 주 보기' : '다음 주 보기'}
           >
             {isNextWeek ? <IconChevronLeft /> : <IconChevronRight />}

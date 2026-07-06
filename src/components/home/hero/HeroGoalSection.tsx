@@ -2,7 +2,7 @@
 
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
-import UUGCharacterImage from '@/assets/image/uug-character-img.webp'
+import UUGCharacterImage from '@/assets/image/uug-character-img.png'
 import NoteImage from '@/assets/image/note-img.png'
 
 type HeroGoalSectionProps = {
