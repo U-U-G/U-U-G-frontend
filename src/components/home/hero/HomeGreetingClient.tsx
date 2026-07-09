@@ -2,7 +2,7 @@
 
 import { useQuery } from '@tanstack/react-query'
 import { getJobPostingList } from '@/apis/job-postings'
-import { getProfile } from '@/apis/user'
+import { profileQueryOptions } from '@/apis/user/queries'
 
 type HomeGreetingClientProps = {
   fallbackName: string
@@ -11,11 +11,7 @@ type HomeGreetingClientProps = {
 export default function HomeGreetingClient({
   fallbackName,
 }: HomeGreetingClientProps) {
-  const { data: profile } = useQuery({
-    queryKey: ['user', 'profile'],
-    queryFn: getProfile,
-    retry: false,
-  })
+  const { data: profile } = useQuery(profileQueryOptions)
 
   const { data: jobPostings = [] } = useQuery({
     queryKey: ['job-postings'],

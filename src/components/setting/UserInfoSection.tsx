@@ -11,7 +11,8 @@ import ChangePasswordPopup from '@/components/setting/ChangePasswordPopup'
 import SignoutConfirmPopup from '@/components/setting/SignoutConfirmPopup'
 import { useNicknameEdit } from '@/hooks/useNicknameEdit'
 import { deleteProfileImage, uploadProfileImage } from '@/apis/profile-image'
-import { getProfile, signout, updateProfile } from '@/apis/user'
+import { signout, updateProfile } from '@/apis/user'
+import { PROFILE_QUERY_KEY, profileQueryOptions } from '@/apis/user/queries'
 import type { UserProfile } from '@/apis/user/type'
 import { logout } from '@/apis/auth'
 import { getHttpStatus } from '@/apis/common/httpError'
@@ -26,10 +27,7 @@ export default function UserInfoSection() {
   const profileImageMenuRef = useRef<HTMLDivElement>(null)
   const profileImageInputRef = useRef<HTMLInputElement>(null)
 
-  const { data: profile, isLoading } = useQuery({
-    queryKey: ['user', 'profile'],
-    queryFn: getProfile,
-  })
+  const { data: profile } = useQuery(profileQueryOptions)
 
   const { mutate: handleLogout } = useMutation({
     mutationFn: logout,
@@ -72,7 +70,7 @@ export default function UserInfoSection() {
   } = useMutation({
     mutationFn: uploadProfileImage,
     onSuccess: async () => {
-      await queryClient.invalidateQueries({ queryKey: ['user', 'profile'] })
+      await queryClient.invalidateQueries({ queryKey: PROFILE_QUERY_KEY })
     },
     onError: (e) => {
       console.log('프로필 이미지 업로드에 실패하였습니다', e) //TODO: 토스트로 변경
@@ -85,20 +83,20 @@ export default function UserInfoSection() {
   } = useMutation({
     mutationFn: deleteProfileImage,
     onMutate: async () => {
-      await queryClient.cancelQueries({ queryKey: ['user', 'profile'] })
-      const previous = queryClient.getQueryData<UserProfile>(['user', 'profile'])
-      queryClient.setQueryData<UserProfile>(['user', 'profile'], (prev) =>
+      await queryClient.cancelQueries({ queryKey: PROFILE_QUERY_KEY })
+      const previous = queryClient.getQueryData<UserProfile>(PROFILE_QUERY_KEY)
+      queryClient.setQueryData<UserProfile>(PROFILE_QUERY_KEY, (prev) =>
         prev ? { ...prev, profileImageUrl: '' } : prev,
       )
       return { previous }
     },
     onSuccess: async () => {
       setIsProfileImageMenuOpen(false)
-      await queryClient.invalidateQueries({ queryKey: ['user', 'profile'] })
+      await queryClient.invalidateQueries({ queryKey: PROFILE_QUERY_KEY })
     },
     onError: (e, _variables, context) => {
       if (context?.previous) {
-        queryClient.setQueryData(['user', 'profile'], context.previous)
+        queryClient.setQueryData(PROFILE_QUERY_KEY, context.previous)
       }
       console.log('프로필 이미지 삭제에 실패하였습니다', e) //TODO: 토스트로 변경
     },
@@ -115,7 +113,7 @@ export default function UserInfoSection() {
         profileImageUrl: profile?.profileImageUrl ?? '',
       }),
     onSuccess: async () => {
-      await queryClient.invalidateQueries({ queryKey: ['user', 'profile'] })
+      await queryClient.invalidateQueries({ queryKey: PROFILE_QUERY_KEY })
       handleNicknameConfirm()
     },
     onError: (e) => {
@@ -157,7 +155,7 @@ export default function UserInfoSection() {
     })
   }
 
-  if (isLoading || !profile) {
+  if (!profile) {
     return <div className="flex-1" />
   }
 
